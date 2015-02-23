@@ -1,0 +1,11 @@
+{
+    "elements": {
+        "wicket:head": {},
+        "wicket:panel": {},
+        "wicket:extend": {}
+    },
+    "attributes": {
+        "wicket:id": {},
+        "aria-expanded": {}
+    }
+}

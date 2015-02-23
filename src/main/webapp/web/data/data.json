@@ -1,0 +1,20 @@
+[
+    {
+        "ticketsId" : "105",
+        "ticketsSubject" : "<a href=\"#\">Chybová hláška</a>",
+        "ticketsState" : "Nová",
+        "ticketsAssigment" : "Nepriradené",
+        "ticketsPriority" : "A",
+        "ticketsEstimated" : "",
+        "ticketsUpdated": "2014-14-11 21:25"
+    },
+    {
+        "ticketsId" : "105",
+        "ticketsSubject" : "<a href=\"\" wicket:id=\"details.link\">Predmet ticketu</a>",
+        "ticketsState" : "Nová",
+        "ticketsAssigment" : "<a href=\"\" data-toggle=\"modal\" data-target=\"#contactForm\">Janko Mrkvicka</a>",
+        "ticketsPriority" : "A",
+        "ticketsEstimated" : "",
+        "ticketsUpdated": "2014-14-11 21:25"
+    }
+]

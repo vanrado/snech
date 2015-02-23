@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<!--
+Copyright 2014 Radovan.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+    <head>
+    <wicket:head>
+        <title>Zoznam nahlasenych poziadaviek</title>
+        <link rel="stylesheet" href="web\bootstrap_tables\bootstrap-table.css">
+        <script src="web\bootstrap_tables\bootstrap-table.js"></script>
+        <script src="web\data\data2.json"></script>
+        <script>
+        </script>
+    </wicket:head>
+</head>
+<body>
+<wicket:extend>
+
+
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">Zoznam nahlásených požiadaviek</div>
+
+
+        <div id="toolbar" class="btn-group">
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-plus"></i> Nahlásiť novú</button>
+            <button type="button" class="btn btn-default"><i class="glyphicon glyphicon-trash"></i> Vymazať</button>
+        </div>
+        <table data-toggle="table"
+               data-click-to-select="true">
+            <thead>
+                <tr>
+                    <th data-field="state" data-checkbox="true"></th>                        
+                    <th data-field="ticketsId">#ID</th>
+                    <th data-field="ticketsSubject">Predmet</th>
+                    <th data-field="ticketsState">Stav</th>
+                    <th data-field="ticketsAssigment">Priradené</th>
+                    <th data-field="ticketsPriority">Priorita</th>
+                    <th data-field="ticketsEstimated">Odhad vyriešenia</th>
+                    <th data-field="ticketsUpdated">Aktualizované</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr data-index="0" class="">
+                    <td class="bs-checkbox">
+                        <input data-index="0" name="btSelectItem" type="checkbox">
+                    </td>
+                    <td style="">105</td>
+                    <td style="">
+                        <a href="#" wicket:id="details.link2">Predmet ticketu</a>
+                    </td><td style="">Prebieha</td>
+                    <td style=""><a href="#" data-toggle="modal" data-target="#contactForm">Janko Mrkvicka</a></td>
+                    <td style="">A</td>
+                    <td style=""></td>
+                    <td style="">2014-14-11 21:25</td></tr><tr data-index="1">
+                    <td class="bs-checkbox"><input data-index="1" name="btSelectItem" type="checkbox"></td>
+                    <td style="">105</td><td style=""><a href="#">Predmet ticketu</a></td>
+                    <td style="">Nová</td><td style="">Nepriradené</td><td style="">A</td>
+                    <td style=""></td><td style="">2014-14-11 21:25</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div wicket:id="reportTicket.panel"></div>
+    <div wicket:id="contactForm.panel"></div>
+</wicket:extend>
+</body>
+</html>

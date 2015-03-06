@@ -1,6 +1,7 @@
 package snech;
 
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import snech.web.pages.LoginPage;
 
 /**
@@ -30,5 +31,6 @@ public class WicketApplication extends WebApplication
         {
             getRequestCycleSettings().setResponseRequestEncoding("UTF-8"); 
             getMarkupSettings().setDefaultMarkupEncoding("UTF-8"); 
+            getComponentInstantiationListeners().add(new SpringComponentInjector(this));
         }
 }

@@ -16,7 +16,15 @@
 package snech.web.forms;
 
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.PasswordTextField;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import snech.core.IDatabaseService;
+import snech.core.types.User;
 import snech.web.pages.ResetPasswordPage;
 import snech.web.pages.TicketsListPage;
 
@@ -24,23 +32,47 @@ import snech.web.pages.TicketsListPage;
  *
  * @author Radovan
  */
-public class LoginForm extends Form{
+public class LoginForm extends Form {
+
+    @SpringBean
+    private IDatabaseService databaseService;
+    
+    private String username;
+    private String password;
 
     public LoginForm(String id) {
         super(id);
-        add(new Link("resetpassword.link"){
+        TextField< ?> usernameField;
+        PasswordTextField passwordField;
+        
+        usernameField = new TextField("username", new PropertyModel(this, "username"));
+        usernameField.setRequired(true);
+        
+        passwordField = new PasswordTextField("password", new PropertyModel(this, "password"));
+        passwordField.setRequired(true);
+        
+        add(usernameField);
+        add(passwordField);
+        add(new Link("resetpassword.link") {
 
             @Override
             public void onClick() {
                 setResponsePage(ResetPasswordPage.class);
             }
-        
+
         });
     }
 
     @Override
     protected void onSubmit() {
-        super.onSubmit(); //To change body of generated methods, choose Tools | Templates.
-        setResponsePage(TicketsListPage.class);
+        super.onSubmit();
+        
+        User user = databaseService.getClient(username,password);
+        
+        if(user != null){
+            setResponsePage(TicketsListPage.class);
+        }else{
+            error("Nespravny login! user=");
+        }
     }
 }

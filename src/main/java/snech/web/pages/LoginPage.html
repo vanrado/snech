@@ -23,13 +23,14 @@ limitations under the License.
     <body>
     <wicket:extend>
         <div class="container">
+            <div class="alert alert-info" role="alert" wicket:id="feedback"></div>
             <form class="form-signin" role="form" wicket:id="login.form">
               <h2 class="form-signin-heading">Prihlásenie</h2>
               <label for="userName" class="sr-only">Užívateľské meno</label>
-              <input type="text" id="userName" class="form-control" placeholder="Login" required autofocus>
+              <input wicket:id="username" type="text" id="userName" class="form-control" placeholder="Login" required autofocus>
 
               <label for="inputPassword" class="sr-only">Heslo</label>
-              <input type="password" id="inputPassword" class="form-control" placeholder="Heslo" required>
+              <input wicket:id="password" type="password" id="inputPassword" class="form-control" placeholder="Heslo" required>
 
               <div class="checkbox">
                 <label>

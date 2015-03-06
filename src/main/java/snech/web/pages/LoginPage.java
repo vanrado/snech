@@ -16,6 +16,7 @@
 package snech.web.pages;
 
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import snech.web.base.BasePage;
 import snech.web.forms.LoginForm;
 
@@ -28,6 +29,7 @@ public class LoginPage extends BasePage{
     private static final long serialVersionUID = 1L;
     
     public LoginPage(){
+        add(new FeedbackPanel("feedback"));
         add(new LoginForm("login.form"));
     }
     

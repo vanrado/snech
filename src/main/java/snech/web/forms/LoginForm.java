@@ -66,10 +66,10 @@ public class LoginForm extends Form {
 
     @Override
     protected void onSubmit() {
-        if(CustomAuthenticatedWebSession.get().authenticate(username, password)){
-            setResponsePage(TicketsListPage.class);
+        if(CustomAuthenticatedWebSession.get().signIn(username, password)){
+            continueToOriginalDestination();
         }else{
-            error("Nespravny login! user=");
+            error("Nespravny login alebo heslo!");
         }
     }
 }

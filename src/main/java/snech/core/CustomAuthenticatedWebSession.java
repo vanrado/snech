@@ -40,10 +40,15 @@ public class CustomAuthenticatedWebSession extends AuthenticatedWebSession {
             return false;
         }
     }
-
+    
     @Override
-    public Roles getRoles() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void signOut() {
+        this.removeAttribute(LOGED_USER);
+        super.signOut();
+    }
+
+    public static User getLoggedUser() {
+        return ((User) CustomAuthenticatedWebSession.get().getAttribute(LOGED_USER));
     }
 
     public static CustomAuthenticatedWebSession get() {
@@ -55,5 +60,10 @@ public class CustomAuthenticatedWebSession extends AuthenticatedWebSession {
         }
 
         return session;
+    }
+
+    @Override
+    public Roles getRoles() {
+        return null;
     }
 }

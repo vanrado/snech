@@ -17,6 +17,7 @@ package snech.web.panels.base;
 
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
+import snech.core.CustomAuthenticatedWebSession;
 import snech.web.pages.AccountManagementPage;
 import snech.web.pages.LoginPage;
 import snech.web.pages.OverviewPage;
@@ -35,7 +36,8 @@ public class HeaderPanel extends Panel {
 
             @Override
             public void onClick() {
-                setResponsePage(LoginPage.class);
+                CustomAuthenticatedWebSession.get().invalidate();
+                setResponsePage(getApplication().getHomePage());
             }
 
         });

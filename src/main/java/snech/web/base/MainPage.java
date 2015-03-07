@@ -15,6 +15,9 @@
  */
 package snech.web.base;
 
+import org.apache.wicket.Application;
+import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
+import snech.core.CustomAuthenticatedWebSession;
 import snech.web.panels.base.HeaderPanel;
 
 /**
@@ -25,4 +28,14 @@ public class MainPage extends BasePage{
     public MainPage(){
         add(new HeaderPanel("header.panel"));
     }
+
+    @Override
+    protected void onConfigure() {
+        AuthenticatedWebApplication app = (AuthenticatedWebApplication) Application.get();
+        if(!CustomAuthenticatedWebSession.get().isSignedIn()){
+            app.restartResponseAtSignInPage();
+        }
+    }
+    
+    
 }

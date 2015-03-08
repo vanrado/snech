@@ -7,7 +7,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import snech.core.IDatabaseService;
+import snech.core.services.IDatabaseService;
 import snech.core.types.Notice;
 
 /**

@@ -1,5 +1,6 @@
 package snech.core;
 
+import snech.core.services.IDatabaseService;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;
 import org.apache.wicket.injection.Injector;

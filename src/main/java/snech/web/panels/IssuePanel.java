@@ -9,7 +9,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import snech.core.IDatabaseService;
+import snech.core.services.IDatabaseService;
 import snech.core.types.Issue;
 import snech.core.types.enums.EIssueStatus;
 import snech.web.pages.TicketDetailPage;

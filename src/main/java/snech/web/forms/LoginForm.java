@@ -24,7 +24,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import snech.core.CustomAuthenticatedWebSession;
-import snech.core.IDatabaseService;
+import snech.core.services.IDatabaseService;
 import snech.core.types.User;
 import snech.web.pages.ResetPasswordPage;
 import snech.web.pages.TicketsListPage;

@@ -1,4 +1,4 @@
-package snech.core;
+package snech.core.services;
 
 import java.util.List;
 import javax.transaction.Transactional;

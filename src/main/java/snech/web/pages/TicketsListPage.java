@@ -18,6 +18,7 @@ package snech.web.pages;
 import org.apache.wicket.markup.html.link.Link;
 import snech.web.base.MainPage;
 import snech.web.panels.ContactFormPanel;
+import snech.web.panels.IssuePanel;
 import snech.web.panels.NoticePanel;
 import snech.web.panels.ReportTicketPanel;
 
@@ -26,15 +27,9 @@ import snech.web.panels.ReportTicketPanel;
  * @author Radovan
  */
 public class TicketsListPage extends MainPage {
-    public TicketsListPage(){
-        add(new Link("details.link2"){
 
-            @Override
-            public void onClick() {
-                setResponsePage(TicketDetailPage.class);
-            }
-        
-        });
+    public TicketsListPage() {
+        add(new IssuePanel("issue.panel"));
         add(new NoticePanel("notice.panel"));
         add(new ReportTicketPanel("reportTicket.panel"));
         add(new ContactFormPanel("contactForm.panel"));

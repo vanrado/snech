@@ -14,16 +14,16 @@ import snech.core.types.Notice;
  *
  * @author Radovan Račák
  */
-public class NoticePanel extends Panel{
-    
+public class NoticePanel extends Panel {
+
     @SpringBean
     private IDatabaseService databaseService;
-    
+
     public NoticePanel(String id) {
         super(id);
         List<Notice> notices = databaseService.getNotices(true);
-        
-        add(new ListView<Notice>("notices", notices){
+
+        add(new ListView<Notice>("notices", notices) {
 
             @Override
             protected void populateItem(ListItem<Notice> notice) {
@@ -32,7 +32,7 @@ public class NoticePanel extends Panel{
                 notice.add(new Label("author", new PropertyModel(notice.getModel(), "author")));
                 notice.add(new Label("content", new PropertyModel(notice.getModel(), "content")));
             }
-            
+
         });
     }
 

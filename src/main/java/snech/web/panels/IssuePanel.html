@@ -1,0 +1,45 @@
+<wicket:panel>
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">Zoznam nahlásených požiadaviek</div>
+
+
+        <div id="toolbar" class="btn-group">
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-plus"></i> Nahlásiť novú</button>
+            <button type="button" class="btn btn-default"><i class="glyphicon glyphicon-trash"></i> Vymazať</button>
+        </div>
+        <table data-toggle="table"
+               data-click-to-select="true">
+            <thead>
+                <tr>
+                    <th data-field="state" data-checkbox="true"></th>                        
+                    <th data-field="ticketsId">#ID</th>
+                    <th data-field="ticketsSubject">Predmet</th>
+                    <th data-field="ticketsState">Stav</th>
+                    <th data-field="ticketsAssigment">Priradené</th>
+                    <th data-field="ticketsPriority">Priorita</th>
+                    <th data-field="ticketsEstimated">Odhad vyriešenia</th>
+                    <th data-field="ticketsUpdated">Aktualizované</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr wicket:id="issue">
+                    <td class="bs-checkbox">
+                        <input data-index="0" name="btSelectItem" type="checkbox">
+                    </td>
+                    <td><span wicket:id="id"></span></td>
+                    <td>
+                        <a href="#" wicket:id="detailsLink"><span wicket:id="detailsLinkLabel"></span></a>
+                    </td>
+                    <td><span wicket:id="issueStatus"></span></td>
+                    <td><a href="#" data-toggle="modal" data-target="#contactForm" wicket:id="contactAdminLink"><span wicket:id="contactName"></span></a></td>
+                    <td><span wicket:id="priority"></span></td>
+                    <td><span wicket:id="estimatedDate"></span></td>
+                    <td><span wicket:id="lastUpdatedDate"></span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</wicket:panel>

@@ -1,6 +1,8 @@
 package snech.core.types;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import snech.core.types.enums.EIssuePriority;
 import snech.core.types.enums.EIssueStatus;
 
@@ -17,8 +19,11 @@ public class Issue {
     private EIssuePriority priority;
     private Timestamp estimatedDate;
     private Timestamp lastUpdatedDate;
+    private String message;
+    private ArrayList<Attachment> attachments;
 
     public Issue() {
+        attachments = new ArrayList<>();
     }
 
     public String getAssignedAdminId() {
@@ -75,6 +80,14 @@ public class Issue {
 
     public void setSubject(String subject) {
         this.subject = subject;
+    }
+
+    public ArrayList<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void addAttachment(Attachment attachment) {
+        this.attachments.add(attachment);
     }
 
 }

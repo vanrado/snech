@@ -10,7 +10,7 @@ import snech.core.types.enums.EIssueStatus;
  */
 public class Issue {
 
-    private long id;
+    private Long id;
     private String subject;
     private EIssueStatus status;
     private String assignedAdminId;
@@ -29,7 +29,7 @@ public class Issue {
         return estimatedDate;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

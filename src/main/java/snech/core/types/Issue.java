@@ -20,10 +20,19 @@ public class Issue {
     private Timestamp estimatedDate;
     private Timestamp lastUpdatedDate;
     private String message;
+    private String replyFromAdmin;
     private ArrayList<Attachment> attachments;
 
     public Issue() {
         attachments = new ArrayList<>();
+    }
+
+    public String getReplyFromAdmin() {
+        return replyFromAdmin;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     public String getAssignedAdminId() {
@@ -90,4 +99,11 @@ public class Issue {
         this.attachments.add(attachment);
     }
 
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setReplyFromAdmin(String replyFromAdmin) {
+        this.replyFromAdmin = replyFromAdmin;
+    }
 }

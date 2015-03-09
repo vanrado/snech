@@ -23,53 +23,50 @@ limitations under the License.
     <body>
     <wicket:extend>
         <div class="panel panel-default">
-          <!-- Default panel contents -->
-          <div class="panel-heading">Detaily o poziadavke</div>
-          
-          <dl class="list-group dl-horizontal">
-              <span class="list-group-item">
-                <dt>ID:</dt>
-                <dd wicket:id="issueId">105</dd>
-              </span>
-              <span class="list-group-item">
-                <dt>Stav:</dt>
-                <dd wicket:id="issueStatus">Nova</dd>
-              </span>
-              <span class="list-group-item">
-                <dt>Priorita:</dt>
-                <dd wicket:id="issuePriority">A</dd>
-              </span>
-              <span class="list-group-item">
-                <dt>Priradený technik:</dt>
-                <dd wicket:id="issueAssigned">Roman Zavacký</dd>
-              </span>
-              <span class="list-group-item">
-                <dt>Odhad vyriešenia:</dt>
-                <dd wicket:id="estimatedDate"></dd>
-              </span>
-              <span class="list-group-item">
-                <dt>Aktualizované:</dt>
-                <dd wicket:id="lastUpdatedDate">2014-13-11 17:00</dd>
-              </span>
-              <span class="list-group-item">
-                <dt>Správa:</dt>
-                <dd><p> org.apache.wicket.RequestListenerInterface - registered listener interface [RequestListenerInterface name=IFormSubmitListener, method=public abstract void org.apache.wicket.markup.html.form.IFormSubmitListener.onFormSubmitted()]
-14:58:13.291 [http-apr-8080-exec-79] INFO  org.apache.wicket.RequestListenerInterface - registered listener interface</p></dd>
-              </span>
-              <span class="list-group-item">
-                <dt>Odpoveď technika:</dt>
-                <dd></dd>
-              </span>
-              <span class="list-group-item">
-                <dt>Príloha:</dt>
-                <dd><a href="#">Screen1.jpg</a></dd>
-                <dd><a href="#">Screen2.jpg</a></dd>
-                <dd><a href="#">Screen3.jpg</a></dd>
-              </span>
-          </dl>
+            <!-- Default panel contents -->
+            <div class="panel-heading">Detaily o poziadavke</div>
+
+            <dl class="list-group dl-horizontal">
+                <span class="list-group-item">
+                    <dt>ID:</dt>
+                    <dd wicket:id="issueId">105</dd>
+                </span>
+                <span class="list-group-item">
+                    <dt>Stav:</dt>
+                    <dd wicket:id="issueStatus">Nova</dd>
+                </span>
+                <span class="list-group-item">
+                    <dt>Priorita:</dt>
+                    <dd wicket:id="issuePriority">A</dd>
+                </span>
+                <span class="list-group-item">
+                    <dt>Priradený technik:</dt>
+                    <dd wicket:id="issueAssigned">Roman Zavacký</dd>
+                </span>
+                <span class="list-group-item">
+                    <dt>Odhad vyriešenia:</dt>
+                    <dd wicket:id="estimatedDate"></dd>
+                </span>
+                <span class="list-group-item">
+                    <dt>Aktualizované:</dt>
+                    <dd wicket:id="lastUpdatedDate">2014-13-11 17:00</dd>
+                </span>
+                <span class="list-group-item">
+                    <dt>Správa:</dt>
+                    <dd wicket:id="message"></dd>
+                </span>
+                <span class="list-group-item">
+                    <dt>Odpoveď technika:</dt>
+                    <dd wicket:id="replyFromAdmin"></dd>
+                </span>
+                <span class="list-group-item">
+                    <dt>Príloha:</dt>
+                    <dd wicket:id="attachments"><a wicket:id="attLink" href="#"></a></dd>
+                </span>
+            </dl>
         </div>
         <button type="button" class="btn btn-default" wicket:id="backpage.link">Späť</button>
         <button type="button" class="btn btn-default"><i class="glyphicon glyphicon-trash"></i> Vymazať</button>
     </wicket:extend>
-    </body>
+</body>
 </html>

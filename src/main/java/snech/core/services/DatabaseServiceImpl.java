@@ -84,4 +84,30 @@ public class DatabaseServiceImpl implements IDatabaseService {
         return issues;
     }
 
+    @Override
+    public Issue getIssue(String issueId) {
+        Issue issue = new Issue();
+        issue.setId(Long.parseLong(issueId));
+        if (issueId.equals("100")) {
+            issue.setAssignedAdminId("100");
+        } else if (issueId.equals("101")) {
+            issue.setAssignedAdminId("101");
+        }
+        return issue;
+    }
+
+    @Override
+    public String getAdminFullName(String adminId) {
+        // TODO Pouzit FormatUtils na formatovanie mena a priezviska - zac. pismena velkym!!
+        if (adminId != null) {
+            if (adminId.equals("100")) {
+                return "Janko Hrasko";
+            } else if (adminId.equals("101")) {
+                return "Jack Langdon";
+            }
+        }
+
+        return "Nezname Meno";
+    }
+
 }

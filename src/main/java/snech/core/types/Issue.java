@@ -1,5 +1,6 @@
 package snech.core.types;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ import snech.core.types.enums.EIssueStatus;
  *
  * @author Radovan Račák
  */
-public class Issue {
+public class Issue implements Serializable {
 
     private Long id;
     private String subject;

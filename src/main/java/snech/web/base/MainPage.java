@@ -17,6 +17,7 @@ package snech.web.base;
 
 import org.apache.wicket.Application;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import snech.core.CustomAuthenticatedWebSession;
 import snech.web.panels.base.HeaderPanel;
 
@@ -26,6 +27,11 @@ import snech.web.panels.base.HeaderPanel;
  */
 public class MainPage extends BasePage{
     public MainPage(){
+        add(new HeaderPanel("header.panel"));
+    }
+    
+    public MainPage(PageParameters pageParameters){
+        super(pageParameters);
         add(new HeaderPanel("header.panel"));
     }
 

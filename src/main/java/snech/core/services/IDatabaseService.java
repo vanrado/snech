@@ -15,4 +15,6 @@ public interface IDatabaseService {
     public User getClient(String id, String password);
     public List<Notice> getNotices(boolean allNotices);
     public List<Issue> getIssues(String userId);
+    public Issue getIssue(String issueId);
+    public String getAdminFullName(String adminId);
 }

@@ -10,6 +10,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import snech.core.services.IDatabaseService;
+import snech.core.services.IFormatUtils;
 import snech.core.types.Issue;
 import snech.core.types.enums.EIssueStatus;
 import snech.web.pages.TicketDetailPage;
@@ -22,6 +23,9 @@ public class IssuePanel extends Panel {
 
     @SpringBean
     private IDatabaseService databaseService;
+    
+    @SpringBean
+    private IFormatUtils formatUtils;
 
     public IssuePanel(String id) {
         super(id);
@@ -63,8 +67,11 @@ public class IssuePanel extends Panel {
                     }
                 });
                 listItem.add(new Label("priority", issue.getPriority().name()));
-                listItem.add(new Label("estimatedDate", issue.getEstimatedDate().getTime()));
-                listItem.add(new Label("lastUpdatedDate", issue.getLastUpdatedDate().getTime()));
+                
+                long estimatedTime = issue.getEstimatedDate().getTime();
+                long lastUpdatedDate = issue.getLastUpdatedDate().getTime();
+                listItem.add(new Label("estimatedDate", formatUtils.getFormatedDate(estimatedTime)));
+                listItem.add(new Label("lastUpdatedDate", formatUtils.getFormatedDate(lastUpdatedDate)));
             }
         });
     }

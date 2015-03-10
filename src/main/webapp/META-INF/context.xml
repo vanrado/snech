@@ -1,2 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context antiJARLocking="true" path="/snech"/>
+<Context antiJARLocking="true" path="/snech" >
+  <!-- DB Connection resources -->
+      <Resource
+        name="jdbc/snechDB"
+        auth="Container"
+        driverClassName="oracle.jdbc.OracleDriver"
+        type="javax.sql.DataSource"
+
+        url="jdbc:oracle:thin:@//localhost:1521/XE"
+        username="snech_db"
+        password="db123"
+        
+        maxWait="10000"
+        maxActive="60"
+        minIdle = "0"
+        maxIdle="30"
+
+        removeAbandoned="true"
+        removeAbandonedTimeout="120"
+
+        testOnBorrow="false"
+        testOnReturn="false"
+        testWhileIdle="true"
+        validationQuery="SELECT * from dual"
+        timeBetweenEvictionRunsMillis="59000"
+        minEvictableIdleTimeMillis="58000"
+    />
+</Context>

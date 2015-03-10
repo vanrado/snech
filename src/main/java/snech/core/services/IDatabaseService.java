@@ -17,4 +17,5 @@ public interface IDatabaseService {
     public List<Issue> getIssues(String userId);
     public Issue getIssue(String issueId);
     public String getAdminFullName(String adminId);
+    public String testSelect();
 }

@@ -39,15 +39,63 @@ public class DatabaseServiceImpl implements IDatabaseService {
 
     @Override
     public User getClient(String id, String password) {
-        User user = new User();
-        user.setId("jack");
-        user.setPassword("1234");
+        User user = null;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "SELECT * FROM user_logins inner join users on user_logins.user_id = users.user_id where login=? and password=?";
+        ResultSet rs = null;
 
-        if (user.getId().equals(id) && user.getPassword().equals(password)) {
-            return user;
-        } else {
-            return null;
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            statement.setString(1, id);
+            statement.setString(2, password);
+            rs = statement.executeQuery();
+
+            if (rs.next()) {
+                user = new User();
+
+                long userId = rs.getLong("login_id");
+                String userLogin = rs.getString("login");
+                String userFirstName = rs.getString("first_name");
+                String userLastName = rs.getString("last_name");
+                String userEmail = rs.getString("email");
+                String userOccupation = rs.getString("occupation");
+
+                user.setId(userId);
+                user.setLogin(userLogin);
+                user.setFirstName(userFirstName);
+                user.setLastName(userLastName);
+                user.setEmail(userEmail);
+                user.setOccupation(userOccupation);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
         }
+
+        return user;
     }
 
     /**
@@ -111,7 +159,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 // TODO metoda co vrati dany enum podla stringu z DB
                 issue.setPriority(EIssuePriority.A);
                 issue.setStatus(EIssueStatus.NOVA);
-                
+
                 issues.add(issue);
             }
 

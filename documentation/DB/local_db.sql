@@ -9,6 +9,9 @@ Insert into SNECH_DB.ISSUES (ISSUE_ID,USER_LOGIN,SUBJECT,CODE_PRIORITY,CODE_STAT
 
 SELECT * FROM issues where user_login='robert_u';
 
+select * from user_logins 
+inner join users on user_logins.user_id = users.user_id;
+
 /* Next we create the package that contains the specification of the security code. *//*
 CREATE OR REPLACE PACKAGE user_security AS
 

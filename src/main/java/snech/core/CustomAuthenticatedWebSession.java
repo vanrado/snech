@@ -18,8 +18,7 @@ public class CustomAuthenticatedWebSession extends AuthenticatedWebSession {
      * serial uid
      */
     private static final long serialVersionUID = 1L;
-
-    private static final String LOGED_USER = "logedUser";
+    private User user;
 
     @SpringBean
     private IDatabaseService databaseService;
@@ -32,24 +31,24 @@ public class CustomAuthenticatedWebSession extends AuthenticatedWebSession {
     @Override
     public boolean authenticate(String username, String password) {
         Injector.get().inject(this);
-        User user = databaseService.getClient(username, password);
+        User users = databaseService.getClient(username, password);
 
-        if (user != null) {
-            this.setAttribute(LOGED_USER, user);
+        if (users != null) {
+            user = users;
             return true;
         } else {
             return false;
         }
     }
-    
+
     @Override
     public void signOut() {
-        this.removeAttribute(LOGED_USER);
         super.signOut();
+        user = null;
     }
 
-    public static User getLoggedUser() {
-        return ((User) CustomAuthenticatedWebSession.get().getAttribute(LOGED_USER));
+    public User getUser() {
+        return user;
     }
 
     public static CustomAuthenticatedWebSession get() {

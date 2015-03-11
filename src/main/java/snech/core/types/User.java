@@ -1,18 +1,20 @@
 package snech.core.types;
 
 import java.io.Serializable;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  *
  * @author Radovan Račák
  */
-public class User implements Serializable{
+public class User implements Serializable {
+
     private String id;
     private String password;
     private String fullName;
-    
+
     public User() {
-    
+
     }
 
     public String getFullName() {
@@ -37,5 +39,10 @@ public class User implements Serializable{
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }

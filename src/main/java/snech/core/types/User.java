@@ -9,36 +9,63 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  */
 public class User implements Serializable {
 
-    private String id;
-    private String password;
-    private String fullName;
+    private long id;
+    private String login;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String occupation;
 
     public User() {
 
     }
 
-    public String getFullName() {
-        return fullName;
-    }
-
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public String getPassword() {
-        return password;
+    public String getEmail() {
+        return email;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setId(String id) {
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public String getOccupation() {
+        return occupation;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public void setOccupation(String occupation) {
+        this.occupation = occupation;
+    }
+
+    public void setId(long id) {
         this.id = id;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     @Override

@@ -29,7 +29,8 @@ public class IssuePanel extends Panel {
 
     public IssuePanel(String id) {
         super(id);
-        List<Issue> issues = databaseService.getIssues(id);
+        // TODO metoda getIssues v DB service
+        List<Issue> issues = databaseService.getIssues("1");
         add(new ListView<Issue>("issue", issues) {
 
             @Override
@@ -66,7 +67,7 @@ public class IssuePanel extends Panel {
                         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
                     }
                 });
-                listItem.add(new Label("priority", issue.getPriority().name()));
+                listItem.add(new Label("priority", issue.getPriority()));
                 
                 long estimatedTime = issue.getEstimatedDate().getTime();
                 long lastUpdatedDate = issue.getLastUpdatedDate().getTime();

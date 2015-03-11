@@ -80,6 +80,66 @@ public class DatabaseServiceImpl implements IDatabaseService {
     @Override
     public List<Issue> getIssues(String userId) {
         ArrayList<Issue> issues = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "SELECT * FROM issues where user_login=?";
+        ResultSet rs = null;
+
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            statement.setString(1, userId);
+            rs = statement.executeQuery();
+
+            while (rs.next()) {
+                Issue issue = new Issue();
+                Timestamp estimatedDate = rs.getTimestamp("estimated_time");
+                Timestamp createdDate = rs.getTimestamp("created_on");
+                Timestamp lastUpdateDate = rs.getTimestamp("last_update");
+                String message = rs.getString("message");
+                String subject = rs.getString("subject");
+                long adminId = rs.getLong("admin_login");
+
+                issue.setId(rs.getLong("issue_id"));
+                issue.setAssignedAdminId(adminId);
+                issue.setEstimatedDate(new Timestamp(estimatedDate != null ? estimatedDate.getTime() : 1));
+                issue.setLastUpdatedDate(new Timestamp(createdDate != null ? createdDate.getTime() : 1));
+                issue.setCreatedDate(new Timestamp(lastUpdateDate != null ? lastUpdateDate.getTime() : 1));
+                issue.setMessage(message != null ? message : "");
+                issue.setSubject(subject != null ? subject : "");
+
+                // TODO metoda co vrati dany enum podla stringu z DB
+                issue.setPriority(EIssuePriority.A);
+                issue.setStatus(EIssueStatus.NOVA);
+                
+                issues.add(issue);
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        }
         return issues;
     }
 
@@ -96,18 +156,17 @@ public class DatabaseServiceImpl implements IDatabaseService {
         try {
             connection = dataSource.getConnection();
             statement = connection.prepareStatement(selectSQL);
-            //statement.setLong(1, issueId);
-            statement.setInt(1, 1);
+            statement.setLong(1, issueId);
             rs = statement.executeQuery();
-            
+
             if (rs.next()) {
                 Timestamp estimatedDate = rs.getTimestamp("estimated_time");
                 Timestamp createdDate = rs.getTimestamp("created_on");
                 Timestamp lastUpdateDate = rs.getTimestamp("last_update");
                 String message = rs.getString("message");
                 String subject = rs.getString("subject");
-                long adminId = rs.getLong("admin_login_id");
-                
+                long adminId = rs.getLong("admin_login");
+
                 issue.setId(issueId);
                 issue.setAssignedAdminId(adminId);
                 issue.setEstimatedDate(new Timestamp(estimatedDate != null ? estimatedDate.getTime() : 1));
@@ -145,6 +204,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 }
             }
         }
+        System.out.println(issue.toString());
         return issue;
     }
 

@@ -29,8 +29,7 @@ public class IssuePanel extends Panel {
 
     public IssuePanel(String id) {
         super(id);
-        // TODO metoda getIssues v DB service
-        List<Issue> issues = databaseService.getIssues("1");
+        List<Issue> issues = databaseService.getIssues("robert_u");
         add(new ListView<Issue>("issue", issues) {
 
             @Override

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import snech.core.types.enums.EIssuePriority;
 import snech.core.types.enums.EIssueStatus;
 
@@ -13,13 +14,14 @@ import snech.core.types.enums.EIssueStatus;
  */
 public class Issue implements Serializable {
 
-    private Long id;
+    private long id;
     private String subject;
     private EIssueStatus status;
-    private String assignedAdminId;
+    private long assignedAdminId;
     private EIssuePriority priority;
     private Timestamp estimatedDate;
     private Timestamp lastUpdatedDate;
+    private Timestamp createdDate;
     private String message;
     private String replyFromAdmin;
     private ArrayList<Attachment> attachments;
@@ -36,7 +38,7 @@ public class Issue implements Serializable {
         return message;
     }
 
-    public String getAssignedAdminId() {
+    public long getAssignedAdminId() {
         return assignedAdminId;
     }
 
@@ -44,12 +46,16 @@ public class Issue implements Serializable {
         return estimatedDate;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
     public Timestamp getLastUpdatedDate() {
         return lastUpdatedDate;
+    }
+
+    public Timestamp getCreatedDate() {
+        return createdDate;
     }
 
     public EIssuePriority getPriority() {
@@ -64,7 +70,7 @@ public class Issue implements Serializable {
         return subject;
     }
 
-    public void setAssignedAdminId(String assignedAdminId) {
+    public void setAssignedAdminId(long assignedAdminId) {
         this.assignedAdminId = assignedAdminId;
     }
 
@@ -107,4 +113,16 @@ public class Issue implements Serializable {
     public void setReplyFromAdmin(String replyFromAdmin) {
         this.replyFromAdmin = replyFromAdmin;
     }
+
+    public void setCreatedDate(Timestamp createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
+    
+        
+
 }

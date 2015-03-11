@@ -15,6 +15,7 @@
  */
 package snech.web.panels.base;
 
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import snech.core.CustomAuthenticatedWebSession;
@@ -31,7 +32,7 @@ public class HeaderPanel extends Panel {
 
     public HeaderPanel(String id) {
         super(id);
-
+        CustomAuthenticatedWebSession MySession = CustomAuthenticatedWebSession.get();
         add(new Link("signOut.link") {
 
             @Override
@@ -42,6 +43,7 @@ public class HeaderPanel extends Panel {
 
         });
 
+        add(new Label("logedUser", MySession.getUser() != null ? MySession.getUser().getFirstName() + " " + MySession.getUser().getLastName() : ""));
         add(new Link("overview.link") {
             @Override
             public void onClick() {

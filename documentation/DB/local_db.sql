@@ -1,6 +1,11 @@
 /* 9.1. 2015 */
 insert into users(first_name, last_name, email, occupation, created_on) values ('Robert', 'Langdon', 'radovan.racak@gmail.com', 'Developer', to_timestamp('31-12-2006 23:34:59','DD-MM-YYYY   HH24:MI:SS'));
 delete from users where user_id=2;
+SELECT * FROM ISSUES where issue_id=1;
+
+/* 11.3. 2015 */
+Insert into SNECH_DB.ISSUES (ISSUE_ID,USER_LOGIN,SUBJECT,CODE_PRIORITY,CODE_STATUS,ESTIMATED_TIME,CREATED_ON,LAST_UPDATE,MESSAGE,ADMIN_LOGIN) values ('1','robert_u','NullPointerException SR1501','A','NOVA',to_timestamp('10.09.02 14:10:10,123000000','DD.MM.RR HH24:MI:SSXFF'),to_timestamp('10.09.02 14:10:10,123000000','DD.MM.RR HH24:MI:SSXFF'),to_timestamp('10.09.02 14:10:10,123000000','DD.MM.RR HH24:MI:SSXFF'),'Tak toto je sprava','1');
+Insert into SNECH_DB.ISSUES (ISSUE_ID,USER_LOGIN,SUBJECT,CODE_PRIORITY,CODE_STATUS,ESTIMATED_TIME,CREATED_ON,LAST_UPDATE,MESSAGE,ADMIN_LOGIN) values ('2','robert_u','SqlException SR1501','A','NOVA',to_timestamp('10.09.02 14:10:10,123000000','DD.MM.RR HH24:MI:SSXFF'),to_timestamp('10.09.02 14:10:10,123000000','DD.MM.RR HH24:MI:SSXFF'),to_timestamp('10.09.02 14:10:10,123000000','DD.MM.RR HH24:MI:SSXFF'),'Tak toto je sprava','1');
 
 /* Next we create the package that contains the specification of the security code. *//*
 CREATE OR REPLACE PACKAGE user_security AS

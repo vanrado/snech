@@ -80,27 +80,6 @@ public class DatabaseServiceImpl implements IDatabaseService {
     @Override
     public List<Issue> getIssues(String userId) {
         ArrayList<Issue> issues = new ArrayList<>();
-//        Issue issue1 = new Issue();
-//        issue1.setAssignedAdminId("admin1");
-//        issue1.setEstimatedDate(new Timestamp(1425767181));
-//        issue1.setId(100);
-//        issue1.setLastUpdatedDate(new Timestamp(1425767200));
-//        issue1.setPriority(EIssuePriority.A);
-//        issue1.setStatus(EIssueStatus.NOVA);
-//        issue1.setSubject("Chyba vo vypise");
-//
-//        Issue issue2 = new Issue();
-//        issue2.setAssignedAdminId("Janko Hrasko");
-//        issue2.setEstimatedDate(new Timestamp(1425767381));
-//        issue2.setId(101);
-//        issue2.setLastUpdatedDate(new Timestamp(1425767300));
-//        issue2.setPriority(EIssuePriority.B);
-//        issue2.setStatus(EIssueStatus.PREBIEHA);
-//        issue2.setSubject("Runtime exception na obrazovke");
-//
-//        issues.add(issue1);
-//        issues.add(issue2);
-
         return issues;
     }
 

@@ -16,6 +16,7 @@ public interface IDatabaseService {
     public List<Notice> getNotices(boolean allNotices);
     public List<Issue> getIssues(String userId);
     public Issue getIssue(long issueId);
+    public boolean insertIssue(Issue issue);
     public String getAdminFullName(String adminId);
     public String testSelect();
 }

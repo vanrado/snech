@@ -12,6 +12,10 @@ SELECT * FROM issues where user_login='robert_u';
 select * from user_logins 
 inner join users on user_logins.user_id = users.user_id;
 
+SELECT * FROM user_logins
+inner join users on user_logins.user_id = users.user_id 
+where login=? and password=?;
+
 /* Next we create the package that contains the specification of the security code. *//*
 CREATE OR REPLACE PACKAGE user_security AS
 

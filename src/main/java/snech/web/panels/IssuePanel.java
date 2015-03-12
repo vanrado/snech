@@ -9,9 +9,11 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import snech.core.CustomAuthenticatedWebSession;
 import snech.core.services.IDatabaseService;
 import snech.core.services.IFormatUtils;
 import snech.core.types.Issue;
+import snech.core.types.User;
 import snech.core.types.enums.EIssueStatus;
 import snech.web.pages.TicketDetailPage;
 
@@ -29,7 +31,9 @@ public class IssuePanel extends Panel {
 
     public IssuePanel(String id) {
         super(id);
-        List<Issue> issues = databaseService.getIssues("robert_u");
+        User logedUser = CustomAuthenticatedWebSession.get().getUser();
+        
+        List<Issue> issues = databaseService.getIssues(logedUser != null ? logedUser.getLogin() : "");
         add(new ListView<Issue>("issue", issues) {
 
             @Override

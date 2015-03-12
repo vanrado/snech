@@ -16,6 +16,7 @@
 package snech.web.panels;
 
 import org.apache.wicket.markup.html.panel.Panel;
+import snech.web.forms.ReportForm;
 
 /**
  *
@@ -25,6 +26,7 @@ public class ReportTicketPanel extends Panel{
 
     public ReportTicketPanel(String id) {
         super(id);
+        add(new ReportForm("reportForm"));
     }
     
 }

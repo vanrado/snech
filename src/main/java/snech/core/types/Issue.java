@@ -25,9 +25,14 @@ public class Issue implements Serializable {
     private String message;
     private String replyFromAdmin;
     private ArrayList<Attachment> attachments;
+    private String userLogin;
 
     public Issue() {
         attachments = new ArrayList<>();
+    }
+
+    public String getUserLogin() {
+        return userLogin;
     }
 
     public String getReplyFromAdmin() {
@@ -82,6 +87,10 @@ public class Issue implements Serializable {
         this.id = id;
     }
 
+    public void setUserLogin(String userLogin) {
+        this.userLogin = userLogin;
+    }
+
     public void setLastUpdatedDate(Timestamp lastUpdatedDate) {
         this.lastUpdatedDate = lastUpdatedDate;
     }
@@ -122,7 +131,5 @@ public class Issue implements Serializable {
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
-    
-        
 
 }

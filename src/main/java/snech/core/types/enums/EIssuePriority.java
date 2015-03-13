@@ -24,4 +24,15 @@ public enum EIssuePriority {
         return list;
     }
     
+    public static EIssuePriority getPriorityFromString(String value){
+        EIssuePriority[] priorities = EIssuePriority.values();
+        
+        for(EIssuePriority priority : priorities){
+            if(priority.name().equals(value)){
+                return priority;
+            }
+        }
+        
+        return null;
+    }
 }

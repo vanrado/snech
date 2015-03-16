@@ -15,7 +15,6 @@
  */
 package snech.web.pages;
 
-import org.apache.wicket.markup.html.link.Link;
 import snech.web.base.MainPage;
 import snech.web.panels.ContactFormPanel;
 import snech.web.panels.IssuePanel;

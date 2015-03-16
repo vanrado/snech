@@ -299,6 +299,50 @@ public class DatabaseServiceImpl implements IDatabaseService {
     }
 
     @Override
+    public boolean removeIssue(long id) {
+        boolean success = true;
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "delete from issues where issue_id=?";
+        ResultSet rs = null;
+
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            statement.setLong(1, id);
+            rs = statement.executeQuery();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            success = false;
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        }
+
+        return success;
+    }
+
+    @Override
     public String getAdminFullName(String adminId) {
         // TODO Pouzit FormatUtils na formatovanie mena a priezviska - zac. pismena velkym!!
         if (adminId != null) {

@@ -3,7 +3,6 @@ package snech.core.types;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.List;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import snech.core.types.enums.EIssuePriority;
 import snech.core.types.enums.EIssueStatus;
@@ -26,6 +25,7 @@ public class Issue implements Serializable {
     private String replyFromAdmin;
     private ArrayList<Attachment> attachments;
     private String userLogin;
+    private Boolean selected = Boolean.FALSE;
 
     public Issue() {
         attachments = new ArrayList<>();
@@ -37,6 +37,10 @@ public class Issue implements Serializable {
 
     public String getReplyFromAdmin() {
         return replyFromAdmin;
+    }
+
+    public Boolean getSelected() {
+        return selected;
     }
 
     public String getMessage() {
@@ -89,6 +93,10 @@ public class Issue implements Serializable {
 
     public void setUserLogin(String userLogin) {
         this.userLogin = userLogin;
+    }
+
+    public void setSelected(Boolean selected) {
+        this.selected = selected;
     }
 
     public void setLastUpdatedDate(Timestamp lastUpdatedDate) {

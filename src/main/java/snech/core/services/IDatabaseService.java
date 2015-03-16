@@ -12,11 +12,20 @@ import snech.core.types.User;
  * @author Radovan Račák
  */
 public interface IDatabaseService {
+
     public User getClient(String id, String password);
+
     public List<Notice> getNotices(boolean allNotices);
+
     public List<Issue> getIssues(String userId);
+
+    public boolean removeIssue(long id);
+
     public Issue getIssue(long issueId);
+
     public boolean insertIssue(Issue issue);
+
     public String getAdminFullName(String adminId);
+
     public String testSelect();
 }

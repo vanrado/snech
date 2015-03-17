@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -54,18 +55,8 @@ public class ReportForm extends Form {
         subjectField.setOutputMarkupId(true);
 
         List<String> prioritiesList = EIssuePriority.getPrioritiesString();
-        final DropDownChoice prioritiesDropDown = new DropDownChoice("priorities", new PropertyModel<String>(this, "selectedPriority"), prioritiesList) {
+        final DropDownChoice prioritiesDropDown = new DropDownChoice("priorities", new PropertyModel<String>(this, "selectedPriority"), prioritiesList);
 
-            @Override
-            protected boolean wantOnSelectionChangedNotifications() {
-                return true;
-            }
-
-            @Override
-            protected void onSelectionChanged(Object newSelection) {
-                super.onSelectionChanged(newSelection);
-            }
-        };
         prioritiesDropDown.setRequired(true);
         prioritiesDropDown.setOutputMarkupId(true);
 

@@ -2,6 +2,7 @@ package snech.web.forms;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -124,7 +125,16 @@ public class IssuesForm extends Form {
         };
         final WebMarkupContainer tableContainer = new WebMarkupContainer("table.container");
         tableContainer.setOutputMarkupId(true);
-        tableContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+        tableContainer.add(new AbstractAjaxTimerBehavior(Duration.seconds(5)) {
+
+            @Override
+            final public void onTimer(AjaxRequestTarget target) {
+                List list = databaseService.getIssues(logedUser != null ? logedUser.getLogin() : "");
+                replaceIssues(list);
+                target.add(tableContainer);
+            }
+
+        });
         add(tableContainer);
 
         tableContainer.add(issueListView);

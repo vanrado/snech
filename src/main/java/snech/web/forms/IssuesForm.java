@@ -23,6 +23,7 @@ import snech.core.services.IDatabaseService;
 import snech.core.services.IFormatUtils;
 import snech.core.types.Issue;
 import snech.core.types.User;
+import snech.core.types.enums.EIssueLogType;
 import snech.core.types.enums.EIssueStatus;
 import snech.web.pages.TicketDetailPage;
 
@@ -135,6 +136,11 @@ public class IssuesForm extends Form {
                 if (!selectedIds.isEmpty()) {
                     for (Long id : selectedIds) {
                         info("Poziadavka s id #" + id + " bola zmazana!");
+                        if (databaseService.insertIssueLog(id, EIssueLogType.ZMAZANIE, logedUser.getLogin(), "")) {
+                            System.out.println("Uspesne zalogovanie");
+                        } else {
+                            System.out.println("Neuspesne zalogovane");
+                        }
                         databaseService.removeIssue(id);
                     }
                 } else {

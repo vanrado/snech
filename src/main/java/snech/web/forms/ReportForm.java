@@ -19,6 +19,7 @@ import org.apache.wicket.util.time.Duration;
 import snech.core.CustomAuthenticatedWebSession;
 import snech.core.services.IDatabaseService;
 import snech.core.types.Issue;
+import snech.core.types.enums.EIssueLogType;
 import snech.core.types.enums.EIssuePriority;
 
 /**
@@ -77,14 +78,21 @@ public class ReportForm extends Form {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 Issue issue = new Issue();
-                issue.setUserLogin(CustomAuthenticatedWebSession.get().getUser().getLogin());
+                String userLogin = CustomAuthenticatedWebSession.get().getUser().getLogin();
+                issue.setUserLogin(userLogin);
                 issue.setSubject(subject != null ? subject : "");
                 issue.setPriority(EIssuePriority.getPriorityFromString(selectedPriority));
                 issue.setMessage(message != null ? message : "");
-
-                if (databaseService.insertIssue(issue)) {
+                long issueId = databaseService.insertIssue(issue);
+                if (issueId != -1) {
+                    issue.setId(issueId);
                     success.setVisible(true);
                     reportContainer.setVisible(false);
+                    if(databaseService.insertIssueLog(issue.getId(), EIssueLogType.VYTVORENIE, userLogin, "")) {
+                        System.out.println("Uspesne zalogovanie");
+                    } else {
+                        System.out.println("Neuspesne zalogovane");
+                    }
                     target.add(success);
                     target.add(feedback);
                     target.add(reportContainer);

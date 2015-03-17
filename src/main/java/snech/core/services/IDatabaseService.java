@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import snech.core.types.Issue;
 import snech.core.types.Notice;
 import snech.core.types.User;
+import snech.core.types.enums.EIssueLogType;
 
 /**
  *
@@ -23,9 +24,11 @@ public interface IDatabaseService {
 
     public Issue getIssue(long issueId);
 
-    public boolean insertIssue(Issue issue);
+    public long insertIssue(Issue issue);
 
     public String getAdminFullName(String adminId);
+
+    public boolean insertIssueLog(long issueId, EIssueLogType logType, String author, String description);
 
     public String testSelect();
 }

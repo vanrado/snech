@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import snech.core.types.Issue;
 import snech.core.types.Notice;
 import snech.core.types.User;
+import snech.core.types.enums.EIssueLogType;
 import snech.core.types.enums.EIssuePriority;
 import snech.core.types.enums.EIssueStatus;
 
@@ -190,12 +191,11 @@ public class DatabaseServiceImpl implements IDatabaseService {
     }
 
     @Override
-    public boolean insertIssue(Issue issue) {
+    public long insertIssue(Issue issue) {
         Connection connection = null;
         PreparedStatement statement = null;
         String selectSQL = "insert into ISSUES (ISSUE_ID,USER_LOGIN,SUBJECT,CODE_PRIORITY,CODE_STATUS,ESTIMATED_TIME,CREATED_ON,LAST_UPDATE,MESSAGE,ADMIN_LOGIN) values (issue_id_seq.nextval,'" + issue.getUserLogin() + "','" + issue.getSubject() + "','" + issue.getPriority().name() + "','NOVA', null, CURRENT_TIMESTAMP, null,'" + issue.getMessage() + "', null)";
         ResultSet rs = null;
-        boolean success = true;
 
         try {
             connection = dataSource.getConnection();
@@ -203,7 +203,6 @@ public class DatabaseServiceImpl implements IDatabaseService {
             rs = statement.executeQuery();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
-            success = false;
         } finally {
             if (rs != null) {
                 try {
@@ -228,7 +227,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
             }
         }
 
-        return success;
+        return getIssueId(issue.getSubject());
     }
 
     @Override
@@ -355,6 +354,53 @@ public class DatabaseServiceImpl implements IDatabaseService {
     }
 
     @Override
+    public boolean insertIssueLog(long issueId, EIssueLogType logType, String author, String description) {
+        boolean success = true;
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        String selectSQL = "insert into ISSUE_LOGS (LOG_ID, ISSUE_ID, LOG_TYPE, AUTHOR_LOGIN, DESCRIPTION, CREATED_ON) values (issue_logs_seq.nextval, ?, ?, ?, ?, CURRENT_TIMESTAMP)";
+        ResultSet rs = null;
+
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            statement.setLong(1, issueId);
+            statement.setString(2, logType.name());
+            statement.setString(3, author);
+            statement.setString(4, description);
+            rs = statement.executeQuery();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            success = false;
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        }
+
+        return success;
+    }
+
+    @Override
     public String testSelect() {
         Connection connection = null;
         PreparedStatement statement = null;
@@ -401,4 +447,54 @@ public class DatabaseServiceImpl implements IDatabaseService {
         return test;
     }
 
+    /**
+     * Vrati issue id podla subject - subject je v db unikatna hodnota
+     *
+     * @param subject
+     * @return -1 ak nenajde
+     */
+    private long getIssueId(String subject) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "SELECT * from ISSUES where subject=?";
+        ResultSet rs = null;
+        long id = -1;
+
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            statement.setString(1, subject);
+            rs = statement.executeQuery();
+
+            if (rs.next()) {
+                id = rs.getLong("issue_id");
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        }
+
+        return id;
+    }
 }

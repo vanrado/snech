@@ -39,12 +39,12 @@ public class ReportForm extends Form {
         final FeedbackPanel feedback = new FeedbackPanel("feedback");
         feedback.setOutputMarkupId(true);
         add(feedback);
-        
+
         final Label success = new Label("success", "Vasa poziadavka sa spracovala uspesne");
         success.setOutputMarkupPlaceholderTag(true);
         success.setVisible(false);
         add(success);
-        
+
         final WebMarkupContainer reportContainer = new WebMarkupContainer("reportContainer");
         reportContainer.setOutputMarkupId(true);
 
@@ -53,7 +53,18 @@ public class ReportForm extends Form {
         subjectField.setOutputMarkupId(true);
 
         List<String> prioritiesList = EIssuePriority.getPrioritiesString();
-        final DropDownChoice prioritiesDropDown = new DropDownChoice("priorities", new PropertyModel(this, "selectedPriority"), prioritiesList);
+        final DropDownChoice prioritiesDropDown = new DropDownChoice("priorities", new PropertyModel<String>(this, "selectedPriority"), prioritiesList) {
+
+            @Override
+            protected boolean wantOnSelectionChangedNotifications() {
+                return true;
+            }
+
+            @Override
+            protected void onSelectionChanged(Object newSelection) {
+                super.onSelectionChanged(newSelection);
+            }
+        };
         prioritiesDropDown.setRequired(true);
         prioritiesDropDown.setOutputMarkupId(true);
 
@@ -79,7 +90,7 @@ public class ReportForm extends Form {
                     target.add(reportContainer);
                     target.add(this);
                     target.appendJavaScript("setTimeout(function(){ window.location.replace(\"" + urlFor(getApplication().getHomePage(), null).toString() + "\"); }, 1500);");
-                }else{
+                } else {
                     error("Pri vytvarani nastala chyba! Akciu opakujte alebo sa obratte na technicku podporu!");
                     target.add(feedback);
                 }
@@ -97,7 +108,7 @@ public class ReportForm extends Form {
         reportContainer.add(prioritiesDropDown);
         reportContainer.add(subjectField);
         add(reportContainer);
-        
+
     }
 
 }

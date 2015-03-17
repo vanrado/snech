@@ -155,9 +155,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 issue.setCreatedDate(new Timestamp(lastUpdateDate != null ? lastUpdateDate.getTime() : 1));
                 issue.setMessage(message != null ? message : "");
                 issue.setSubject(subject != null ? subject : "");
-
-                // TODO metoda co vrati dany enum podla stringu z DB
-                issue.setPriority(EIssuePriority.A);
+                issue.setPriority(EIssuePriority.getPriorityFromString(rs.getString("CODE_PRIORITY")));
                 issue.setStatus(EIssueStatus.NOVA);
 
                 issues.add(issue);

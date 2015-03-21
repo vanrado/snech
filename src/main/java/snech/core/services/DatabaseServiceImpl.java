@@ -13,6 +13,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import org.springframework.stereotype.Service;
 import snech.core.types.Issue;
+import snech.core.types.IssueLog;
 import snech.core.types.Notice;
 import snech.core.types.User;
 import snech.core.types.enums.EIssueLogType;
@@ -127,11 +128,16 @@ public class DatabaseServiceImpl implements IDatabaseService {
     }
 
     @Override
-    public List<Issue> getIssues(String userId) {
+    public List<Issue> getIssues(String userId, boolean deleted) {
         ArrayList<Issue> issues = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
-        String selectSQL = "SELECT * FROM issues where user_login=?";
+        String selectSQL;
+        if (deleted) {
+            selectSQL = "SELECT * FROM issues where user_login=?";
+        } else {
+            selectSQL = "SELECT * FROM issues where user_login=? and code_status!='VYMAZANA'";
+        }
         ResultSet rs = null;
 
         try {
@@ -308,6 +314,51 @@ public class DatabaseServiceImpl implements IDatabaseService {
             connection = dataSource.getConnection();
             statement = connection.prepareStatement(selectSQL);
             statement.setLong(1, id);
+            rs = statement.executeQuery();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            success = false;
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        }
+
+        return success;
+    }
+
+    @Override
+    public boolean setIssueStatus(EIssueStatus status, long id) {
+        boolean success = true;
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "update issues set code_status = ? where issue_id = ?";
+        ResultSet rs = null;
+
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            statement.setString(1, status.name());
+            statement.setLong(2, id);
             rs = statement.executeQuery();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());

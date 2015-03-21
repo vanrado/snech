@@ -51,7 +51,7 @@ public class IssuesForm extends Form {
         add(feedback);
 
         final User logedUser = CustomAuthenticatedWebSession.get().getUser();
-        issues = databaseService.getIssues(logedUser != null ? logedUser.getLogin() : "");
+        issues = databaseService.getIssues(logedUser != null ? logedUser.getLogin() : "", false);
 
         final Label issuesForDelete = new Label("issuesForDelete", "");
         issuesForDelete.setOutputMarkupId(true);
@@ -129,7 +129,7 @@ public class IssuesForm extends Form {
 
             @Override
             final public void onTimer(AjaxRequestTarget target) {
-                List list = databaseService.getIssues(logedUser != null ? logedUser.getLogin() : "");
+                List list = databaseService.getIssues(logedUser != null ? logedUser.getLogin() : "", false);
                 replaceIssues(list);
                 target.add(tableContainer);
             }
@@ -151,13 +151,13 @@ public class IssuesForm extends Form {
                         } else {
                             System.out.println("Neuspesne zalogovane");
                         }
-                        databaseService.removeIssue(id);
+                        databaseService.setIssueStatus(EIssueStatus.VYMAZANA, id);
                     }
                 } else {
                     error("Ziadna poziadavka nieje oznacena na vymazanie!");
                 }
 
-                List list = databaseService.getIssues(logedUser != null ? logedUser.getLogin() : "");
+                List list = databaseService.getIssues(logedUser != null ? logedUser.getLogin() : "", false);
                 replaceIssues(list);
                 selectedIds.clear();
                 target.add(issuesForDelete.setDefaultModelObject(""));

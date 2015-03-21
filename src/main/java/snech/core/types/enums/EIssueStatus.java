@@ -6,7 +6,7 @@ package snech.core.types.enums;
  */
 public enum EIssueStatus {
 
-    NOVA("Nová"), PREBIEHA("Prebieha");
+    NOVA("Nová"), PREBIEHA("Prebieha"), VYMAZANA("Vymazaná");
 
     String name;
 

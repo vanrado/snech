@@ -1,8 +1,6 @@
 package snech.core.services;
 
 import java.util.List;
-import javax.transaction.Transactional;
-import org.springframework.stereotype.Service;
 import snech.core.types.Issue;
 import snech.core.types.IssueLog;
 import snech.core.types.Notice;
@@ -37,6 +35,8 @@ public interface IDatabaseService {
     public String getAdminFullName(String adminId);
 
     public boolean insertIssueLog(long issueId, EIssueLogType logType, String author, String description);
+
+    public List<IssueLog> getIssueLogs(String userLogin);
     
     public boolean setIssueStatus(EIssueStatus status, long id);
     

@@ -452,6 +452,60 @@ public class DatabaseServiceImpl implements IDatabaseService {
     }
 
     @Override
+    public List<IssueLog> getIssueLogs(String userLogin) {
+        List<IssueLog> issueLogs = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "select * from issue_logs where issue_id in (select issue_id from issues where user_login = ?)";
+        ResultSet rs = null;
+
+        String test = "";
+
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            statement.setString(1, userLogin);
+            rs = statement.executeQuery();
+
+            while (rs.next()) {
+                IssueLog log = new IssueLog();
+                log.setAuthorLogin(rs.getString("author_login"));
+                log.setCreatedOn(rs.getTimestamp("created_on"));
+                log.setDescription(rs.getString("description"));
+                log.setIssueId(rs.getLong("log_id"));
+                log.setLogType(EIssueLogType.valueOf(rs.getString("log_type")));
+                issueLogs.add(log);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        }
+
+        return issueLogs;
+    }
+
+    @Override
     public String testSelect() {
         Connection connection = null;
         PreparedStatement statement = null;

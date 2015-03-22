@@ -79,11 +79,6 @@ public class ReportForm extends Form {
                     issue.setId(issueId);
                     success.setVisible(true);
                     reportContainer.setVisible(false);
-                    if(databaseService.insertIssueLog(issue.getId(), EIssueLogType.VYTVORENIE, userLogin, "")) {
-                        System.out.println("Uspesne zalogovanie");
-                    } else {
-                        System.out.println("Neuspesne zalogovane");
-                    }
                     target.add(success);
                     target.add(feedback);
                     target.add(reportContainer);

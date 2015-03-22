@@ -26,6 +26,7 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import snech.core.CustomAuthenticatedWebSession;
 import snech.core.services.IDatabaseService;
 import snech.core.services.IFormatUtils;
 import snech.core.types.Attachment;
@@ -109,7 +110,8 @@ public class TicketDetailPage extends MainPage {
             @Override
             public void onClick() {
                 if(issue.getStatus().equals(EIssueStatus.NOVA)){
-                    databaseService.setIssueStatus(EIssueStatus.VYMAZANA, issue.getId());
+                    final User logedUser = CustomAuthenticatedWebSession.get().getUser();
+                    databaseService.setIssueStatus(EIssueStatus.VYMAZANA, issue.getId(), logedUser.getLogin());
                     setResponsePage(TicketsListPage.class);
                 }else{
                     info("Poziadavku #" + issue.getId() + " nieje mozne vymazat! Uz nema status Nova!");

@@ -143,12 +143,7 @@ public class IssuesForm extends Form {
                 if (!selectedIds.isEmpty()) {
                     for (Long id : selectedIds) {
                         info("Poziadavka s id #" + id + " bola zmazana!");
-                        if (databaseService.insertIssueLog(id, EIssueLogType.ZMAZANIE, logedUser.getLogin(), "")) {
-                            System.out.println("Uspesne zalogovanie");
-                        } else {
-                            System.out.println("Neuspesne zalogovane");
-                        }
-                        databaseService.setIssueStatus(EIssueStatus.VYMAZANA, id);
+                        databaseService.setIssueStatus(EIssueStatus.VYMAZANA, id, logedUser.getLogin());
                     }
                 } else {
                     error("Ziadna poziadavka nieje oznacena na vymazanie!");

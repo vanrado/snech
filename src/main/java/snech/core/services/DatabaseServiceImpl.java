@@ -228,13 +228,16 @@ public class DatabaseServiceImpl implements IDatabaseService {
         PreparedStatement statement = null;
         String selectSQL = "insert into ISSUES (ISSUE_ID,USER_LOGIN,SUBJECT,CODE_PRIORITY,CODE_STATUS,ESTIMATED_TIME,CREATED_ON,LAST_UPDATE,MESSAGE,ADMIN_LOGIN) values (issue_id_seq.nextval,'" + issue.getUserLogin() + "','" + issue.getSubject() + "','" + issue.getPriority().name() + "','NOVA', null, CURRENT_TIMESTAMP, null,'" + issue.getMessage() + "', null)";
         ResultSet rs = null;
-
+        boolean success = true;
+        long issueId = -1;
+        
         try {
             connection = dataSource.getConnection();
             statement = connection.prepareStatement(selectSQL);
             rs = statement.executeQuery();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
+            success = false;
         } finally {
             if (rs != null) {
                 try {
@@ -257,9 +260,14 @@ public class DatabaseServiceImpl implements IDatabaseService {
                     System.out.println(ex.getMessage());
                 }
             }
+
+            if (success) {
+                issueId = getIssueId(issue.getSubject());
+                insertIssueLog(issueId, EIssueLogType.VYTVORENIE, issue.getUserLogin(), "");
+            }
         }
 
-        return getIssueId(issue.getSubject());
+        return issueId;
     }
 
     @Override
@@ -366,7 +374,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
     }
 
     @Override
-    public boolean setIssueStatus(EIssueStatus status, long id) {
+    public boolean setIssueStatus(EIssueStatus status, long id, String author) {
         boolean success = true;
 
         Connection connection = null;
@@ -403,6 +411,14 @@ public class DatabaseServiceImpl implements IDatabaseService {
                     connection.close();
                 } catch (SQLException ex) {
                     System.out.println(ex.getMessage());
+                }
+            }
+
+            if (success) {
+                if (status.equals(EIssueStatus.VYMAZANA)) {
+                    insertIssueLog(id, EIssueLogType.ZMAZANIE, author, "");
+                } else {
+                    insertIssueLog(id, EIssueLogType.INE, author, "");
                 }
             }
         }
@@ -456,7 +472,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 }
             }
         }
-        
+
         return user;
     }
 

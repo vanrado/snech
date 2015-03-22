@@ -30,6 +30,11 @@ public interface IDatabaseService {
 
     public Issue getIssue(long issueId);
 
+    /**
+     * 
+     * @param issue predstavuje vkladany ticket.
+     * @return vrati issueId vygenerovane pre vlozeny ticket v databaze.
+     */
     public long insertIssue(Issue issue);
 
     public User getUser(long userId);
@@ -38,7 +43,7 @@ public interface IDatabaseService {
 
     public List<IssueLog> getIssueLogs(String userLogin);
     
-    public boolean setIssueStatus(EIssueStatus status, long id);
+    public boolean setIssueStatus(EIssueStatus status, long id, String author);
     
     public String testSelect();
 }

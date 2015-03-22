@@ -2,8 +2,11 @@ package snech.web.panels;
 
 import java.io.Serializable;
 import java.util.List;
+import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -12,6 +15,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.time.Duration;
 import snech.core.CustomAuthenticatedWebSession;
 import snech.core.services.IDatabaseService;
 import snech.core.services.IFormatUtils;
@@ -36,9 +40,21 @@ public class OverviewPanel extends Panel {
 
     public OverviewPanel(String id) {
         super(id);
+        setOutputMarkupId(true);
         final User logedUser = CustomAuthenticatedWebSession.get().getUser();
         issueLogs = databaseService.getIssueLogs(logedUser.getLogin());
-        System.out.println(issueLogs.toArray().toString());
+        final WebMarkupContainer logContainer = new WebMarkupContainer("log.container");
+        logContainer.setOutputMarkupId(true);
+        logContainer.add(new AbstractAjaxTimerBehavior(Duration.seconds(5)) {
+            
+            @Override
+            protected void onTimer(AjaxRequestTarget target) {
+                replaceIssues(databaseService.getIssueLogs(logedUser.getLogin()));
+                target.add(logContainer);
+            }
+        });
+        add(logContainer);
+        
         ListView<IssueLog> logList = new ListView<IssueLog>("log", issueLogs) {
 
             @Override
@@ -89,8 +105,13 @@ public class OverviewPanel extends Panel {
             }
         };
 
-        add(logList);
+        logContainer.add(logList);
 
+    }
+    
+    private void replaceIssues(List list) {
+        issueLogs.clear();
+        issueLogs.addAll(list);
     }
 
 }

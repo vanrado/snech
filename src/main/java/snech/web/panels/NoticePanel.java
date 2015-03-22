@@ -26,11 +26,13 @@ public class NoticePanel extends Panel {
         add(new ListView<Notice>("notices", notices) {
 
             @Override
-            protected void populateItem(ListItem<Notice> notice) {
-                notice.add(new Label("heading", new PropertyModel(notice.getModel(), "heading")));
-                notice.add(new Label("formatedDate", new PropertyModel(notice.getModel(), "formatedDate")));
-                notice.add(new Label("author", new PropertyModel(notice.getModel(), "author")));
-                notice.add(new Label("content", new PropertyModel(notice.getModel(), "content")));
+            protected void populateItem(ListItem<Notice> item) {
+                Notice notice = item.getModelObject();
+                
+                item.add(new Label("heading", new PropertyModel(notice, "subject")));
+                item.add(new Label("formatedDate", new PropertyModel(notice, "formatedDate")));
+                item.add(new Label("author", new PropertyModel(notice, "author")));
+                item.add(new Label("content", new PropertyModel(notice, "content")));
             }
 
         });

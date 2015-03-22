@@ -109,21 +109,51 @@ public class DatabaseServiceImpl implements IDatabaseService {
      */
     @Override
     public List<Notice> getNotices(boolean allNotices) {
-        ArrayList<Notice> notices = new ArrayList<Notice>();
-        Notice notice1 = new Notice();
-        notice1.setAuthor("Janko Mrkvicka");
-        notice1.setContent("Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Phasellus tempor elementum enim. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nulla bibendum tincidunt sapien");
-        notice1.setFormatedDate("15. 02. 2015, 17:30");
-        notice1.setHeading("Class aptent taciti");
+        ArrayList<Notice> notices = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "select * from notices where visible = '1' order by created_on DESC";
+        ResultSet rs = null;
 
-        Notice notice2 = new Notice();
-        notice2.setAuthor("Hlavny spravca");
-        notice2.setContent("Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Phasellus tempor elementum enim. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nulla bibendum tincidunt sapien");
-        notice2.setFormatedDate("07. 03. 2015, 17:30");
-        notice2.setHeading("Per inceptos himenaeos");
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
 
-        notices.add(notice1);
-        notices.add(notice2);
+            rs = statement.executeQuery();
+
+            while (rs.next()) {
+                Notice notice = new Notice();
+                notice.setAuthor(rs.getLong("author_id") + "");
+                notice.setContent(rs.getString("message"));
+                notice.setFormatedDate(rs.getTimestamp("created_on"));
+                notice.setSubject(rs.getString("subject"));
+                notices.add(notice);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        }
         return notices;
     }
 

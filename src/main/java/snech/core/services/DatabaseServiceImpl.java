@@ -230,7 +230,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
         ResultSet rs = null;
         boolean success = true;
         long issueId = -1;
-        
+
         try {
             connection = dataSource.getConnection();
             statement = connection.prepareStatement(selectSQL);
@@ -291,6 +291,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 String subject = rs.getString("subject");
 
                 issue.setId(rs.getLong("issue_id"));
+                issue.setUserLogin(rs.getString("user_login"));
                 issue.setAssignedAdminId(rs.getLong("admin_login"));
                 issue.setEstimatedDate(rs.getTimestamp("estimated_time"));
                 issue.setCreatedDate(rs.getTimestamp("created_on"));
@@ -369,6 +370,57 @@ public class DatabaseServiceImpl implements IDatabaseService {
             }
         }
 
+        return success;
+    }
+
+    @Override
+    public boolean updateIssue(Issue issue) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "update issues set subject=?, code_priority=?, message=? where issue_id=?";
+        ResultSet rs = null;
+        boolean success = true;
+        
+
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            statement.setString(1, issue.getSubject());
+            statement.setString(2, issue.getPriority().name());
+            statement.setString(3, issue.getMessage());
+            statement.setLong(4, issue.getId());
+            rs = statement.executeQuery();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            success = false;
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            
+            if(success){
+                insertIssueLog(issue.getId(), EIssueLogType.AKTUALIZACIA, issue.getUserLogin(), "");
+            }
+        }
+        
         return success;
     }
 

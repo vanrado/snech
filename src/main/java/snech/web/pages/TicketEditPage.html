@@ -1,0 +1,42 @@
+<wicket:extend>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading">Upraviť požiadavku</div>
+
+                <form wicket:id="edit.form">
+                    <div wicket:id="feedback"></div>
+                    <dl class="list-group dl-horizontal">
+                        <span class="list-group-item">
+                            <dt>ID:</dt>
+                            <dd wicket:id="issueId">105</dd>
+                        </span>
+
+                        <span class="list-group-item">
+                            <dt>Predmet:</dt>
+                            <dd><input type="text" id="userName" class="form-control" wicket:id="issueSubject"></dd>
+                        </span>
+
+                        <span class="list-group-item">
+                            <dt>Priorita:</dt>
+                            <dd>
+                                <select class="form-control" id="priority" wicket:id="priorities">
+                                </select>
+                            </dd>
+                        </span>
+
+                        <span class="list-group-item">
+                            <dt>Sprava:</dt>
+                            <dd><textarea class="form-control" rows="5" id="comment" wicket:id="message"></textarea></dd>
+                        </span>
+                    </dl>
+                    <button type="submit" class="btn btn-default" wicket:id="save.button"><span class="glyphicon glyphicon-check"></span> Uložiť</button>
+                    <button type="button" class="btn btn-default" wicket:id="cancel.button">Zrušiť</button>
+                </form>
+            </div>
+
+
+        </div>
+    </div>
+</wicket:extend>

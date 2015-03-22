@@ -26,6 +26,7 @@ public interface IDatabaseService {
      */
     public List<Issue> getIssues(String userId, boolean deleted);
 
+    public boolean updateIssue(Issue issue);
     public boolean removeIssue(long id);
 
     public Issue getIssue(long issueId);

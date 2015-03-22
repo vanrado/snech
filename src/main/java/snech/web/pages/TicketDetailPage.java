@@ -104,20 +104,31 @@ public class TicketDetailPage extends MainPage {
             }
 
         });
-        
-        add(new Link("submit.button"){
+
+        add(new Link("editTicket.link") {
 
             @Override
             public void onClick() {
-                if(issue.getStatus().equals(EIssueStatus.NOVA)){
+                PageParameters params = new PageParameters();
+                params.add("id", issue.getId());
+                setResponsePage(TicketEditPage.class, params);
+            }
+
+        });
+
+        add(new Link("submit.button") {
+
+            @Override
+            public void onClick() {
+                if (issue.getStatus().equals(EIssueStatus.NOVA)) {
                     final User logedUser = CustomAuthenticatedWebSession.get().getUser();
                     databaseService.setIssueStatus(EIssueStatus.VYMAZANA, issue.getId(), logedUser.getLogin());
                     setResponsePage(TicketsListPage.class);
-                }else{
+                } else {
                     info("Poziadavku #" + issue.getId() + " nieje mozne vymazat! Uz nema status Nova!");
                 }
             }
-        
+
         });
         add(new Label("issuesForDelete", "#" + issue.getId()));
     }

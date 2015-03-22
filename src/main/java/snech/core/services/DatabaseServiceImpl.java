@@ -325,7 +325,6 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 }
             }
         }
-        System.out.println(issue.toString());
         return issue;
     }
 

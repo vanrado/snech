@@ -18,8 +18,8 @@
                         <th data-field="ticketsState">Stav</th>
                         <th data-field="ticketsAssigment">Priradené</th>
                         <th data-field="ticketsPriority">Priorita</th>
+                        <th data-field="ticketsUpdated">Vytvorené</th>
                         <th data-field="ticketsEstimated">Odhad vyriešenia</th>
-                        <th data-field="ticketsUpdated">Aktualizované</th>
                     </tr>
                 </thead>
 
@@ -35,8 +35,9 @@
                         <td><span wicket:id="issueStatus"></span></td>
                         <td><a href="#" data-toggle="modal" data-target="#contactForm" wicket:id="contactAdminLink"><span wicket:id="contactName"></span></a></td>
                         <td><span wicket:id="priority"></span></td>
+                        <td><span wicket:id="createdOnDate"></span></td>
                         <td><span wicket:id="estimatedDate"></span></td>
-                        <td><span wicket:id="lastUpdatedDate"></span></td>
+                        
                     </tr>
                 </tbody>
             </table>

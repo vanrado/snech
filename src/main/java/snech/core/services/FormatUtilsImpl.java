@@ -22,7 +22,6 @@ public class FormatUtilsImpl implements IFormatUtils {
         String timeString = "-";
         
         if(date != null){
-            System.out.println(date.getTime());
             Timestamp timestamp = new Timestamp(date.getTime());
             timeString = timestamp.toString();
         }

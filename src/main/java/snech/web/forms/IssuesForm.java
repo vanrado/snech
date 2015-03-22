@@ -56,7 +56,11 @@ public class IssuesForm extends Form {
         final Label issuesForDelete = new Label("issuesForDelete", "");
         issuesForDelete.setOutputMarkupId(true);
         add(issuesForDelete);
-
+        
+        final Label confirmationQuestion = new Label("confirmationQuestion", "Nieje co zmazat! Neoznacili ste ziadny ticket!");
+        confirmationQuestion.setOutputMarkupId(true);
+        add(confirmationQuestion);
+        
         Button deleteButton = new Button("deleteConfirmation.button");
         deleteButton.setDefaultFormProcessing(false);
         add(deleteButton);
@@ -87,7 +91,7 @@ public class IssuesForm extends Form {
                 AjaxCheckBox checkBox = new AjaxCheckBox("check", new PropertyModel<Boolean>(listItem.getModelObject(), "selected")) {
                     @Override
                     protected void onUpdate(AjaxRequestTarget target) {
-                        if (issue.getSelected()) {
+                        if (issue.getSelected() && !selectedIds.contains(issue.getId())) {
                             //checkbox changes to true
                             selectedIds.add(issue.getId());
                         } else {
@@ -95,7 +99,15 @@ public class IssuesForm extends Form {
                             selectedIds.remove(issue.getId());
                         }
 
-                        issuesForDelete.setDefaultModelObject(selectedIdsToString());
+                        
+                        if(!selectedIds.isEmpty()){
+                            confirmationQuestion.setDefaultModelObject("Naozaj si prajete odstranit poziadavky s id ");
+                            issuesForDelete.setDefaultModelObject(selectedIdsToString() + " ?");
+                        }else{
+                            confirmationQuestion.setDefaultModelObject("Nieje co zmazat! Neoznacili ste ziadny ticket!");
+                            issuesForDelete.setDefaultModelObject("");
+                        }
+                        target.add(confirmationQuestion);
                         target.add(issuesForDelete);
                     }
                 };
@@ -128,6 +140,7 @@ public class IssuesForm extends Form {
             final public void onTimer(AjaxRequestTarget target) {
                 List list = databaseService.getIssues(logedUser != null ? logedUser.getLogin() : "", false);
                 replaceIssues(list);
+                setSelectedValueToIssues();
                 target.add(tableContainer);
             }
 
@@ -183,6 +196,19 @@ public class IssuesForm extends Form {
     private void replaceIssues(List list) {
         issues.clear();
         issues.addAll(list);
+    }
+    
+    /**
+     * Skontroluje oznacene poziadavky a nastavi podla toho aj list s vypisanymi poziadavkami. 
+     * Takze nam to zabezpeci to, ze ked Ajax refresuje kazdych 5s tabulku
+     * s vypisom tak sa nam zachova oznaceny checkbox
+     */
+    private void setSelectedValueToIssues(){
+        for(Issue issue : issues){
+            if(selectedIds.contains(issue.getId())){
+                issue.setSelected(true);
+            }
+        }
     }
 
 }

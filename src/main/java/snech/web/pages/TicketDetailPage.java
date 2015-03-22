@@ -31,6 +31,7 @@ import snech.core.services.IFormatUtils;
 import snech.core.types.Attachment;
 import snech.core.types.Issue;
 import snech.core.types.User;
+import snech.core.types.enums.EIssueStatus;
 import snech.web.base.MainPage;
 
 /**
@@ -51,7 +52,7 @@ public class TicketDetailPage extends MainPage {
 
     public TicketDetailPage(PageParameters pageParameters) {
         super(pageParameters);
-        Issue issue = databaseService.getIssue(Long.parseLong(pageParameters.get("id").toString()));
+        final Issue issue = databaseService.getIssue(Long.parseLong(pageParameters.get("id").toString()));
         User assignedAdmin = databaseService.getUser(issue.getAssignedAdminId());
 
         add(new Label("issueId", issue.getId() != 0 ? issue.getId() : UNKNOWN));
@@ -102,6 +103,21 @@ public class TicketDetailPage extends MainPage {
             }
 
         });
+        
+        add(new Link("submit.button"){
+
+            @Override
+            public void onClick() {
+                if(issue.getStatus().equals(EIssueStatus.NOVA)){
+                    databaseService.setIssueStatus(EIssueStatus.VYMAZANA, issue.getId());
+                    setResponsePage(TicketsListPage.class);
+                }else{
+                    info("Poziadavku #" + issue.getId() + " nieje mozne vymazat! Uz nema status Nova!");
+                }
+            }
+        
+        });
+        add(new Label("issuesForDelete", "#" + issue.getId()));
     }
 
 }

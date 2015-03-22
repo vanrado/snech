@@ -178,18 +178,14 @@ public class DatabaseServiceImpl implements IDatabaseService {
 
             while (rs.next()) {
                 Issue issue = new Issue();
-                Timestamp estimatedDate = rs.getTimestamp("estimated_time");
-                Timestamp createdDate = rs.getTimestamp("created_on");
-                Timestamp lastUpdateDate = rs.getTimestamp("last_update");
                 String message = rs.getString("message");
                 String subject = rs.getString("subject");
-                long adminId = rs.getLong("admin_login");
 
                 issue.setId(rs.getLong("issue_id"));
-                issue.setAssignedAdminId(adminId);
-                issue.setEstimatedDate(new Timestamp(estimatedDate != null ? estimatedDate.getTime() : 1));
-                issue.setLastUpdatedDate(new Timestamp(createdDate != null ? createdDate.getTime() : 1));
-                issue.setCreatedDate(new Timestamp(lastUpdateDate != null ? lastUpdateDate.getTime() : 1));
+                issue.setAssignedAdminId(rs.getLong("admin_login"));
+                issue.setEstimatedDate(rs.getTimestamp("estimated_time"));
+                issue.setCreatedDate(rs.getTimestamp("created_on"));
+                issue.setLastUpdatedDate(rs.getTimestamp("last_update"));
                 issue.setMessage(message != null ? message : "");
                 issue.setSubject(subject != null ? subject : "");
                 issue.setPriority(EIssuePriority.getPriorityFromString(rs.getString("CODE_PRIORITY")));
@@ -283,23 +279,17 @@ public class DatabaseServiceImpl implements IDatabaseService {
             rs = statement.executeQuery();
 
             if (rs.next()) {
-                Timestamp estimatedDate = rs.getTimestamp("estimated_time");
-                Timestamp createdDate = rs.getTimestamp("created_on");
-                Timestamp lastUpdateDate = rs.getTimestamp("last_update");
                 String message = rs.getString("message");
                 String subject = rs.getString("subject");
-                long adminId = rs.getLong("admin_login");
 
-                issue.setId(issueId);
-                issue.setAssignedAdminId(adminId);
-                issue.setEstimatedDate(new Timestamp(estimatedDate != null ? estimatedDate.getTime() : 1));
-                issue.setLastUpdatedDate(new Timestamp(createdDate != null ? createdDate.getTime() : 1));
-                issue.setCreatedDate(new Timestamp(lastUpdateDate != null ? lastUpdateDate.getTime() : 1));
+                issue.setId(rs.getLong("issue_id"));
+                issue.setAssignedAdminId(rs.getLong("admin_login"));
+                issue.setEstimatedDate(rs.getTimestamp("estimated_time"));
+                issue.setCreatedDate(rs.getTimestamp("created_on"));
+                issue.setLastUpdatedDate(rs.getTimestamp("last_update"));
                 issue.setMessage(message != null ? message : "");
                 issue.setSubject(subject != null ? subject : "");
-
-                // TODO metoda co vrati dany enum podla stringu z DB
-                issue.setPriority(EIssuePriority.A);
+                issue.setPriority(EIssuePriority.valueOf(rs.getString("CODE_PRIORITY")));
                 issue.setStatus(EIssueStatus.NOVA);
             }
         } catch (SQLException ex) {
@@ -421,17 +411,53 @@ public class DatabaseServiceImpl implements IDatabaseService {
     }
 
     @Override
-    public String getAdminFullName(String adminId) {
-        // TODO Pouzit FormatUtils na formatovanie mena a priezviska - zac. pismena velkym!!
-        if (adminId != null) {
-            if (adminId.equals("100")) {
-                return "Janko Hrasko";
-            } else if (adminId.equals("101")) {
-                return "Jack Langdon";
+    public User getUser(long userId) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "SELECT * FROM users where user_id=?";
+        ResultSet rs = null;
+        User user = null;
+
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            statement.setLong(1, userId);
+            rs = statement.executeQuery();
+
+            if (rs.next()) {
+                user = new User();
+                user.setId(rs.getLong("user_id"));
+                user.setFirstName(rs.getString("first_name"));
+                user.setLastName(rs.getString("last_name"));
+                user.setOccupation(rs.getString("occupation"));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
             }
         }
-
-        return "Nezname Meno";
+        
+        return user;
     }
 
     @Override

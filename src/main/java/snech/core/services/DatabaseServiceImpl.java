@@ -456,7 +456,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
         List<IssueLog> issueLogs = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
-        String selectSQL = "select * from issue_logs where issue_id in (select issue_id from issues where user_login = ?)";
+        String selectSQL = "select * from ISSUE_LOGS where issue_id in (select issue_id from issues where user_login=?) order by created_on DESC";
         ResultSet rs = null;
 
         String test = "";

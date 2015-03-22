@@ -5,10 +5,12 @@ import java.util.List;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import snech.core.CustomAuthenticatedWebSession;
 import snech.core.services.IDatabaseService;
@@ -16,6 +18,7 @@ import snech.core.services.IFormatUtils;
 import snech.core.types.IssueLog;
 import snech.core.types.User;
 import snech.core.types.enums.EIssueLogType;
+import snech.web.pages.TicketDetailPage;
 
 /**
  *
@@ -40,34 +43,49 @@ public class OverviewPanel extends Panel {
 
             @Override
             protected void populateItem(ListItem<IssueLog> item) {
-                IssueLog log = item.getModelObject();
+                final IssueLog log = item.getModelObject();
                 String logActivity = "";
                 final EIssueLogType logType = log.getLogType() != null ? log.getLogType() : EIssueLogType.INE;
                 Label activityIcon = new Label("activityIcon", "");
-                activityIcon.add(new AttributeAppender("class", new Model(){
+                activityIcon.add(new AttributeAppender("class", new Model() {
 
                     @Override
                     public Serializable getObject() {
                         String cssClass;
-                        
-                        if(logType.equals(EIssueLogType.VYTVORENIE)){
+
+                        if (logType.equals(EIssueLogType.VYTVORENIE)) {
                             cssClass = " glyphicon-plus";
-                        }else if(logType.equals(EIssueLogType.ZMAZANIE)){
+                        } else if (logType.equals(EIssueLogType.ZMAZANIE)) {
                             cssClass = " glyphicon-minus";
-                        }else{
+                        } else {
                             cssClass = " glyphicon-exclamation-sign";
                         }
-                        
+
                         return cssClass;
                     }
-                    
+
                 }));
-                
+
                 item.add(activityIcon);
                 item.add(new Label("author", log.getAuthorLogin()));
                 item.add(new Label("formatedDate", formatUtils.getFormatedDate(log.getCreatedOn().getTime())));
                 item.add(new Label("content", log.getDescription()));
                 item.add(new Label("activity", logType.getActivity()));
+                item.add(new Link("detailsLink") {
+
+                    @Override
+                    protected void onInitialize() {
+                        super.onInitialize();
+                        add(new Label("detailsLinkLabel", "#" + log.getIssueId()));
+                    }
+
+                    @Override
+                    public void onClick() {
+                        PageParameters params = new PageParameters();
+                        params.add("id", log.getIssueId());
+                        setResponsePage(TicketDetailPage.class, params);
+                    }
+                });
             }
         };
 

@@ -472,7 +472,8 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 log.setAuthorLogin(rs.getString("author_login"));
                 log.setCreatedOn(rs.getTimestamp("created_on"));
                 log.setDescription(rs.getString("description"));
-                log.setIssueId(rs.getLong("log_id"));
+                log.setLogId(rs.getLong("log_id"));
+                log.setIssueId(rs.getLong("issue_id"));
                 log.setLogType(EIssueLogType.valueOf(rs.getString("log_type")));
                 issueLogs.add(log);
             }

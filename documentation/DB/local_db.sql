@@ -25,7 +25,18 @@ where issue_id in (select issue_id from issues where user_login='robert_u')
 order by created_on DESC;
 
 INSERT INTO "SNECH_DB"."NOTICES" (NOTICE_ID, SUBJECT, CREATED_ON, VISIBLE, AUTHOR_ID, MESSAGE) 
-VALUES (1, 'Oznam prvy', TO_TIMESTAMP('2015-03-22 11:53:46.948000000', 'YYYY-MM-DD HH24:MI:SS.FF'), '1', 1, 'Tak toto je sprava a oznaam, budeme vypinat servery v stredu 16.5.2015');
+VALUES (2, 'Oznam druhy', CURRENT_TIMESTAMP, '1', 1, 'Tak toto je sprava a oznaam, budeme vypinat servery v stredu 16.5.2015');
+
+select * from notices
+where visible = '1';
+
+update issues
+set subject='Ccxzcxz', code_priority='A', message=''
+where issue_id=125;
+
+UPDATE Customers
+SET ContactName='Alfred Schmidt', City='Hamburg'
+WHERE CustomerName='Alfreds Futterkiste';
 
 /* Next we create the package that contains the specification of the security code. *//*
 CREATE OR REPLACE PACKAGE user_security AS

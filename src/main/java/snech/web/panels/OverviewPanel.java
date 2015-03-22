@@ -68,7 +68,7 @@ public class OverviewPanel extends Panel {
 
                 item.add(activityIcon);
                 item.add(new Label("author", log.getAuthorLogin()));
-                item.add(new Label("formatedDate", formatUtils.getFormatedDate(log.getCreatedOn().getTime())));
+                item.add(new Label("formatedDate", formatUtils.getFormatedDate(log.getCreatedOn())));
                 item.add(new Label("content", log.getDescription()));
                 item.add(new Label("activity", logType.getActivity()));
                 item.add(new Link("detailsLink") {

@@ -116,11 +116,8 @@ public class IssuesForm extends Form {
                     }
                 });
                 listItem.add(new Label("priority", issue.getPriority()));
-
-                long estimatedTime = 4000;//issue.getEstimatedDate().getTime();
-                long lastUpdatedDate = 4000;//issue.getLastUpdatedDate().getTime();
-                listItem.add(new Label("estimatedDate", formatUtils.getFormatedDate(estimatedTime)));
-                listItem.add(new Label("lastUpdatedDate", formatUtils.getFormatedDate(lastUpdatedDate)));
+                listItem.add(new Label("estimatedDate", formatUtils.getFormatedDate(issue.getEstimatedDate())));
+                listItem.add(new Label("lastUpdatedDate", formatUtils.getFormatedDate(issue.getLastUpdatedDate())));
             }
         };
         final WebMarkupContainer tableContainer = new WebMarkupContainer("table.container");

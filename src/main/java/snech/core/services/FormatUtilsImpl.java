@@ -2,6 +2,7 @@ package snech.core.services;
 
 import java.sql.Timestamp;
 import org.springframework.stereotype.Service;
+import snech.core.types.User;
 
 /**
  *
@@ -17,11 +18,27 @@ public class FormatUtilsImpl implements IFormatUtils {
      * @return
      */
     @Override
-    public String getFormatedDate(long timestampDate) {
-        Timestamp timestamp = new Timestamp(timestampDate);
-        String timeString = timestamp.toString();
+    public String getFormatedDate(Timestamp date) {
+        String timeString = "-";
+        
+        if(date != null){
+            System.out.println(date.getTime());
+            Timestamp timestamp = new Timestamp(date.getTime());
+            timeString = timestamp.toString();
+        }
+        
         return timeString;
 
     }
 
+    @Override
+    public String getUserFullName(User user) {
+        String fullname = "-";
+        
+        if(user != null){
+            fullname = user.getFirstName() + " " + user.getLastName();
+        }
+        
+        return fullname;
+    }
 }

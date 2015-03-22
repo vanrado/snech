@@ -30,6 +30,7 @@ import snech.core.services.IDatabaseService;
 import snech.core.services.IFormatUtils;
 import snech.core.types.Attachment;
 import snech.core.types.Issue;
+import snech.core.types.User;
 import snech.web.base.MainPage;
 
 /**
@@ -46,18 +47,21 @@ public class TicketDetailPage extends MainPage {
     @SpringBean
     private IFormatUtils formatUtils;
 
-    private final String UNKNOWN = "Neuvedene";
+    private final String UNKNOWN = "-";
 
     public TicketDetailPage(PageParameters pageParameters) {
         super(pageParameters);
         Issue issue = databaseService.getIssue(Long.parseLong(pageParameters.get("id").toString()));
+        User assignedAdmin = databaseService.getUser(issue.getAssignedAdminId());
 
         add(new Label("issueId", issue.getId() != 0 ? issue.getId() : UNKNOWN));
+        add(new Label("issueSubject", issue.getSubject()));
         add(new Label("issueStatus", issue.getStatus() != null ? issue.getStatus().getName() : UNKNOWN));
         add(new Label("issuePriority", issue.getPriority() != null ? issue.getPriority() : UNKNOWN));
-        add(new Label("issueAssigned", databaseService.getAdminFullName(issue.getAssignedAdminId() + "")));
-        add(new Label("estimatedDate", issue.getEstimatedDate() != null ? formatUtils.getFormatedDate(issue.getEstimatedDate().getTime()) : UNKNOWN));
-        add(new Label("lastUpdatedDate", issue.getLastUpdatedDate() != null ? formatUtils.getFormatedDate(issue.getLastUpdatedDate().getTime()) : UNKNOWN));
+        add(new Label("issueAssigned", formatUtils.getUserFullName(assignedAdmin)));
+        add(new Label("estimatedDate", formatUtils.getFormatedDate(issue.getEstimatedDate())));
+        add(new Label("lastUpdatedDate", formatUtils.getFormatedDate(issue.getLastUpdatedDate())));
+        add(new Label("createdOnDate", formatUtils.getFormatedDate(issue.getCreatedDate())));
         add(new MultiLineLabel("message", issue.getMessage() != null ? issue.getMessage() : UNKNOWN));
         add(new MultiLineLabel("replyFromAdmin", issue.getReplyFromAdmin() != null ? issue.getReplyFromAdmin() : UNKNOWN));
         List<Attachment> attachments = issue.getAttachments();

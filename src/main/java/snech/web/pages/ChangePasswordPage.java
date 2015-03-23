@@ -1,30 +1,73 @@
-/*
- * Copyright 2014 Radovan.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package snech.web.pages;
 
+import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import snech.core.CustomAuthenticatedWebSession;
+import snech.core.services.IDatabaseService;
+import snech.core.types.User;
 import snech.web.base.MainPage;
+import snech.web.validators.PasswordValidator;
 
 /**
  *
  * @author Radovan
  */
 public class ChangePasswordPage extends MainPage {
+    
+    @SpringBean
+    private IDatabaseService databaseService;
+    
+    private PasswordTextField currentPasswordTextField;
+    private PasswordTextField newPasswordTextField;
+    private PasswordTextField newPasswordRepeatTextField;
+    
     public ChangePasswordPage(){
-        add(new Link("backpage.link"){
+        Form form = new Form("change.form");
+        form.add(new FeedbackPanel("feedback"));
+        
+        currentPasswordTextField = new PasswordTextField("currentPassword.field", Model.of(""));
+        currentPasswordTextField.setRequired(true);
+        form.add(currentPasswordTextField);
+        
+        newPasswordTextField = new PasswordTextField("newPassword.field", Model.of(""));
+        newPasswordTextField.setRequired(true);
+        form.add(newPasswordTextField);
+        
+        newPasswordRepeatTextField = new PasswordTextField("newPasswordRepeat.field", Model.of(""));
+        newPasswordRepeatTextField.setRequired(true);
+        form.add(newPasswordRepeatTextField);
+        
+        form.add(new Button("submit.button"){
+            @Override
+            public void onSubmit() {
+                super.onSubmit();
+                User user = CustomAuthenticatedWebSession.get().getUser();
+                
+                if(databaseService.getClient(user.getLogin(), currentPasswordTextField.getModelObject()) != null){
+                    String newPass = newPasswordTextField.getModelObject();
+                    String newPassRepeat = newPasswordRepeatTextField.getModelObject();
+                    
+                    if(newPass.equals(newPassRepeat)){
+                        if(databaseService.updateLoginPassword(newPass, user.getLogin())){
+                            info("Heslo bolo aktualizovane!");
+                        }else{
+                            error("Heslo nebolo aktualizovane! Nastala chyba");
+                        }
+                    }else{
+                        error("Hesla sa nezhoduju!");
+                    }
+                }else{
+                    error("Zadane aktualne heslo nieje spravne");
+                }                
+            }
+        });
+        
+        form.add(new Link("backpage.link"){
 
             @Override
             public void onClick() {
@@ -32,5 +75,7 @@ public class ChangePasswordPage extends MainPage {
             }
             
         });
+        
+        add(form);
     }
 }

@@ -40,6 +40,8 @@ public interface IDatabaseService {
 
     public User getUser(long userId);
     
+    public boolean updateLoginPassword(String newPassword, String login);
+    
     public boolean updateUser(User user);
 
     public boolean insertIssueLog(long issueId, EIssueLogType logType, String author, String description);

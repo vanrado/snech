@@ -579,6 +579,51 @@ public class DatabaseServiceImpl implements IDatabaseService {
     }
 
     @Override
+    public boolean updateLoginPassword(String newPassword, String login) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "update user_logins set password=? where login=?";
+        ResultSet rs = null;
+
+        boolean success = true;
+
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            statement.setString(1, newPassword);
+            statement.setString(2, login);
+            rs = statement.executeQuery();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            success = false;
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        }
+
+        return success;
+    }
+    
+    @Override
     public boolean insertIssueLog(long issueId, EIssueLogType logType, String author, String description) {
         boolean success = true;
         Connection connection = null;

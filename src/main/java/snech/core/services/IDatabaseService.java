@@ -39,6 +39,8 @@ public interface IDatabaseService {
     public long insertIssue(Issue issue);
 
     public User getUser(long userId);
+    
+    public boolean updateUser(User user);
 
     public boolean insertIssueLog(long issueId, EIssueLogType logType, String author, String description);
 

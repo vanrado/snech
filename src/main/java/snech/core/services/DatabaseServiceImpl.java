@@ -380,7 +380,6 @@ public class DatabaseServiceImpl implements IDatabaseService {
         String selectSQL = "update issues set subject=?, code_priority=?, message=? where issue_id=?";
         ResultSet rs = null;
         boolean success = true;
-        
 
         try {
             connection = dataSource.getConnection();
@@ -415,12 +414,12 @@ public class DatabaseServiceImpl implements IDatabaseService {
                     System.out.println(ex.getMessage());
                 }
             }
-            
-            if(success){
+
+            if (success) {
                 insertIssueLog(issue.getId(), EIssueLogType.AKTUALIZACIA, issue.getUserLogin(), "");
             }
         }
-        
+
         return success;
     }
 
@@ -525,6 +524,58 @@ public class DatabaseServiceImpl implements IDatabaseService {
         }
 
         return user;
+    }
+
+    @Override
+    public boolean updateUser(User user) {
+        final String UNKNOWN = "-";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "update users set first_name=?, last_name=?, email=?, occupation=?";
+        ResultSet rs = null;
+        boolean success = true;
+        String firstName = user.getFirstName() != null ? user.getFirstName() : UNKNOWN;
+        String lastName = user.getLastName() != null ? user.getLastName() : UNKNOWN;
+        String email = user.getEmail() != null ? user.getEmail() : UNKNOWN;
+        String occupation = user.getOccupation() != null ? user.getOccupation() : UNKNOWN;
+        
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            statement.setString(1, firstName);
+            statement.setString(2, lastName);
+            statement.setString(3, email);
+            statement.setString(4, occupation);
+            
+            rs = statement.executeQuery();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            success = false;
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        }
+        
+        return success;
     }
 
     @Override

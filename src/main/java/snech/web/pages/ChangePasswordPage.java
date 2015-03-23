@@ -36,6 +36,7 @@ public class ChangePasswordPage extends MainPage {
         
         newPasswordTextField = new PasswordTextField("newPassword.field", Model.of(""));
         newPasswordTextField.setRequired(true);
+        newPasswordTextField.add(new PasswordValidator());
         form.add(newPasswordTextField);
         
         newPasswordRepeatTextField = new PasswordTextField("newPasswordRepeat.field", Model.of(""));

@@ -15,7 +15,10 @@
  */
 package snech.web.pages;
 
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
+import snech.core.CustomAuthenticatedWebSession;
+import snech.core.types.User;
 import snech.web.base.MainPage;
 
 /**
@@ -23,7 +26,14 @@ import snech.web.base.MainPage;
  * @author Radovan
  */
 public class AccountManagementPage extends MainPage {
+    
     public AccountManagementPage(){
+        User user = CustomAuthenticatedWebSession.get().getUser();
+        add(new Label("firstName.label", user.getFirstName()));
+        add(new Label("lastName.label", user.getLastName()));
+        add(new Label("email.label", user.getEmail()));
+        add(new Label("occupation.label", user.getOccupation()));
+        
         add(new Link("changedetails.link"){
 
             @Override

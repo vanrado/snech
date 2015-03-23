@@ -13,7 +13,12 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.navigation.paging.PagingNavigation;
+import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.markup.repeater.data.ListDataProvider;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -54,20 +59,21 @@ public class IssuesForm extends Form {
         final Label issuesForDelete = new Label("issuesForDelete", "");
         issuesForDelete.setOutputMarkupId(true);
         add(issuesForDelete);
-        
+
         final Label confirmationQuestion = new Label("confirmationQuestion", "Nieje co zmazat! Neoznacili ste ziadny ticket!");
         confirmationQuestion.setOutputMarkupId(true);
         add(confirmationQuestion);
-        
+
         Button deleteButton = new Button("deleteConfirmation.button");
         deleteButton.setDefaultFormProcessing(false);
         add(deleteButton);
 
-        final ListView<Issue> issueListView = new ListView<Issue>("issue", issues) {
+        ListDataProvider<Issue> issueDataProvider = new ListDataProvider<>(issues);
+        DataView<Issue> issueDataView = new DataView<Issue>("issue", issueDataProvider) {
 
             @Override
-            protected void populateItem(ListItem<Issue> listItem) {
-                final Issue issue = (Issue) listItem.getModelObject();
+            protected void populateItem(Item<Issue> listItem) {
+                final Issue issue = listItem.getModelObject();
 
                 listItem.add(new Label("id", issue.getId()));
                 listItem.add(new Link("detailsLink") {
@@ -97,11 +103,10 @@ public class IssuesForm extends Form {
                             selectedIds.remove(issue.getId());
                         }
 
-                        
-                        if(!selectedIds.isEmpty()){
+                        if (!selectedIds.isEmpty()) {
                             confirmationQuestion.setDefaultModelObject("Naozaj si prajete odstranit poziadavky s id ");
                             issuesForDelete.setDefaultModelObject(selectedIdsToString() + " ?");
-                        }else{
+                        } else {
                             confirmationQuestion.setDefaultModelObject("Nieje co zmazat! Neoznacili ste ziadny ticket!");
                             issuesForDelete.setDefaultModelObject("");
                         }
@@ -111,7 +116,7 @@ public class IssuesForm extends Form {
                 };
                 listItem.add(checkBox);
 
-                listItem.add(new Label("issueStatus", EIssueStatus.NOVA.getName())); //issue.getStatus().getName()));
+                listItem.add(new Label("issueStatus", issue.getStatus().getName())); //issue.getStatus().getName()));
                 listItem.add(new Link("contactAdminLink") {
 
                     @Override
@@ -143,9 +148,11 @@ public class IssuesForm extends Form {
             }
 
         });
-        add(tableContainer);
 
-        tableContainer.add(issueListView);
+        tableContainer.add(issueDataView);
+        add(tableContainer);
+        issueDataView.setItemsPerPage(5);
+        add(new PagingNavigator("pagination", issueDataView));
 
         AjaxButton submitButton = new AjaxButton("submit.button") {
 
@@ -195,15 +202,15 @@ public class IssuesForm extends Form {
         issues.clear();
         issues.addAll(list);
     }
-    
+
     /**
-     * Skontroluje oznacene poziadavky a nastavi podla toho aj list s vypisanymi poziadavkami. 
-     * Takze nam to zabezpeci to, ze ked Ajax refresuje kazdych 5s tabulku
-     * s vypisom tak sa nam zachova oznaceny checkbox
+     * Skontroluje oznacene poziadavky a nastavi podla toho aj list s vypisanymi
+     * poziadavkami. Takze nam to zabezpeci to, ze ked Ajax refresuje kazdych 5s
+     * tabulku s vypisom tak sa nam zachova oznaceny checkbox
      */
-    private void setSelectedValueToIssues(){
-        for(Issue issue : issues){
-            if(selectedIds.contains(issue.getId())){
+    private void setSelectedValueToIssues() {
+        for (Issue issue : issues) {
+            if (selectedIds.contains(issue.getId())) {
                 issue.setSelected(true);
             }
         }

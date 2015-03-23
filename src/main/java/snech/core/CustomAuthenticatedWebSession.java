@@ -31,7 +31,7 @@ public class CustomAuthenticatedWebSession extends AuthenticatedWebSession {
     @Override
     public boolean authenticate(String username, String password) {
         Injector.get().inject(this);
-        User users = databaseService.getClient(username, password);
+        User users = databaseService.getUserLogin(username, password);
 
         if (users != null) {
             user = users;

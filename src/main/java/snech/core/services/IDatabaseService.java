@@ -14,7 +14,7 @@ import snech.core.types.enums.EIssueStatus;
  */
 public interface IDatabaseService {
 
-    public User getClient(String id, String password);
+    public User getUserLogin(String id, String password);
 
     public List<Notice> getNotices(boolean allNotices);
 

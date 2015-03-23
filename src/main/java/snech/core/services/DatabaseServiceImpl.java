@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import javax.naming.Context;
@@ -40,7 +39,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
     }
 
     @Override
-    public User getClient(String id, String password) {
+    public User getUserLogin(String id, String password) {
         User user = null;
         Connection connection = null;
         PreparedStatement statement = null;

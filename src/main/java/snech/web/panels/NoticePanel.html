@@ -1,10 +1,57 @@
-<wicket:panel>
-    <div class="panel panel-default">
-        <div class="panel-heading">Oznamy</div>
-        <div class="notice" wicket:id="notices">
-            <h4 wicket:id="heading">Oznam1</h4>
-            <span wicket:id="formatedDate">05.03.2015, 14:22</span>, <span wicket:id="author">Janko Hrasko</span>
-            <p wicket:id="content">Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Phasellus tempor elementum enim. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nulla bibendum tincidunt sapien.</p>
+<!DOCTYPE html>
+<!--
+Copyright 2014 Radovan.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+    <wicket:head>
+        <script>
+            $(document).ready(function () {
+                $('#myCarousel').carousel({
+                    interval: 4000
+                });
+
+                $('.notice').first().addClass("active");
+            });
+        </script>
+    </wicket:head>
+    <body>
+    <wicket:panel>
+        <div class="container">
         </div>
-    </div>
-</wicket:panel>
+        <div class="panel panel-default">
+            <div class="panel-heading">Oznamy</div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="myCarousel" class="carousel slide">
+                        <!-- Indicators -->         
+                        <div class="carousel-inner">   
+                            <div class="notice item" wicket:id="notices">
+                                <h4 wicket:id="heading">Oznam1</h4>
+                                <span wicket:id="formatedDate">05.03.2015, 14:22</span>, <span wicket:id="author">Janko Hrasko</span>
+                                <p wicket:id="content">Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Phasellus tempor elementum enim. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nulla bibendum tincidunt sapien.</p>
+                            </div>                                                                                 
+                        </div> 
+                        <div class="carousel-controls">
+                            <a class="carousel-control left" href="#myCarousel" data-slide="prev"><span class="fa fa-angle-double-left"></span></a>
+                            <a class="carousel-control right" href="#myCarousel" data-slide="next"><span class="fa fa-angle-double-right"></span></a>
+                        </div>               
+
+                    </div><!-- End Carousel -->  
+                </div>
+            </div>
+        </div>
+    </wicket:panel>
+</body>
+</html>

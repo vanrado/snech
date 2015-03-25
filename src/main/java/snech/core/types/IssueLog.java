@@ -1,5 +1,6 @@
 package snech.core.types;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import snech.core.types.enums.EIssueLogType;
 
@@ -7,7 +8,7 @@ import snech.core.types.enums.EIssueLogType;
  *
  * @author Radovan Račák
  */
-public class IssueLog {
+public class IssueLog implements Serializable{
 
     private long logId;
     private long issueId;

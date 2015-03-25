@@ -34,6 +34,13 @@ update issues
 set subject='Ccxzcxz', code_priority='A', message=''
 where issue_id=125;
 
+update users
+set first_name='Loles', last_name='Boles', email='odveci@email.sk', occupation='udrzbar';
+
+update user_logins
+set password='1234'
+where login='robert_a';
+
 UPDATE Customers
 SET ContactName='Alfred Schmidt', City='Hamburg'
 WHERE CustomerName='Alfreds Futterkiste';

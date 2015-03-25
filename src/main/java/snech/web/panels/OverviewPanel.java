@@ -11,7 +11,11 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.markup.repeater.data.ListDataProvider;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -37,7 +41,8 @@ public class OverviewPanel extends Panel {
     private IFormatUtils formatUtils;
 
     private List<IssueLog> issueLogs;
-
+    private final int LOGS_PER_PAGE = 20;
+    
     public OverviewPanel(String id) {
         super(id);
         setOutputMarkupId(true);
@@ -46,7 +51,7 @@ public class OverviewPanel extends Panel {
         final WebMarkupContainer logContainer = new WebMarkupContainer("log.container");
         logContainer.setOutputMarkupId(true);
         logContainer.add(new AbstractAjaxTimerBehavior(Duration.seconds(5)) {
-            
+
             @Override
             protected void onTimer(AjaxRequestTarget target) {
                 replaceIssues(databaseService.getIssueLogs(logedUser.getLogin()));
@@ -54,11 +59,12 @@ public class OverviewPanel extends Panel {
             }
         });
         add(logContainer);
-        
-        ListView<IssueLog> logList = new ListView<IssueLog>("log", issueLogs) {
+
+        ListDataProvider dataProvider = new ListDataProvider(issueLogs);
+        DataView<IssueLog> logView = new DataView<IssueLog>("log", dataProvider) {
 
             @Override
-            protected void populateItem(ListItem<IssueLog> item) {
+            protected void populateItem(Item<IssueLog> item) {
                 final IssueLog log = item.getModelObject();
                 String logActivity = "";
                 final EIssueLogType logType = log.getLogType() != null ? log.getLogType() : EIssueLogType.INE;
@@ -104,11 +110,12 @@ public class OverviewPanel extends Panel {
                 });
             }
         };
-
-        logContainer.add(logList);
-
+        
+        logView.setItemsPerPage(LOGS_PER_PAGE);
+        logContainer.add(logView);
+        logContainer.add(new PagingNavigator("pagination", logView));
     }
-    
+
     private void replaceIssues(List list) {
         issueLogs.clear();
         issueLogs.addAll(list);

@@ -45,7 +45,8 @@ public class IssuesForm extends Form {
     private IFormatUtils formatUtils;
 
     private List<Issue> issues;
-    private ArrayList<Long> selectedIds = new ArrayList<Long>();
+    private ArrayList<Long> selectedIds = new ArrayList<>();
+    private final int ITEMS_PER_PAGE = 5;
 
     public IssuesForm(String id) {
         super(id);
@@ -156,7 +157,12 @@ public class IssuesForm extends Form {
         tableContainer.add(issueDataView);
         add(tableContainer);
         issueDataView.setItemsPerPage(5);
-        add(new PagingNavigator("pagination", issueDataView));
+
+        PagingNavigator pagination = new PagingNavigator("pagination", issueDataView);
+        if (issueDataView.getItemCount() <= ITEMS_PER_PAGE) {
+            pagination.setVisible(false);
+        }
+        add(pagination);
 
         AjaxButton submitButton = new AjaxButton("submit.button") {
 

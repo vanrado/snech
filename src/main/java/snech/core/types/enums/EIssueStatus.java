@@ -8,8 +8,8 @@ public enum EIssueStatus {
 
     NOVA("Nová"), PREBIEHA("Prebieha"), VYMAZANA("Vymazaná");
 
-    String name;
-
+    private String name;
+    
     private EIssueStatus(String name) {
         this.name = name;
     }
@@ -17,5 +17,4 @@ public enum EIssueStatus {
     public String getName() {
         return name;
     }
-
 }

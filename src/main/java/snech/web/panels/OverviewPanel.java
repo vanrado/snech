@@ -113,7 +113,11 @@ public class OverviewPanel extends Panel {
         
         logView.setItemsPerPage(LOGS_PER_PAGE);
         logContainer.add(logView);
-        logContainer.add(new PagingNavigator("pagination", logView));
+        PagingNavigator pagination = new PagingNavigator("pagination", logView);
+        if(logView.getItemCount() <= LOGS_PER_PAGE){
+            pagination.setVisible(false);
+        }
+        logContainer.add(pagination);
     }
 
     private void replaceIssues(List list) {

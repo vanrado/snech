@@ -1,6 +1,7 @@
 package snech.core.services;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import org.springframework.stereotype.Service;
 import snech.core.types.User;
 
@@ -23,7 +24,7 @@ public class FormatUtilsImpl implements IFormatUtils {
         
         if(date != null){
             Timestamp timestamp = new Timestamp(date.getTime());
-            timeString = timestamp.toString();
+            timeString = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(timestamp);
         }
         
         return timeString;

@@ -26,6 +26,7 @@ public class Issue implements Serializable {
     private ArrayList<Attachment> attachments;
     private String userLogin;
     private Boolean selected = Boolean.FALSE;
+    private int progress;
 
     public Issue() {
         attachments = new ArrayList<>();
@@ -53,6 +54,10 @@ public class Issue implements Serializable {
 
     public Timestamp getEstimatedDate() {
         return estimatedDate;
+    }
+
+    public int getProgress() {
+        return progress;
     }
 
     public long getId() {
@@ -133,6 +138,10 @@ public class Issue implements Serializable {
 
     public void setCreatedDate(Timestamp createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
     }
 
     @Override

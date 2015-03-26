@@ -2,6 +2,7 @@ package snech.web.forms;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -133,11 +134,14 @@ public class IssuesForm extends Form {
                 listItem.add(new Label("priority", issue.getPriority()));
                 listItem.add(new Label("estimatedDate", formatUtils.getFormatedDate(issue.getEstimatedDate())));
                 listItem.add(new Label("createdOnDate", formatUtils.getFormatedDate(issue.getCreatedDate())));
+                Label progress = new Label("progress", issue.getProgress() + "%");
+                progress.add(new AttributeModifier("style", "width: " + issue.getProgress() + "%"));
+                listItem.add(progress);
             }
         };
         final WebMarkupContainer tableContainer = new WebMarkupContainer("table.container");
         tableContainer.setOutputMarkupId(true);
-        tableContainer.add(new AbstractAjaxTimerBehavior(Duration.seconds(5)) {
+        tableContainer.add(new AbstractAjaxTimerBehavior(Duration.seconds(1)) {
 
             @Override
             final public void onTimer(AjaxRequestTarget target) {

@@ -188,7 +188,8 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 issue.setMessage(message != null ? message : "");
                 issue.setSubject(subject != null ? subject : "");
                 issue.setPriority(EIssuePriority.getPriorityFromString(rs.getString("CODE_PRIORITY")));
-                issue.setStatus(EIssueStatus.NOVA);
+                issue.setStatus(EIssueStatus.valueOf(rs.getString("code_status")));
+                issue.setProgress(rs.getInt("progress"));
 
                 issues.add(issue);
             }
@@ -225,7 +226,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
     public long insertIssue(Issue issue) {
         Connection connection = null;
         PreparedStatement statement = null;
-        String selectSQL = "insert into ISSUES (ISSUE_ID,USER_LOGIN,SUBJECT,CODE_PRIORITY,CODE_STATUS,ESTIMATED_TIME,CREATED_ON,LAST_UPDATE,MESSAGE,ADMIN_LOGIN) values (issue_id_seq.nextval,'" + issue.getUserLogin() + "','" + issue.getSubject() + "','" + issue.getPriority().name() + "','NOVA', null, CURRENT_TIMESTAMP, null,'" + issue.getMessage() + "', null)";
+        String selectSQL = "insert into ISSUES (ISSUE_ID,USER_LOGIN,SUBJECT,CODE_PRIORITY,CODE_STATUS,ESTIMATED_TIME,CREATED_ON,LAST_UPDATE,MESSAGE,ADMIN_LOGIN, PROGRESS) values (issue_id_seq.nextval,'" + issue.getUserLogin() + "','" + issue.getSubject() + "','" + issue.getPriority().name() + "','NOVA', null, CURRENT_TIMESTAMP, null,'" + issue.getMessage() + "', null, ?)";
         ResultSet rs = null;
         boolean success = true;
         long issueId = -1;
@@ -233,6 +234,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
         try {
             connection = dataSource.getConnection();
             statement = connection.prepareStatement(selectSQL);
+            statement.setInt(1, 0);
             rs = statement.executeQuery();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -298,7 +300,8 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 issue.setMessage(message != null ? message : "");
                 issue.setSubject(subject != null ? subject : "");
                 issue.setPriority(EIssuePriority.valueOf(rs.getString("CODE_PRIORITY")));
-                issue.setStatus(EIssueStatus.NOVA);
+                issue.setStatus(EIssueStatus.valueOf(rs.getString("code_status")));
+                issue.setProgress(rs.getInt("progress"));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());

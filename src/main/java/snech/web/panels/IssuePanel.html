@@ -18,6 +18,7 @@
                         <th data-field="ticketsState">Stav</th>
                         <th data-field="ticketsAssigment">Priradené</th>
                         <th data-field="ticketsPriority">Priorita</th>
+                        <th data-field="progress">Pokrok</th>
                         <th data-field="ticketsUpdated">Vytvorené</th>
                         <th data-field="ticketsEstimated">Odhad vyriešenia</th>
                     </tr>
@@ -35,6 +36,14 @@
                         <td><span wicket:id="issueStatus"></span></td>
                         <td><a href="#" data-toggle="modal" data-target="#contactForm" wicket:id="contactAdminLink"><span wicket:id="contactName"></span></a></td>
                         <td><span wicket:id="priority"></span></td>
+                        <td>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40"
+                                     aria-valuemin="0" aria-valuemax="100" style="width:40%" wicket:id="progress">
+                                    40%
+                                </div>
+                            </div>
+                        </td>
                         <td><span wicket:id="createdOnDate"></span></td>
                         <td><span wicket:id="estimatedDate"></span></td>
 

@@ -1,3 +1,10 @@
+alter table issues 
+modify(progress number(1));
+
+update issues
+set progress=0
+where progress is null;
+
 /* 9.1. 2015 */
 insert into users(first_name, last_name, email, occupation, created_on) values ('Robert', 'Langdon', 'radovan.racak@gmail.com', 'Developer', to_timestamp('31-12-2006 23:34:59','DD-MM-YYYY   HH24:MI:SS'));
 delete from users where user_id=2;

@@ -15,6 +15,8 @@ public class User implements Serializable {
     private String lastName;
     private String email;
     private String occupation;
+    private String salt;
+    private String password;
 
     public User() {
 
@@ -44,6 +46,22 @@ public class User implements Serializable {
         return occupation;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+    
     public void setEmail(String email) {
         this.email = email;
     }

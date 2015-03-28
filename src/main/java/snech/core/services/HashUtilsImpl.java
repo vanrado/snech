@@ -5,23 +5,18 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.springframework.stereotype.Service;
 import snech.core.exceptions.HashGenerationException;
 
 /**
  *
  * @author Radovan Račák
  */
+@Service
 public class HashUtilsImpl implements IHashUtils {
 
     @Override
-    public String hashPassword(String password, String paSalt) {
-        String salt ;
-        if (paSalt != null) {
-            salt = paSalt;
-        } else {
-            salt = randomStringGenerator(32);
-        }
-
+    public String hashPassword(String password, String salt) {
         String hashPassword;
         String saltHash;
         String finalHash = null;
@@ -29,8 +24,7 @@ public class HashUtilsImpl implements IHashUtils {
         //hash((hash(string, "SHA-1") + hash(salt, "MD5")), "SHA-256")
         try {
             hashPassword = hashString(password, "SHA-1");
-            saltHash = hashString(salt, "MD5");
-            finalHash = hashString(hashPassword + saltHash, "SHA-256");
+            finalHash = hashString(hashPassword + salt, "SHA-256");
             return finalHash;
         } catch (HashGenerationException ex) {
             Logger.getLogger(HashUtilsImpl.class.getName()).log(Level.SEVERE, null, ex);

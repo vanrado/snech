@@ -6,6 +6,7 @@ import org.apache.wicket.authroles.authorization.strategies.role.Roles;
 import org.apache.wicket.injection.Injector;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import snech.core.services.IHashUtils;
 import snech.core.types.User;
 
 /**
@@ -23,22 +24,30 @@ public class CustomAuthenticatedWebSession extends AuthenticatedWebSession {
     @SpringBean
     private IDatabaseService databaseService;
 
+    @SpringBean
+    private IHashUtils hashUtils;
+
     public CustomAuthenticatedWebSession(Request request) {
         super(request);
         Injector.get().inject(this);
     }
 
     @Override
-    public boolean authenticate(String username, String password) {
+    public boolean authenticate(String login, String password) {
         Injector.get().inject(this);
-        User users = databaseService.getUserLogin(username, password);
+        User userLogin = databaseService.getUserLogin(login);
 
-        if (users != null) {
-            user = users;
-            return true;
-        } else {
-            return false;
+        if (userLogin != null) {
+            String inputPassHash = hashUtils.hashPassword(password, userLogin.getSalt());
+
+            if (inputPassHash.equals(userLogin.getPassword())) {
+                user = userLogin;
+                return true;
+            }
+
         }
+
+        return false;
     }
 
     @Override

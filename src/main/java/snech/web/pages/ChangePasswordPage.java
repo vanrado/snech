@@ -49,7 +49,7 @@ public class ChangePasswordPage extends MainPage {
                 super.onSubmit(); 
                 User user = CustomAuthenticatedWebSession.get().getUser();
                 
-                if(databaseService.getUserLogin(user.getLogin(), currentPasswordTextField.getModelObject()) != null){
+                if(true){
                     String newPass = newPasswordTextField.getModelObject();
                     String newPassRepeat = newPasswordRepeatTextField.getModelObject();
                     

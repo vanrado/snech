@@ -39,18 +39,17 @@ public class DatabaseServiceImpl implements IDatabaseService {
     }
 
     @Override
-    public User getUserLogin(String id, String password) {
+    public User getUserLogin(String login) {
         User user = null;
         Connection connection = null;
         PreparedStatement statement = null;
-        String selectSQL = "SELECT * FROM user_logins inner join users on user_logins.user_id = users.user_id where login=? and password=?";
+        String selectSQL = "SELECT * FROM user_logins inner join users on user_logins.user_id = users.user_id where login=?";
         ResultSet rs = null;
 
         try {
             connection = dataSource.getConnection();
             statement = connection.prepareStatement(selectSQL);
-            statement.setString(1, id);
-            statement.setString(2, password);
+            statement.setString(1, login);
             rs = statement.executeQuery();
 
             if (rs.next()) {
@@ -62,6 +61,8 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 String userLastName = rs.getString("last_name");
                 String userEmail = rs.getString("email");
                 String userOccupation = rs.getString("occupation");
+                String password = rs.getString("password");
+                String salt = rs.getString("salt");
 
                 user.setId(userId);
                 user.setLogin(userLogin);
@@ -69,6 +70,8 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 user.setLastName(userLastName);
                 user.setEmail(userEmail);
                 user.setOccupation(userOccupation);
+                user.setPassword(password);
+                user.setSalt(salt);
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -98,6 +101,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
 
         return user;
     }
+    
 
     /**
      * Vrati oznamy
@@ -540,7 +544,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
         String lastName = user.getLastName() != null ? user.getLastName() : UNKNOWN;
         String email = user.getEmail() != null ? user.getEmail() : UNKNOWN;
         String occupation = user.getOccupation() != null ? user.getOccupation() : UNKNOWN;
-        
+
         try {
             connection = dataSource.getConnection();
             statement = connection.prepareStatement(selectSQL);
@@ -548,7 +552,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
             statement.setString(2, lastName);
             statement.setString(3, email);
             statement.setString(4, occupation);
-            
+
             rs = statement.executeQuery();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -576,7 +580,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 }
             }
         }
-        
+
         return success;
     }
 
@@ -624,7 +628,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
 
         return success;
     }
-    
+
     @Override
     public boolean insertIssueLog(long issueId, EIssueLogType logType, String author, String description) {
         boolean success = true;
@@ -725,6 +729,52 @@ public class DatabaseServiceImpl implements IDatabaseService {
         }
 
         return issueLogs;
+    }
+
+    @Override
+    public String getLoginSalt(String userLogin) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "SELECT salt FROM user_logins where login=?";
+        ResultSet rs = null;
+        String salt = null;
+        
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            statement.setString(1, userLogin);
+            rs = statement.executeQuery();
+
+            if (rs.next()) {
+                salt = rs.getString("salt");
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        }
+
+        return salt;
     }
 
     @Override

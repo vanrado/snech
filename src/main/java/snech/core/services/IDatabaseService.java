@@ -14,12 +14,38 @@ import snech.core.types.enums.EIssueStatus;
  */
 public interface IDatabaseService {
 
-    public User getUserLogin(String id, String password);
-
+    /*
+        Users
+    */
+    public User getUser(long userId);
+    
+    public boolean updateLoginPassword(String newPassword, String login);
+    
+    public boolean updateUser(User user);
+    
+    public User getUserLogin(String login);
+    
+    public String getLoginSalt(String userLogin);
+    /*
+        /Users
+    */
+    
+    
+    
+    /*
+        Notices
+    */
     public List<Notice> getNotices(boolean allNotices);
-
+    /*
+        /Notices
+    */
+    
+    
+    
+    /*
+        Issues
+    */
     /**
-     * 
      * @param userId
      * @param deleted ak true vrati aj poziadavky so statusom VYMAZANA
      * @return 
@@ -27,22 +53,20 @@ public interface IDatabaseService {
     public List<Issue> getIssues(String userId, boolean deleted);
 
     public boolean updateIssue(Issue issue);
+    
     public boolean removeIssue(long id);
 
     public Issue getIssue(long issueId);
 
     /**
-     * 
      * @param issue predstavuje vkladany ticket.
      * @return vrati issueId vygenerovane pre vlozeny ticket v databaze.
      */
     public long insertIssue(Issue issue);
+    /*
+        /Issues
+    */
 
-    public User getUser(long userId);
-    
-    public boolean updateLoginPassword(String newPassword, String login);
-    
-    public boolean updateUser(User user);
 
     public boolean insertIssueLog(long issueId, EIssueLogType logType, String author, String description);
 

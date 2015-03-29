@@ -585,19 +585,19 @@ public class DatabaseServiceImpl implements IDatabaseService {
     }
 
     @Override
-    public boolean updateLoginPassword(String newPassword, String login) {
+    public boolean updateLoginPassword(String login, String newPassword, String newSalt) {
         Connection connection = null;
         PreparedStatement statement = null;
-        String selectSQL = "update user_logins set password=? where login=?";
+        String selectSQL = "update user_logins set password=?, salt=? where login=?";
         ResultSet rs = null;
-
         boolean success = true;
 
         try {
             connection = dataSource.getConnection();
             statement = connection.prepareStatement(selectSQL);
             statement.setString(1, newPassword);
-            statement.setString(2, login);
+            statement.setString(2, newSalt);
+            statement.setString(3, login);
             rs = statement.executeQuery();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());

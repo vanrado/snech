@@ -19,7 +19,7 @@ public interface IDatabaseService {
     */
     public User getUser(long userId);
     
-    public boolean updateLoginPassword(String newPassword, String login);
+    public boolean updateLoginPassword(String login, String newPassword, String newSalt);
     
     public boolean updateUser(User user);
     

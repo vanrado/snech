@@ -18,7 +18,6 @@ public class HashUtilsImpl implements IHashUtils {
     @Override
     public String hashPassword(String password, String salt) {
         String hashPassword;
-        String saltHash;
         String finalHash = null;
 
         //hash((hash(string, "SHA-1") + hash(salt, "MD5")), "SHA-256")
@@ -33,6 +32,20 @@ public class HashUtilsImpl implements IHashUtils {
         return finalHash;
     }
 
+    @Override
+    public String getRandomSalt() {
+        String salt = null;
+        
+        try {
+            salt = hashString(randomStringGenerator(32), "MD5");
+        } catch (HashGenerationException ex) {
+            Logger.getLogger(HashUtilsImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return salt;
+    }
+
+    
     @Override
     public String hashString(String message, String algorithm) throws HashGenerationException {
 

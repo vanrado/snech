@@ -9,6 +9,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import snech.core.CustomAuthenticatedWebSession;
 import snech.core.services.IDatabaseService;
+import snech.core.services.IHashUtils;
 import snech.core.types.User;
 import snech.web.base.MainPage;
 import snech.web.validators.PasswordValidator;
@@ -21,6 +22,9 @@ public class ChangePasswordPage extends MainPage {
     
     @SpringBean
     private IDatabaseService databaseService;
+    
+    @SpringBean
+    private IHashUtils hashUtils;
     
     private PasswordTextField currentPasswordTextField;
     private PasswordTextField newPasswordTextField;
@@ -49,12 +53,16 @@ public class ChangePasswordPage extends MainPage {
                 super.onSubmit(); 
                 User user = CustomAuthenticatedWebSession.get().getUser();
                 
-                if(true){
+                if(CustomAuthenticatedWebSession.get().authenticate(user.getLogin(), currentPasswordTextField.getModelObject())){
+                    //Zahashovat nove heslo, vygenerovat salt a aj ho zahasovat a potom spravit update
                     String newPass = newPasswordTextField.getModelObject();
                     String newPassRepeat = newPasswordRepeatTextField.getModelObject();
                     
                     if(newPass.equals(newPassRepeat)){
-                        if(databaseService.updateLoginPassword(newPass, user.getLogin())){
+                        String newSalt = hashUtils.getRandomSalt();
+                        newPass = hashUtils.hashPassword(newPass, newSalt);
+                        
+                        if(databaseService.updateLoginPassword(user.getLogin(), newPass, newSalt)){
                             info("Heslo bolo aktualizovane!");
                         }else{
                             error("Heslo nebolo aktualizovane! Nastala chyba");

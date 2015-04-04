@@ -6,6 +6,7 @@ import org.apache.wicket.core.request.mapper.MountedMapper;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
+import org.apache.wicket.util.file.Folder;
 import snech.core.CustomAuthenticatedWebSession;
 import snech.web.pages.AccountManagementPage;
 import snech.web.pages.ChangeDetailsPage;
@@ -22,6 +23,8 @@ import snech.web.pages.TicketsListPage;
  * @see wicket.myproject.Start#main(String[])
  */
 public class WicketApplication extends AuthenticatedWebApplication {
+
+    private Folder uploadFolder = null;
 
     /**
      * Constructor
@@ -42,6 +45,11 @@ public class WicketApplication extends AuthenticatedWebApplication {
         getMarkupSettings().setDefaultMarkupEncoding("UTF-8");
         getComponentInstantiationListeners().add(new SpringComponentInjector(this));
         mountPages();
+
+        //Upload
+        uploadFolder = new Folder(System.getProperty("java.io.tmpdir"), "wicket-uploads");
+        uploadFolder.mkdirs();
+        getApplicationSettings().setUploadProgressUpdatesEnabled(true);
     }
 
     @Override
@@ -53,8 +61,8 @@ public class WicketApplication extends AuthenticatedWebApplication {
     protected Class<? extends WebPage> getSignInPageClass() {
         return LoginPage.class;
     }
-    
-    private void mountPages(){
+
+    private void mountPages() {
         mountPage("/prihlasenie", LoginPage.class);
         mountPage("/domov", TicketsListPage.class);
         mountPage("/prehlad", OverviewPage.class);
@@ -62,5 +70,9 @@ public class WicketApplication extends AuthenticatedWebApplication {
         mountPage("/zmena-profilu", ChangeDetailsPage.class);
         mountPage("/zmena-hesla", ChangePasswordPage.class);
         mountPage("/detail-poziadavky", TicketDetailPage.class);
+    }
+
+    public Folder getUploadFolder() {
+        return uploadFolder;
     }
 }

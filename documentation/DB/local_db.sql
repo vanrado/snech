@@ -52,6 +52,8 @@ UPDATE Customers
 SET ContactName='Alfred Schmidt', City='Hamburg'
 WHERE CustomerName='Alfreds Futterkiste';
 
+update user_logins set password='ec5f86977d0dc3544f62106b29947b336227d912e41aaa5c09219e7273235c8f', salt='563cc1dd8a38141756c9bc95c1f8463d' where login='robert_u';
+
 /* Next we create the package that contains the specification of the security code. *//*
 CREATE OR REPLACE PACKAGE user_security AS
 

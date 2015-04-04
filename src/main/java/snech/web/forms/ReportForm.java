@@ -1,43 +1,56 @@
 package snech.web.forms;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import org.apache.wicket.Application;
+import java.util.logging.Logger;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.markup.html.form.upload.MultiFileUploadField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.util.file.Files;
+import org.apache.wicket.util.file.Folder;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.time.Duration;
+import snech.WicketApplication;
 import snech.core.CustomAuthenticatedWebSession;
 import snech.core.services.IDatabaseService;
 import snech.core.types.Issue;
-import snech.core.types.enums.EIssueLogType;
 import snech.core.types.enums.EIssuePriority;
 
 /**
  *
  * @author Radovan Račák
  */
+
+
 public class ReportForm extends Form {
 
     private String subject;
     private String selectedPriority;
     private String message;
+    private List<FileUpload> filesToUpload;
+    private Collection<FileUpload> uploads;
 
     @SpringBean
     private IDatabaseService databaseService;
+//    private final FileUploadField fileUploadField;
 
     public ReportForm(String id) {
         super(id);
+        filesToUpload = new ArrayList<>();
+
         final FeedbackPanel feedback = new FeedbackPanel("feedback");
         feedback.setOutputMarkupId(true);
         add(feedback);
@@ -97,6 +110,9 @@ public class ReportForm extends Form {
 
         };
 
+        setMultiPart(true);
+        reportContainer.add(new MultiFileUploadField("fileInput", new PropertyModel<Collection<FileUpload>>(this, "uploads"), 5));
+
         reportContainer.add(confirmButton);
         reportContainer.add(messageTextArea);
         reportContainer.add(prioritiesDropDown);
@@ -105,4 +121,46 @@ public class ReportForm extends Form {
 
     }
 
+    @Override
+    protected void onSubmit() {
+        for (FileUpload fileUpload : uploads) {
+            File newFile = new File(getUploadFolder(), fileUpload.getClientFileName());
+
+            // Check new file, delete if it allready existed
+            checkFileExists(newFile);
+
+            try {
+                newFile.createNewFile();
+                fileUpload.writeTo(newFile);
+                info("Subor " + fileUpload.getClientFileName() + " ulozeny do: " + newFile.getAbsolutePath());
+            } catch (IOException ex) {
+                Logger.getLogger(ReportForm.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(ReportForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public Collection<FileUpload> getUploads() {
+        return uploads;
+    }
+
+    private Folder getUploadFolder() {
+        return ((WicketApplication) Application.get()).getUploadFolder();
+    }
+
+    /**
+     * Check whether the file allready exists, and if so, try to delete it.
+     *
+     * @param file
+     */
+    private void checkFileExists(File file) {
+        if (file.exists()) {
+
+            //Try to delete file
+            if (!Files.remove(file)) {
+                throw new IllegalStateException("Unable to overwrite " + file.getAbsolutePath());
+            }
+        }
+    }
 }

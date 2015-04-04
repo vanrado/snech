@@ -2,6 +2,8 @@ package snech.web.forms;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.apache.wicket.Application;
@@ -27,6 +29,7 @@ import snech.WicketApplication;
 import snech.core.CustomAuthenticatedWebSession;
 import snech.core.services.IDatabaseService;
 import snech.core.services.IHashUtils;
+import snech.core.types.Attachment;
 import snech.core.types.Issue;
 import snech.core.types.enums.EIssuePriority;
 
@@ -92,7 +95,7 @@ public class ReportForm extends Form {
                 issue.setMessage(message != null ? message : "");
                 long issueId = databaseService.insertIssue(issue);
                 if (issueId != -1) {
-                    
+
                     Folder newFolder;
                     try {
                         //Vytvorit Folder pre tento upload - current value of seq
@@ -101,7 +104,8 @@ public class ReportForm extends Form {
 
                         //Doneho zapisem subory
                         for (FileUpload fileUpload : uploads) {
-                            File newFile = new File(newFolder, fileUpload.getClientFileName());
+                            String fileName = fileUpload.getClientFileName();
+                            File newFile = new File(newFolder, fileName);
 
                             // Skontroluj ci subor uz neexistuje, ak ano vymaz ho a nahrad
                             checkFileExists(newFile);
@@ -115,7 +119,27 @@ public class ReportForm extends Form {
                             } catch (Exception ex) {
                                 Logger.getLogger(ReportForm.class.getName()).log(Level.SEVERE, null, ex);
                             }
+
+                            Attachment attachment = new Attachment();
+                            String fileNameEncoded = URLEncoder.encode(fileName, "UTF-8");
+                            attachment.setFileName(fileNameEncoded);
+                            //attachment.setFileSize(newFile.get);
+                            String url = newFile.getAbsolutePath();
+                            String encodedUrl = URLEncoder.encode(url, "UTF-8");
+                            attachment.setFileUrl(encodedUrl);
+                            attachment.setIssueId(issueId);
+                            attachment.setMessageId(null);
+
+                            try {
+                                boolean success = databaseService.insertAttachment(attachment);
+                            } catch (Exception ex) {
+                                Logger.getLogger(ReportForm.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+//                            String decodedUrl = URLDecoder.decode(url, "UTF-8");
+//                            System.out.println("Dcoded: " + decodedUrl);
+
                         }
+
                     } catch (Exception ex) {
                         error("Chyba pri uploade suboru!");
                     }
@@ -127,7 +151,7 @@ public class ReportForm extends Form {
                     target.add(feedback);
                     target.add(reportContainer);
                     target.add(this);
-                    target.appendJavaScript("setTimeout(function(){ window.location.replace(\"" + urlFor(getApplication().getHomePage(), null).toString() + "\"); }, 2500);");
+                    target.appendJavaScript("setTimeout(function(){ window.location.replace(\"" + urlFor(getApplication().getHomePage(), null).toString() + "\"); }, 10000);");
                 } else {
                     error("Pri vytvarani nastala chyba! Akciu opakujte alebo sa obratte na technicku podporu!");
                     subject = "";
@@ -151,10 +175,8 @@ public class ReportForm extends Form {
 
         };
 
-        setMultiPart(
-                true);
-        reportContainer.add(
-                new MultiFileUploadField("fileInput", new PropertyModel<Collection<FileUpload>>(this, "uploads"), 5));
+        setMultiPart(true);
+        reportContainer.add(new MultiFileUploadField("fileInput", new PropertyModel<Collection<FileUpload>>(this, "uploads"), 5));
 
         reportContainer.add(confirmButton);
 

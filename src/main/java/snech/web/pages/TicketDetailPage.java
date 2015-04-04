@@ -16,7 +16,11 @@
 package snech.web.pages;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
@@ -66,15 +70,22 @@ public class TicketDetailPage extends MainPage {
         add(new Label("createdOnDate", formatUtils.getFormatedDate(issue.getCreatedDate())));
         add(new MultiLineLabel("message", issue.getMessage() != null ? issue.getMessage() : UNKNOWN));
         add(new MultiLineLabel("replyFromAdmin", issue.getReplyFromAdmin() != null ? issue.getReplyFromAdmin() : UNKNOWN));
-        List<Attachment> attachments = issue.getAttachments();
-        if (!attachments.isEmpty()) {
+        List<Attachment> attachments = databaseService.getAttachments(issue.getId(), -1);
+
+        if (attachments != null) {
             add(new ListView<Attachment>("attachments", attachments) {
 
                 @Override
                 protected void populateItem(ListItem<Attachment> listItem) {
-                    final Attachment attachment = listItem.getModelObject();
-                    File file = new File(attachment.getFileUrl() != null ? attachment.getFileUrl() : UNKNOWN);
-                    add(new DownloadLink("attLink", file, attachment.getFileName() != null ? attachment.getFileName() : UNKNOWN));
+                    try {
+                        final Attachment attachment = listItem.getModelObject();
+                        File file = new File(attachment.getFileUrl() != null ? URLDecoder.decode(attachment.getFileUrl(), "UTF-8") : UNKNOWN);
+                        DownloadLink downloadLink = new DownloadLink("attLink", file, URLDecoder.decode(attachment.getFileName(), "UTF-8"));
+                        downloadLink.add(new Label("fileName", attachment.getFileName()));
+                        listItem.add(downloadLink);
+                    } catch (UnsupportedEncodingException ex) {
+                        Logger.getLogger(TicketDetailPage.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             });
         } else {
@@ -86,10 +97,16 @@ public class TicketDetailPage extends MainPage {
                     add(new Link("attLink") {
 
                         @Override
+                        protected void onInitialize() {
+                            super.onInitialize();
+                            add(new Label("fileName", UNKNOWN));
+                        }
+
+                        @Override
                         public void onClick() {
 
                         }
-                    });
+                    }.setVisible(false));
                 }
 
             };

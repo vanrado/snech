@@ -6,11 +6,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import org.springframework.stereotype.Service;
+import snech.core.types.Attachment;
 import snech.core.types.Issue;
 import snech.core.types.IssueLog;
 import snech.core.types.Notice;
@@ -858,6 +861,124 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean insertAttachment(Attachment attachment) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "insert into attachments(attachment_id, ISSUE_ID, message_id, file_url, file_name, file_size) values (ATTACHMENT_ID_seq.nextval, ?, null, ?, ?, ?)";
+        ResultSet rs = null;
+        boolean success = true;
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            statement.setLong(1, attachment.getIssueId());
+            statement.setString(2, attachment.getFileUrl());
+            statement.setString(3, attachment.getFileName());
+            statement.setLong(4, attachment.getFileSize());
+            rs = statement.executeQuery();
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            success = false;
+        } catch (Exception ex) {
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            success = false;
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        }
+
+        return success;
+    }
+
+    /**
+     *
+     * @param issueId -1 ak hladame podla messageId
+     * @param messageId -1 ak hladame podla issueId
+     * @return
+     */
+    @Override
+    public List<Attachment> getAttachments(long issueId, long messageId) {
+        List<Attachment> attachments = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "select * from attachments where ";
+        if (messageId == -1) {
+            selectSQL += "issue_id=?";
+        } else {
+            selectSQL += "message_id=?";
+        }
+
+        ResultSet rs = null;
+
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            if (messageId == -1) {
+                statement.setLong(1, issueId);
+            } else {
+                statement.setLong(1, messageId);
+            }
+
+            rs = statement.executeQuery();
+
+            while (rs.next()) {
+                Attachment attachment = new Attachment();
+                attachment.setId(rs.getLong("attachment_id"));
+                attachment.setIssueId(rs.getLong("issue_id"));
+                attachment.setMessageId(rs.getLong("message_id"));
+                attachment.setFileUrl(rs.getString("file_url"));
+                attachment.setFileName(rs.getString("file_name"));
+                attachment.setFileSize(rs.getLong("file_size"));
+                attachments.add(attachment);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        }
+
+        return attachments.size() > 0 ? attachments : null;
     }
 
     @Override

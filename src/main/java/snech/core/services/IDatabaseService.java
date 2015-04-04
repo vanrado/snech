@@ -1,6 +1,7 @@
 package snech.core.services;
 
 import java.util.List;
+import snech.core.types.Attachment;
 import snech.core.types.Issue;
 import snech.core.types.IssueLog;
 import snech.core.types.Notice;
@@ -15,45 +16,41 @@ import snech.core.types.enums.EIssueStatus;
 public interface IDatabaseService {
 
     /*
-        Users
-    */
+     Users
+     */
     public User getUser(long userId);
-    
+
     public boolean updateLoginPassword(String login, String newPassword, String newSalt);
-    
+
     public boolean updateUser(User user);
-    
+
     public User getUserLogin(String login);
-    
+
     public String getLoginSalt(String userLogin);
     /*
-        /Users
-    */
-    
-    
-    
+     /Users
+     */
+
     /*
-        Notices
-    */
+     Notices
+     */
     public List<Notice> getNotices(boolean allNotices);
     /*
-        /Notices
-    */
-    
-    
-    
+     /Notices
+     */
+
     /*
-        Issues
-    */
+     Issues
+     */
     /**
      * @param userId
      * @param deleted ak true vrati aj poziadavky so statusom VYMAZANA
-     * @return 
+     * @return
      */
     public List<Issue> getIssues(String userId, boolean deleted);
 
     public boolean updateIssue(Issue issue);
-    
+
     public boolean removeIssue(long id);
 
     public Issue getIssue(long issueId);
@@ -64,23 +61,28 @@ public interface IDatabaseService {
      */
     public long insertIssue(Issue issue);
     /*
-        /Issues
-    */
-
+     /Issues
+     */
 
     public boolean insertIssueLog(long issueId, EIssueLogType logType, String author, String description);
 
     public List<IssueLog> getIssueLogs(String userLogin);
-    
+
     public boolean setIssueStatus(EIssueStatus status, long id, String author);
-    
+
     /*
-        Uploads
-    */
+     Uploads
+     */
     public long getUploadsCount();
+
     public void incrementUploads();
     /*
-        /Uploads
-    */
+     /Uploads
+     */
+
+    public boolean insertAttachment(Attachment attachment);
+
+    public List<Attachment> getAttachments(long issueId, long messageId);
+
     public String testSelect();
 }

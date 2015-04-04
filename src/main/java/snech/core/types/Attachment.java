@@ -8,12 +8,12 @@ import java.io.Serializable;
  */
 public class Attachment implements Serializable {
 
-    private String id;
-    private String issueId;
-    private String messageId;
+    private long id;
+    private long issueId;
+    private Long messageId;
     private String fileUrl;
     private String fileName;
-    private int fileSize;
+    private long fileSize;
 
     public Attachment() {
     }
@@ -22,7 +22,7 @@ public class Attachment implements Serializable {
         return fileName;
     }
 
-    public int getFileSize() {
+    public long getFileSize() {
         return fileSize;
     }
 
@@ -30,15 +30,15 @@ public class Attachment implements Serializable {
         return fileUrl;
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public String getIssueId() {
+    public long getIssueId() {
         return issueId;
     }
 
-    public String getMessageId() {
+    public Long getMessageId() {
         return messageId;
     }
 
@@ -46,7 +46,7 @@ public class Attachment implements Serializable {
         this.fileName = fileName;
     }
 
-    public void setFileSize(int fileSize) {
+    public void setFileSize(long fileSize) {
         this.fileSize = fileSize;
     }
 
@@ -54,15 +54,15 @@ public class Attachment implements Serializable {
         this.fileUrl = fileUrl;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public void setIssueId(String issueId) {
+    public void setIssueId(long issueId) {
         this.issueId = issueId;
     }
 
-    public void setMessageId(String messageId) {
+    public void setMessageId(Long messageId) {
         this.messageId = messageId;
     }
 }

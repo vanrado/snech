@@ -18,4 +18,6 @@ public interface IHashUtils {
     public String getRandomSalt();
     
     public String hashString(String message, String algorithm) throws HashGenerationException;
+
+    public String randomStringGenerator(int length);
 }

@@ -780,7 +780,8 @@ public class DatabaseServiceImpl implements IDatabaseService {
     public long getUploadsCount() {
         Connection connection = null;
         PreparedStatement statement = null;
-        String selectSQL = "select last_number from user_sequences where sequence_name='UPLOAD_FOLDER_SEQ'";
+        //String selectSQL = "select last_number from user_sequences where sequence_name='UPLOAD_FOLDER_SEQ'";
+        String selectSQL = "select upload_folder_seq.NEXTVAL from dual";
         ResultSet rs = null;
         long count = -1;
 
@@ -790,7 +791,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
             rs = statement.executeQuery();
 
             if (rs.next()) {
-                count = rs.getLong("last_number");
+                count = rs.getLong("nextval");
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());

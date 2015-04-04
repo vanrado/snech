@@ -35,17 +35,16 @@ public class HashUtilsImpl implements IHashUtils {
     @Override
     public String getRandomSalt() {
         String salt = null;
-        
+
         try {
             salt = hashString(randomStringGenerator(32), "MD5");
         } catch (HashGenerationException ex) {
             Logger.getLogger(HashUtilsImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return salt;
     }
 
-    
     @Override
     public String hashString(String message, String algorithm) throws HashGenerationException {
 
@@ -59,16 +58,8 @@ public class HashUtilsImpl implements IHashUtils {
         }
     }
 
-    private String convertByteArrayToHexString(byte[] arrayBytes) {
-        StringBuffer stringBuffer = new StringBuffer();
-        for (int i = 0; i < arrayBytes.length; i++) {
-            stringBuffer.append(Integer.toString((arrayBytes[i] & 0xff) + 0x100, 16)
-                    .substring(1));
-        }
-        return stringBuffer.toString();
-    }
-
-    private String randomStringGenerator(int length) {
+    @Override
+    public String randomStringGenerator(int length) {
         String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuffer buffer = new StringBuffer();
 
@@ -79,4 +70,14 @@ public class HashUtilsImpl implements IHashUtils {
 
         return buffer.toString();
     }
+
+    private String convertByteArrayToHexString(byte[] arrayBytes) {
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int i = 0; i < arrayBytes.length; i++) {
+            stringBuffer.append(Integer.toString((arrayBytes[i] & 0xff) + 0x100, 16)
+                    .substring(1));
+        }
+        return stringBuffer.toString();
+    }
+
 }

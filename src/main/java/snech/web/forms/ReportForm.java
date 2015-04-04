@@ -26,6 +26,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import snech.WicketApplication;
 import snech.core.CustomAuthenticatedWebSession;
 import snech.core.services.IDatabaseService;
+import snech.core.services.IHashUtils;
 import snech.core.types.Issue;
 import snech.core.types.enums.EIssuePriority;
 
@@ -44,6 +45,9 @@ public class ReportForm extends Form {
     @SpringBean
     private IDatabaseService databaseService;
 //    private final FileUploadField fileUploadField;
+
+    @SpringBean
+    private IHashUtils hashUtils;
 
     public ReportForm(String id) {
         super(id);
@@ -88,30 +92,34 @@ public class ReportForm extends Form {
                 issue.setMessage(message != null ? message : "");
                 long issueId = databaseService.insertIssue(issue);
                 if (issueId != -1) {
-                    //Vytvorit Folder pre tento upload - current value of seq
-                    Folder newFolder = new Folder(getUploadFolder(), databaseService.getUploadsCount() + "");
-                    newFolder.mkdirs();
-
-                    //Doneho zapisem subory
-                    for (FileUpload fileUpload : uploads) {
-                        File newFile = new File(newFolder, fileUpload.getClientFileName());
-
-                        // Skontroluj ci subor uz neexistuje, ak ano vymaz ho a nahrad
-                        checkFileExists(newFile);
-
-                        try {
-                            newFile.createNewFile();
-                            fileUpload.writeTo(newFile);
-                            info("Subor " + fileUpload.getClientFileName() + " ulozeny do: " + newFile.getAbsolutePath());
-                        } catch (IOException ex) {
-                            Logger.getLogger(ReportForm.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (Exception ex) {
-                            Logger.getLogger(ReportForm.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                    databaseService.incrementUploads();
-                    System.out.println(databaseService.getUploadsCount());
                     
+                    Folder newFolder;
+                    try {
+                        //Vytvorit Folder pre tento upload - current value of seq
+                        newFolder = new Folder(getUploadFolder(), databaseService.getUploadsCount() + "-" + hashUtils.randomStringGenerator(5));
+                        newFolder.mkdirs();
+
+                        //Doneho zapisem subory
+                        for (FileUpload fileUpload : uploads) {
+                            File newFile = new File(newFolder, fileUpload.getClientFileName());
+
+                            // Skontroluj ci subor uz neexistuje, ak ano vymaz ho a nahrad
+                            checkFileExists(newFile);
+
+                            try {
+                                newFile.createNewFile();
+                                fileUpload.writeTo(newFile);
+                                info("Subor " + fileUpload.getClientFileName() + " ulozeny do: " + newFile.getAbsolutePath());
+                            } catch (IOException ex) {
+                                Logger.getLogger(ReportForm.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (Exception ex) {
+                                Logger.getLogger(ReportForm.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    } catch (Exception ex) {
+                        error("Chyba pri uploade suboru!");
+                    }
+
                     issue.setId(issueId);
                     success.setVisible(true);
                     reportContainer.setVisible(false);
@@ -126,7 +134,6 @@ public class ReportForm extends Form {
                     message = "";
                     selectedPriority = "";
 
-                    
                     target.add(subjectField);
                     target.add(messageTextArea);
                     target.add(prioritiesDropDown);
@@ -136,24 +143,31 @@ public class ReportForm extends Form {
             }
 
             @Override
-            protected void onError(AjaxRequestTarget target, Form<?> form) {
+            protected void onError(AjaxRequestTarget target, Form<?> form
+            ) {
                 error("Nastala chyba pri spracovani formulara!");
                 target.add(feedback);
             }
 
         };
 
-        setMultiPart(true);
-        reportContainer.add(new MultiFileUploadField("fileInput", new PropertyModel<Collection<FileUpload>>(this, "uploads"), 5));
+        setMultiPart(
+                true);
+        reportContainer.add(
+                new MultiFileUploadField("fileInput", new PropertyModel<Collection<FileUpload>>(this, "uploads"), 5));
 
         reportContainer.add(confirmButton);
+
         reportContainer.add(messageTextArea);
+
         reportContainer.add(prioritiesDropDown);
+
         reportContainer.add(subjectField);
+
         add(reportContainer);
 
     }
-    
+
     public Collection<FileUpload> getUploads() {
         return uploads;
     }

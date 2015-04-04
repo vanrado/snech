@@ -74,5 +74,13 @@ public interface IDatabaseService {
     
     public boolean setIssueStatus(EIssueStatus status, long id, String author);
     
+    /*
+        Uploads
+    */
+    public long getUploadsCount();
+    public void incrementUploads();
+    /*
+        /Uploads
+    */
     public String testSelect();
 }

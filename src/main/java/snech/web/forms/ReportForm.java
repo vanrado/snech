@@ -33,8 +33,6 @@ import snech.core.types.enums.EIssuePriority;
  *
  * @author Radovan Račák
  */
-
-
 public class ReportForm extends Form {
 
     private String subject;
@@ -77,7 +75,8 @@ public class ReportForm extends Form {
         messageTextArea.setRequired(true);
         messageTextArea.setOutputMarkupId(true);
 
-        AjaxButton confirmButton = (AjaxButton) new AjaxButton("confirm") {
+        AjaxButton confirmButton;
+        confirmButton = (AjaxButton) new AjaxButton("confirm") {
 
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -89,6 +88,30 @@ public class ReportForm extends Form {
                 issue.setMessage(message != null ? message : "");
                 long issueId = databaseService.insertIssue(issue);
                 if (issueId != -1) {
+                    //Vytvorit Folder pre tento upload - current value of seq
+                    Folder newFolder = new Folder(getUploadFolder(), databaseService.getUploadsCount() + "");
+                    newFolder.mkdirs();
+
+                    //Doneho zapisem subory
+                    for (FileUpload fileUpload : uploads) {
+                        File newFile = new File(newFolder, fileUpload.getClientFileName());
+
+                        // Skontroluj ci subor uz neexistuje, ak ano vymaz ho a nahrad
+                        checkFileExists(newFile);
+
+                        try {
+                            newFile.createNewFile();
+                            fileUpload.writeTo(newFile);
+                            info("Subor " + fileUpload.getClientFileName() + " ulozeny do: " + newFile.getAbsolutePath());
+                        } catch (IOException ex) {
+                            Logger.getLogger(ReportForm.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (Exception ex) {
+                            Logger.getLogger(ReportForm.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    databaseService.incrementUploads();
+                    System.out.println(databaseService.getUploadsCount());
+                    
                     issue.setId(issueId);
                     success.setVisible(true);
                     reportContainer.setVisible(false);
@@ -96,13 +119,23 @@ public class ReportForm extends Form {
                     target.add(feedback);
                     target.add(reportContainer);
                     target.add(this);
-                    target.appendJavaScript("setTimeout(function(){ window.location.replace(\"" + urlFor(getApplication().getHomePage(), null).toString() + "\"); }, 1500);");
+                    target.appendJavaScript("setTimeout(function(){ window.location.replace(\"" + urlFor(getApplication().getHomePage(), null).toString() + "\"); }, 2500);");
                 } else {
                     error("Pri vytvarani nastala chyba! Akciu opakujte alebo sa obratte na technicku podporu!");
+                    subject = "";
+                    message = "";
+                    selectedPriority = "";
+
+                    
+                    target.add(subjectField);
+                    target.add(messageTextArea);
+                    target.add(prioritiesDropDown);
+
                     target.add(feedback);
                 }
             }
 
+            @Override
             protected void onError(AjaxRequestTarget target, Form<?> form) {
                 error("Nastala chyba pri spracovani formulara!");
                 target.add(feedback);
@@ -120,27 +153,7 @@ public class ReportForm extends Form {
         add(reportContainer);
 
     }
-
-    @Override
-    protected void onSubmit() {
-        for (FileUpload fileUpload : uploads) {
-            File newFile = new File(getUploadFolder(), fileUpload.getClientFileName());
-
-            // Check new file, delete if it allready existed
-            checkFileExists(newFile);
-
-            try {
-                newFile.createNewFile();
-                fileUpload.writeTo(newFile);
-                info("Subor " + fileUpload.getClientFileName() + " ulozeny do: " + newFile.getAbsolutePath());
-            } catch (IOException ex) {
-                Logger.getLogger(ReportForm.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (Exception ex) {
-                Logger.getLogger(ReportForm.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-
+    
     public Collection<FileUpload> getUploads() {
         return uploads;
     }

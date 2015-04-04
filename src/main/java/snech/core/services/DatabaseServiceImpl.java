@@ -101,7 +101,6 @@ public class DatabaseServiceImpl implements IDatabaseService {
 
         return user;
     }
-    
 
     /**
      * Vrati oznamy
@@ -738,7 +737,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
         String selectSQL = "SELECT salt FROM user_logins where login=?";
         ResultSet rs = null;
         String salt = null;
-        
+
         try {
             connection = dataSource.getConnection();
             statement = connection.prepareStatement(selectSQL);
@@ -775,6 +774,89 @@ public class DatabaseServiceImpl implements IDatabaseService {
         }
 
         return salt;
+    }
+
+    @Override
+    public long getUploadsCount() {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "select last_number from user_sequences where sequence_name='UPLOAD_FOLDER_SEQ'";
+        ResultSet rs = null;
+        long count = -1;
+
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            rs = statement.executeQuery();
+
+            if (rs.next()) {
+                count = rs.getLong("last_number");
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        }
+
+        return count;
+    }
+
+    @Override
+    public void incrementUploads() {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "select upload_folder_seq.nextval from dual";
+        ResultSet rs = null;
+
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            rs = statement.executeQuery();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        }
     }
 
     @Override

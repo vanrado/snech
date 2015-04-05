@@ -5,6 +5,17 @@ update issues
 set progress=0
 where progress is null;
 
+/* Selektuje hodnotu sequence */
+select last_number
+from user_sequences
+where sequence_name='UPLOAD_FOLDER_SEQ';
+
+select upload_folder_seq.NEXTVAL from dual;
+
+insert into attachments(attachment_id, ISSUE_ID, message_id, file_url, file_name, file_size) values (ATTACHMENT_ID_seq.nextval, 199, null, 'url', 'nazov', 5000045612);
+select * from attachments
+where issue_id=199 and message_id is null;
+
 /* 9.1. 2015 */
 insert into users(first_name, last_name, email, occupation, created_on) values ('Robert', 'Langdon', 'radovan.racak@gmail.com', 'Developer', to_timestamp('31-12-2006 23:34:59','DD-MM-YYYY   HH24:MI:SS'));
 delete from users where user_id=2;

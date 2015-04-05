@@ -1,20 +1,28 @@
 package snech.web.pages;
 
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
-import org.apache.wicket.Component;
-import org.apache.wicket.behavior.Behavior;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.link.DownloadLink;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import snech.core.services.IDatabaseService;
+import snech.core.types.Attachment;
 import snech.core.types.Issue;
 import snech.core.types.enums.EIssuePriority;
 import snech.web.base.MainPage;
@@ -32,6 +40,7 @@ public class TicketEditPage extends MainPage {
     private String selectedPriority;
     private String message;
     private Issue issue;
+    private final String UNKNOWN = "-";
 
     public TicketEditPage(final PageParameters pageParameters) {
         super(pageParameters);
@@ -55,7 +64,6 @@ public class TicketEditPage extends MainPage {
         messageTextArea.setRequired(true);
         editForm.add(messageTextArea);
 
-        
         editForm.add(new Button("save.button") {
 
             @Override
@@ -64,7 +72,6 @@ public class TicketEditPage extends MainPage {
                 error("Error on submit");
             }
 
-            
             @Override
             public void onSubmit() {
                 super.onSubmit();
@@ -84,7 +91,50 @@ public class TicketEditPage extends MainPage {
             }
 
         });
-        
+
+        List<Attachment> attachments = databaseService.getAttachments(issue.getId(), -1);
+
+        if (attachments != null) {
+            editForm.add(new ListView<Attachment>("attachments", attachments) {
+
+                @Override
+                protected void populateItem(ListItem<Attachment> listItem) {
+                    try {
+                        final Attachment attachment = listItem.getModelObject();
+                        File file = new File(attachment.getFileUrl() != null ? URLDecoder.decode(attachment.getFileUrl(), "UTF-8") : UNKNOWN);
+                        DownloadLink downloadLink = new DownloadLink("attLink", file, URLDecoder.decode(attachment.getFileName(), "UTF-8"));
+                        downloadLink.add(new Label("fileName", attachment.getFileName()));
+                        listItem.add(downloadLink);
+                    } catch (UnsupportedEncodingException ex) {
+                        Logger.getLogger(TicketDetailPage.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            });
+        } else {
+            //Component pridany, ale nieje nutne zobrazovat nejake prilohy
+            MarkupContainer linkContainer = new MarkupContainer("attachments") {
+                @Override
+                protected void onInitialize() {
+                    super.onInitialize();
+                    add(new Link("attLink") {
+
+                        @Override
+                        protected void onInitialize() {
+                            super.onInitialize();
+                            add(new Label("fileName", UNKNOWN));
+                        }
+
+                        @Override
+                        public void onClick() {
+
+                        }
+                    }.setVisible(false));
+                }
+
+            };
+            editForm.add(linkContainer);
+        }
+
         add(editForm);
     }
 }

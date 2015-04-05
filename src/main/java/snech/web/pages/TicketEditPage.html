@@ -1,3 +1,27 @@
+<html>
+    <head>
+    <wicket:head>
+        <style>
+            .for-delete{
+                color: #C00
+                    ;
+            }
+        </style>
+
+        <script>
+            $(document).ready(function () {
+                $(".remove").click(function () {
+                    
+                    if ($(".attLink").hasClass("for-delete")) {
+                        $(".attLink").removeClass("for-delete");
+                    } else {
+                        $(".attLink").addClass("for-delete");
+                    }
+                });
+            });
+        </script>
+    </wicket:head>
+</head>
 <wicket:extend>
     <div class="row">
         <div class="col-sm-12">
@@ -30,6 +54,13 @@
                             <dt>Sprava:</dt>
                             <dd><textarea class="form-control" rows="5" id="comment" wicket:id="message"></textarea></dd>
                         </span>
+
+                        <span class="list-group-item">
+                            <dt>Príloha:</dt>
+                            <dd wicket:id="attachments">
+                                <a class="attLink" wicket:id="attLink" href="#"><span wicket:id="fileName"></span></a><a href="#" class="remove"><span class="glyphicon glyphicon-remove"></span></a>
+                            </dd>
+                        </span>
                     </dl>
                     <button type="submit" class="btn btn-default" wicket:id="save.button"><span class="glyphicon glyphicon-check"></span> Uložiť</button>
                     <button type="button" class="btn btn-default" wicket:id="cancel.button">Zrušiť</button>
@@ -40,3 +71,4 @@
         </div>
     </div>
 </wicket:extend>
+</html>

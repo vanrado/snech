@@ -3,10 +3,13 @@ package snech.web.pages;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -26,6 +29,7 @@ import snech.core.types.Attachment;
 import snech.core.types.Issue;
 import snech.core.types.enums.EIssuePriority;
 import snech.web.base.MainPage;
+import snech.web.forms.TicketEditForm;
 
 /**
  *
@@ -33,108 +37,13 @@ import snech.web.base.MainPage;
  */
 public class TicketEditPage extends MainPage {
 
-    @SuppressWarnings("FieldMayBeFinal")
-    @SpringBean
-    private IDatabaseService databaseService;
-    private String subject;
-    private String selectedPriority;
-    private String message;
-    private Issue issue;
-    private final String UNKNOWN = "-";
-
     public TicketEditPage(final PageParameters pageParameters) {
         super(pageParameters);
-        issue = databaseService.getIssue(Long.parseLong(pageParameters.get("id").toString()));
-        subject = issue.getSubject();
-        selectedPriority = issue.getPriority().name();
-        message = issue.getMessage();
-        Form editForm = new Form("edit.form");
-
-        editForm.add(new FeedbackPanel("feedback"));
-        editForm.add(new Label("issueId", issue.getId()));
-        TextField<String> subjectField = new TextField<>("issueSubject", new PropertyModel<String>(this, "subject"));
-        editForm.add(subjectField);
-
-        List<String> prioritiesList = EIssuePriority.getPrioritiesString();
-        final DropDownChoice prioritiesDropDown = new DropDownChoice("priorities", new PropertyModel<String>(this, "selectedPriority"), prioritiesList);
-        prioritiesDropDown.setRequired(true);
-        editForm.add(prioritiesDropDown);
-
-        final TextArea messageTextArea = new TextArea("message", new PropertyModel(this, "message"));
-        messageTextArea.setRequired(true);
-        editForm.add(messageTextArea);
-
-        editForm.add(new Button("save.button") {
-
-            @Override
-            public void onError() {
-                super.onError();
-                error("Error on submit");
-            }
-
-            @Override
-            public void onSubmit() {
-                super.onSubmit();
-                issue.setSubject(subject);
-                issue.setPriority(EIssuePriority.valueOf(selectedPriority));
-                issue.setMessage(message);
-                databaseService.updateIssue(issue);
-                info("Uspesne aktualizovane");
-            }
-
-        });
-        editForm.add(new Link("cancel.button") {
-
-            @Override
-            public void onClick() {
-                setResponsePage(TicketDetailPage.class, pageParameters);
-            }
-
-        });
-
-        List<Attachment> attachments = databaseService.getAttachments(issue.getId(), -1);
-
-        if (attachments != null) {
-            editForm.add(new ListView<Attachment>("attachments", attachments) {
-
-                @Override
-                protected void populateItem(ListItem<Attachment> listItem) {
-                    try {
-                        final Attachment attachment = listItem.getModelObject();
-                        File file = new File(attachment.getFileUrl() != null ? URLDecoder.decode(attachment.getFileUrl(), "UTF-8") : UNKNOWN);
-                        DownloadLink downloadLink = new DownloadLink("attLink", file, URLDecoder.decode(attachment.getFileName(), "UTF-8"));
-                        downloadLink.add(new Label("fileName", attachment.getFileName()));
-                        listItem.add(downloadLink);
-                    } catch (UnsupportedEncodingException ex) {
-                        Logger.getLogger(TicketDetailPage.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            });
-        } else {
-            //Component pridany, ale nieje nutne zobrazovat nejake prilohy
-            MarkupContainer linkContainer = new MarkupContainer("attachments") {
-                @Override
-                protected void onInitialize() {
-                    super.onInitialize();
-                    add(new Link("attLink") {
-
-                        @Override
-                        protected void onInitialize() {
-                            super.onInitialize();
-                            add(new Label("fileName", UNKNOWN));
-                        }
-
-                        @Override
-                        public void onClick() {
-
-                        }
-                    }.setVisible(false));
-                }
-
-            };
-            editForm.add(linkContainer);
-        }
-
-        add(editForm);
+        add(new TicketEditForm("edit.form", pageParameters));
     }
+
+//    private void replaceContainer(List list) {
+//        attachmentsToDelete.clear();
+//        attachmentsToDelete.addAll(list);
+//    }
 }

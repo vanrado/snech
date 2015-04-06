@@ -2,7 +2,7 @@
     <head>
     <wicket:head>
         <style>
-            .for-delete{
+            .for-delete a{
                 color: #C00
                     ;
             }
@@ -12,10 +12,10 @@
             $(document).ready(function () {
                 $(".remove").click(function () {
                     
-                    if ($(".attLink").hasClass("for-delete")) {
-                        $(".attLink").removeClass("for-delete");
+                    if ($(this).parent(this).hasClass("for-delete")) {
+                        $(this).parent(this).removeClass("for-delete");
                     } else {
-                        $(".attLink").addClass("for-delete");
+                        $(this).parent(this).addClass("for-delete");
                     }
                 });
             });
@@ -58,7 +58,8 @@
                         <span class="list-group-item">
                             <dt>Príloha:</dt>
                             <dd wicket:id="attachments">
-                                <a class="attLink" wicket:id="attLink" href="#"><span wicket:id="fileName"></span></a><a href="#" class="remove"><span class="glyphicon glyphicon-remove"></span></a>
+                                <a class="attLink" wicket:id="attLink" href="#"><span wicket:id="fileName"></span></a>
+                                <a href="#" class="remove" wicket:id="remove.link"><span class="glyphicon glyphicon-remove"></span></a>
                             </dd>
                         </span>
                     </dl>

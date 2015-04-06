@@ -15,6 +15,7 @@
  */
 package snech.web.pages;
 
+import com.sun.glass.ui.Application;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -58,6 +59,13 @@ public class TicketDetailPage extends MainPage {
     public TicketDetailPage(PageParameters pageParameters) {
         super(pageParameters);
         final Issue issue = databaseService.getIssue(Long.parseLong(pageParameters.get("id").toString()));
+        
+        if(issue != null && !issue.getUserLogin().equals(CustomAuthenticatedWebSession.get().getUser().getLogin()) 
+                && !CustomAuthenticatedWebSession.get().getRoles().contains("TECHNIK") 
+                && !CustomAuthenticatedWebSession.get().getRoles().contains("ADMIN")){
+            setResponsePage(getApplication().getApplicationSettings().getAccessDeniedPage());
+        }
+        
         User assignedAdmin = databaseService.getUser(issue.getAssignedAdminId());
 
         add(new Label("issueId", issue.getId() != 0 ? issue.getId() : UNKNOWN));

@@ -55,6 +55,7 @@ public class ReportForm extends Form {
     public ReportForm(String id) {
         super(id);
         filesToUpload = new ArrayList<>();
+        uploads = new ArrayList<>();
 
         final FeedbackPanel feedback = new FeedbackPanel("feedback");
         feedback.setOutputMarkupId(true);
@@ -96,53 +97,7 @@ public class ReportForm extends Form {
                 long issueId = databaseService.insertIssue(issue);
                 if (issueId != -1) {
 
-                    Folder newFolder;
-                    try {
-                        //Vytvorit Folder pre tento upload - current value of seq
-                        newFolder = new Folder(getUploadFolder(), databaseService.getUploadsCount() + "-" + hashUtils.randomStringGenerator(5));
-                        newFolder.mkdirs();
-
-                        //Doneho zapisem subory
-                        for (FileUpload fileUpload : uploads) {
-                            String fileName = fileUpload.getClientFileName();
-                            File newFile = new File(newFolder, fileName);
-
-                            // Skontroluj ci subor uz neexistuje, ak ano vymaz ho a nahrad
-                            checkFileExists(newFile);
-
-                            try {
-                                newFile.createNewFile();
-                                fileUpload.writeTo(newFile);
-                                info("Subor " + fileUpload.getClientFileName() + " ulozeny do: " + newFile.getAbsolutePath());
-                            } catch (IOException ex) {
-                                Logger.getLogger(ReportForm.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (Exception ex) {
-                                Logger.getLogger(ReportForm.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-
-                            Attachment attachment = new Attachment();
-                            String fileNameEncoded = URLEncoder.encode(fileName, "UTF-8");
-                            attachment.setFileName(fileNameEncoded);
-                            //attachment.setFileSize(newFile.get);
-                            String url = newFile.getAbsolutePath();
-                            String encodedUrl = URLEncoder.encode(url, "UTF-8");
-                            attachment.setFileUrl(encodedUrl);
-                            attachment.setIssueId(issueId);
-                            attachment.setMessageId(null);
-
-                            try {
-                                boolean success = databaseService.insertAttachment(attachment);
-                            } catch (Exception ex) {
-                                Logger.getLogger(ReportForm.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-//                            String decodedUrl = URLDecoder.decode(url, "UTF-8");
-//                            System.out.println("Dcoded: " + decodedUrl);
-
-                        }
-
-                    } catch (Exception ex) {
-                        error("Chyba pri uploade suboru!");
-                    }
+                    uploadAttachments(issueId);
 
                     issue.setId(issueId);
                     success.setVisible(true);
@@ -192,6 +147,53 @@ public class ReportForm extends Form {
 
     public Collection<FileUpload> getUploads() {
         return uploads;
+    }
+
+    private void uploadAttachments(long issueId) {
+        Folder newFolder;
+        try {
+            //Vytvorit Folder pre tento upload - current value of seq
+            newFolder = new Folder(getUploadFolder(), databaseService.getUploadsCount() + "-" + hashUtils.randomStringGenerator(5));
+            newFolder.mkdirs();
+
+            //Doneho zapisem subory
+            for (FileUpload fileUpload : uploads) {
+                String fileName = fileUpload.getClientFileName();
+                File newFile = new File(newFolder, fileName);
+
+                // Skontroluj ci subor uz neexistuje, ak ano vymaz ho a nahrad
+                checkFileExists(newFile);
+
+                try {
+                    newFile.createNewFile();
+                    fileUpload.writeTo(newFile);
+                    info("Subor " + fileUpload.getClientFileName() + " ulozeny do: " + newFile.getAbsolutePath());
+                } catch (IOException ex) {
+                    Logger.getLogger(ReportForm.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception ex) {
+                    Logger.getLogger(ReportForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                Attachment attachment = new Attachment();
+                String fileNameEncoded = URLEncoder.encode(fileName, "UTF-8");
+                attachment.setFileName(fileNameEncoded);
+                //attachment.setFileSize(newFile.get);
+                String url = newFile.getAbsolutePath();
+                String encodedUrl = URLEncoder.encode(url, "UTF-8");
+                attachment.setFileUrl(encodedUrl);
+                attachment.setIssueId(issueId);
+                attachment.setMessageId(null);
+
+                try {
+                    boolean success = databaseService.insertAttachment(attachment);
+                } catch (Exception ex) {
+                    Logger.getLogger(ReportForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+        } catch (Exception ex) {
+            error("Chyba pri uploade suboru!");
+        }
     }
 
     private Folder getUploadFolder() {

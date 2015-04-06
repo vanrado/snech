@@ -982,6 +982,51 @@ public class DatabaseServiceImpl implements IDatabaseService {
     }
 
     @Override
+    public boolean removeAttachment(long attachmentId) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "delete from attachments where attachment_id=?";
+        ResultSet rs = null;
+
+        boolean success = true;
+
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            statement.setLong(1, attachmentId);
+            rs = statement.executeQuery();
+        } catch (SQLException ex) {
+            success = false;
+            System.out.println(ex.getMessage());
+        } catch (Exception ex) {
+            success = false;
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        }
+        return success;
+    }
+
+    @Override
     public String testSelect() {
         Connection connection = null;
         PreparedStatement statement = null;

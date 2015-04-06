@@ -10,6 +10,8 @@ select last_number
 from user_sequences
 where sequence_name='UPLOAD_FOLDER_SEQ';
 
+delete from attachments where attachment_id=12;
+
 select upload_folder_seq.NEXTVAL from dual;
 
 insert into attachments(attachment_id, ISSUE_ID, message_id, file_url, file_name, file_size) values (ATTACHMENT_ID_seq.nextval, 199, null, 'url', 'nazov', 5000045612);

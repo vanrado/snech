@@ -83,6 +83,8 @@ public interface IDatabaseService {
     public boolean insertAttachment(Attachment attachment);
 
     public List<Attachment> getAttachments(long issueId, long messageId);
+    
+    public boolean removeAttachment(long attachmentId);
 
     public String testSelect();
 }

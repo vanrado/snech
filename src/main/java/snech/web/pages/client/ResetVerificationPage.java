@@ -13,19 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package snech.web.pages;
+package snech.web.pages.client;
 
-import snech.web.base.MainPage;
-import snech.web.panels.OverviewPanel;
+import org.apache.wicket.markup.html.link.Link;
+import snech.web.base.BasePage;
 
 /**
  *
  * @author Radovan
  */
-public class OverviewPage extends MainPage {
+public class ResetVerificationPage extends BasePage{
+    public ResetVerificationPage(){
+        
+        add(new Link("changepass.link"){
 
-    public OverviewPage() {
-        add(new OverviewPanel("overview.panel"));
+            @Override
+            public void onClick() {
+                setResponsePage(ChangePasswordPage.class);
+            }
+        
+        });
+        
+        add(new Link("resetpassword.link"){
+
+            @Override
+            public void onClick() {
+                setResponsePage(ResetPasswordPage.class);
+            }
+        
+        });
     }
-    
 }

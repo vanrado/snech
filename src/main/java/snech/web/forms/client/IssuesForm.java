@@ -1,4 +1,4 @@
-package snech.web.forms;
+package snech.web.forms.client;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ import snech.core.services.IFormatUtils;
 import snech.core.types.Issue;
 import snech.core.types.User;
 import snech.core.types.enums.EIssueStatus;
-import snech.web.pages.TicketDetailPage;
+import snech.web.pages.client.TicketDetailPage;
 
 /**
  *

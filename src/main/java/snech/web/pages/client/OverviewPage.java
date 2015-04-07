@@ -13,24 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package snech.web.pages;
+package snech.web.pages.client;
 
 import snech.web.base.MainPage;
-import snech.web.panels.ContactFormPanel;
-import snech.web.panels.IssuePanel;
-import snech.web.panels.NoticePanel;
-import snech.web.panels.ReportTicketPanel;
+import snech.web.panels.OverviewPanel;
 
 /**
  *
  * @author Radovan
  */
-public class TicketsListPage extends MainPage {
+public class OverviewPage extends MainPage {
 
-    public TicketsListPage() {
-        add(new IssuePanel("issue.panel"));
-        add(new NoticePanel("notice.panel"));
-        add(new ReportTicketPanel("reportTicket.panel"));
-        add(new ContactFormPanel("contactForm.panel"));
+    public OverviewPage() {
+        add(new OverviewPanel("overview.panel"));
     }
+    
 }

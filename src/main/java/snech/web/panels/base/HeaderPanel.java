@@ -19,10 +19,10 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import snech.core.CustomAuthenticatedWebSession;
-import snech.web.pages.AccountManagementPage;
-import snech.web.pages.LoginPage;
-import snech.web.pages.OverviewPage;
-import snech.web.pages.TicketsListPage;
+import snech.web.pages.client.AccountManagementPage;
+import snech.web.pages.client.LoginPage;
+import snech.web.pages.client.OverviewPage;
+import snech.web.pages.client.TicketsListPage;
 
 /**
  *

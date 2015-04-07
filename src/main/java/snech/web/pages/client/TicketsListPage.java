@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package snech.web.pages;
+package snech.web.pages.client;
 
-import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import snech.web.base.BasePage;
-import snech.web.forms.LoginForm;
+import snech.web.base.MainPage;
+import snech.web.panels.ContactFormPanel;
+import snech.web.panels.IssuePanel;
+import snech.web.panels.NoticePanel;
+import snech.web.panels.ReportTicketPanel;
 
 /**
  *
  * @author Radovan
  */
-public class LoginPage extends BasePage{
-    
-    private static final long serialVersionUID = 1L;
-    
-    public LoginPage(){
-        add(new FeedbackPanel("feedback"));
-        add(new LoginForm("login.form"));
+public class TicketsListPage extends MainPage {
+
+    public TicketsListPage() {
+        add(new IssuePanel("issue.panel"));
+        add(new NoticePanel("notice.panel"));
+        add(new ReportTicketPanel("reportTicket.panel"));
+        add(new ContactFormPanel("contactForm.panel"));
     }
-    
 }

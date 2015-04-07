@@ -26,7 +26,7 @@ import snech.core.services.IFormatUtils;
 import snech.core.types.IssueLog;
 import snech.core.types.User;
 import snech.core.types.enums.EIssueLogType;
-import snech.web.pages.TicketDetailPage;
+import snech.web.pages.client.TicketDetailPage;
 
 /**
  *

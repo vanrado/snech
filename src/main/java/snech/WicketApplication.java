@@ -1,18 +1,20 @@
 package snech;
 
+import org.apache.wicket.authentication.IAuthenticationStrategy;
 import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSession;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
+import org.apache.wicket.authroles.authorization.strategies.role.annotations.AnnotationsRoleAuthorizationStrategy;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.file.Folder;
 import snech.core.CustomAuthenticatedWebSession;
-import snech.web.pages.AccountManagementPage;
-import snech.web.pages.ChangeDetailsPage;
-import snech.web.pages.ChangePasswordPage;
-import snech.web.pages.LoginPage;
-import snech.web.pages.OverviewPage;
-import snech.web.pages.TicketDetailPage;
-import snech.web.pages.TicketsListPage;
+import snech.web.pages.client.AccountManagementPage;
+import snech.web.pages.client.ChangeDetailsPage;
+import snech.web.pages.client.ChangePasswordPage;
+import snech.web.pages.client.LoginPage;
+import snech.web.pages.client.OverviewPage;
+import snech.web.pages.client.TicketDetailPage;
+import snech.web.pages.client.TicketsListPage;
 
 /**
  * Application object for your web application. If you want to run this
@@ -43,6 +45,8 @@ public class WicketApplication extends AuthenticatedWebApplication {
         getMarkupSettings().setDefaultMarkupEncoding("UTF-8");
         getComponentInstantiationListeners().add(new SpringComponentInjector(this));
         mountPages();
+        
+        getSecuritySettings().setAuthorizationStrategy(new AnnotationsRoleAuthorizationStrategy(this));
 
         //Upload
         uploadFolder = new Folder(System.getProperty("java.io.tmpdir"), "uploads");

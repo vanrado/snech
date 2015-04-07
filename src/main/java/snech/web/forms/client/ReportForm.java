@@ -1,4 +1,4 @@
-package snech.web.forms;
+package snech.web.forms.client;
 
 import java.io.File;
 import java.io.IOException;

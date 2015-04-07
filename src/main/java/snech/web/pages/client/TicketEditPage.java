@@ -1,8 +1,8 @@
-package snech.web.pages;
+package snech.web.pages.client;
 
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import snech.web.base.MainPage;
-import snech.web.forms.TicketEditForm;
+import snech.web.forms.client.TicketEditForm;
 
 /**
  *

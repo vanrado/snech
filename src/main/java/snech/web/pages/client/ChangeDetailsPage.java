@@ -1,4 +1,4 @@
-package snech.web.pages;
+package snech.web.pages.client;
 
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;

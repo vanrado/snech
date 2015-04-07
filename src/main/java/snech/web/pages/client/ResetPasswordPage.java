@@ -13,43 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package snech.web.pages;
+package snech.web.pages.client;
 
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
-import snech.core.CustomAuthenticatedWebSession;
-import snech.core.types.User;
-import snech.web.base.MainPage;
+import snech.web.base.BasePage;
 
 /**
  *
  * @author Radovan
  */
-public class AccountManagementPage extends MainPage {
+public class ResetPasswordPage extends BasePage {
+
     
-    public AccountManagementPage(){
-        User user = CustomAuthenticatedWebSession.get().getUser();
-        add(new Label("firstName.label", user.getFirstName()));
-        add(new Label("lastName.label", user.getLastName()));
-        add(new Label("email.label", user.getEmail()));
-        add(new Label("occupation.label", user.getOccupation()));
-        
-        add(new Link("changedetails.link"){
+    public ResetPasswordPage(){
+        add(new Link("verification.link"){
 
             @Override
             public void onClick() {
-                setResponsePage(ChangeDetailsPage.class);
+                setResponsePage(ResetVerificationPage.class);
             }
-        
+
         });
         
-        add(new Link("changepass.link"){
+        add(new Link("backpage.link"){
 
             @Override
             public void onClick() {
-                setResponsePage(ChangePasswordPage.class);
+                setResponsePage(LoginPage.class);
             }
-            
+        
         });
     }
 }

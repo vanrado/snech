@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package snech.web.forms;
+package snech.web.forms.client;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.wicket.Application;
-import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
@@ -42,7 +41,6 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -54,8 +52,7 @@ import snech.core.services.IHashUtils;
 import snech.core.types.Attachment;
 import snech.core.types.Issue;
 import snech.core.types.enums.EIssuePriority;
-import snech.web.pages.TicketDetailPage;
-import snech.web.pages.TicketEditPage;
+import snech.web.pages.client.TicketDetailPage;
 
 /**
  *
@@ -89,7 +86,7 @@ public class TicketEditForm extends Form<Object> {
         uploads = new ArrayList<>();
         attachmentsToDelete = new ArrayList<>();
         issue = databaseService.getIssue(Long.parseLong(pageParameters.get("id").toString()));
-        attachments = attachments == null ? new ArrayList<Attachment>() : databaseService.getAttachments(issue.getId(), -1);
+        attachments = databaseService.getAttachments(issue.getId(), -1);
         subject = issue.getSubject();
         selectedPriority = issue.getPriority().name();
         message = issue.getMessage();

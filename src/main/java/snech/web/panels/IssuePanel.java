@@ -1,7 +1,7 @@
 package snech.web.panels;
 
 import org.apache.wicket.markup.html.panel.Panel;
-import snech.web.forms.IssuesForm;
+import snech.web.forms.client.IssuesForm;
 
 /**
  *

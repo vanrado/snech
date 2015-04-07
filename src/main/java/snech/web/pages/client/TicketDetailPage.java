@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package snech.web.pages;
+package snech.web.pages.client;
 
 import com.sun.glass.ui.Application;
 import java.io.File;

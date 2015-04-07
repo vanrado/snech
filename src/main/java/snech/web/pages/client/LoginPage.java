@@ -13,35 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package snech.web.pages;
+package snech.web.pages.client;
 
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import snech.web.base.BasePage;
+import snech.web.forms.LoginForm;
 
 /**
  *
  * @author Radovan
  */
-public class ResetPasswordPage extends BasePage {
-
+public class LoginPage extends BasePage{
     
-    public ResetPasswordPage(){
-        add(new Link("verification.link"){
-
-            @Override
-            public void onClick() {
-                setResponsePage(ResetVerificationPage.class);
-            }
-
-        });
-        
-        add(new Link("backpage.link"){
-
-            @Override
-            public void onClick() {
-                setResponsePage(LoginPage.class);
-            }
-        
-        });
+    private static final long serialVersionUID = 1L;
+    
+    public LoginPage(){
+        add(new FeedbackPanel("feedback"));
+        add(new LoginForm("login.form"));
     }
+    
 }

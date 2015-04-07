@@ -1,4 +1,5 @@
-package snech.core;
+package snech.core; 
+
 
 import snech.core.services.IDatabaseService;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
@@ -73,6 +74,11 @@ public class CustomAuthenticatedWebSession extends AuthenticatedWebSession {
 
     @Override
     public Roles getRoles() {
-        return null;
+        Roles resultRoles = new Roles();
+        
+        if(isSignedIn() && user.getLogin().equals("robert_d")){
+            resultRoles.add("TECHNIK");
+        }
+        return resultRoles;
     }
 }

@@ -13,17 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package snech.web.pages;
+package snech.web.pages.client;
 
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
-import snech.web.base.BasePage;
+import snech.core.CustomAuthenticatedWebSession;
+import snech.core.types.User;
+import snech.web.base.MainPage;
 
 /**
  *
  * @author Radovan
  */
-public class ResetVerificationPage extends BasePage{
-    public ResetVerificationPage(){
+public class AccountManagementPage extends MainPage {
+    
+    public AccountManagementPage(){
+        User user = CustomAuthenticatedWebSession.get().getUser();
+        add(new Label("firstName.label", user.getFirstName()));
+        add(new Label("lastName.label", user.getLastName()));
+        add(new Label("email.label", user.getEmail()));
+        add(new Label("occupation.label", user.getOccupation()));
+        
+        add(new Link("changedetails.link"){
+
+            @Override
+            public void onClick() {
+                setResponsePage(ChangeDetailsPage.class);
+            }
+        
+        });
         
         add(new Link("changepass.link"){
 
@@ -31,16 +49,7 @@ public class ResetVerificationPage extends BasePage{
             public void onClick() {
                 setResponsePage(ChangePasswordPage.class);
             }
-        
-        });
-        
-        add(new Link("resetpassword.link"){
-
-            @Override
-            public void onClick() {
-                setResponsePage(ResetPasswordPage.class);
-            }
-        
+            
         });
     }
 }

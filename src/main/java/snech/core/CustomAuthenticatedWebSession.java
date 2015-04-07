@@ -76,9 +76,10 @@ public class CustomAuthenticatedWebSession extends AuthenticatedWebSession {
     public Roles getRoles() {
         Roles resultRoles = new Roles();
         
-        if(isSignedIn() && user.getLogin().equals("robert_d")){
-            resultRoles.add("TECHNIK");
+        if(isSignedIn()){
+            resultRoles.add(user.getUserRole().name());
         }
+        
         return resultRoles;
     }
 }

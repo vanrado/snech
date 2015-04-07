@@ -17,8 +17,10 @@ package snech.web.pages;
 
 import org.apache.wicket.Application;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
+import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.link.Link;
 import snech.core.CustomAuthenticatedWebSession;
+import snech.core.types.enums.EUserRole;
 import snech.web.base.BasePage;
 import snech.web.pages.client.TicketDetailPage;
 import snech.web.pages.client.TicketsListPage;
@@ -56,7 +58,8 @@ public class AppSelectionPage extends BasePage {
             app.restartResponseAtSignInPage();
         }
         
-        if (CustomAuthenticatedWebSession.get().getUser().getLogin().equals("robert_u")) {
+        EUserRole userRole = CustomAuthenticatedWebSession.get().getUser().getUserRole();
+        if (userRole.equals(EUserRole.UZIVATEL)) {
             setResponsePage(TicketsListPage.class);
         }
     }

@@ -2,6 +2,7 @@ package snech.core.types;
 
 import java.io.Serializable;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import snech.core.types.enums.EUserRole;
 
 /**
  *
@@ -17,6 +18,7 @@ public class User implements Serializable {
     private String occupation;
     private String salt;
     private String password;
+    private EUserRole userRole;
 
     public User() {
 
@@ -54,6 +56,10 @@ public class User implements Serializable {
         return salt;
     }
 
+    public EUserRole getUserRole() {
+        return userRole;
+    }
+
     public void setPassword(String password) {
         this.password = password;
     }
@@ -84,6 +90,10 @@ public class User implements Serializable {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public void setUserRole(EUserRole userRole) {
+        this.userRole = userRole;
     }
 
     @Override

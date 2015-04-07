@@ -21,6 +21,7 @@ import snech.core.types.User;
 import snech.core.types.enums.EIssueLogType;
 import snech.core.types.enums.EIssuePriority;
 import snech.core.types.enums.EIssueStatus;
+import snech.core.types.enums.EUserRole;
 
 /**
  *
@@ -46,7 +47,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
         User user = null;
         Connection connection = null;
         PreparedStatement statement = null;
-        String selectSQL = "SELECT * FROM user_logins inner join users on user_logins.user_id = users.user_id where login=?";
+        String selectSQL = "SELECT * FROM user_logins inner join users on user_logins.user_id = users.user_id inner join user_roles on user_roles_role_id=user_roles.ROLE_ID where login=?";
         ResultSet rs = null;
 
         try {
@@ -66,6 +67,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 String userOccupation = rs.getString("occupation");
                 String password = rs.getString("password");
                 String salt = rs.getString("salt");
+                EUserRole userRole = EUserRole.valueOf(rs.getString("role_name").toUpperCase());
 
                 user.setId(userId);
                 user.setLogin(userLogin);
@@ -75,6 +77,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 user.setOccupation(userOccupation);
                 user.setPassword(password);
                 user.setSalt(salt);
+                user.setUserRole(userRole);
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());

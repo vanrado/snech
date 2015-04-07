@@ -42,6 +42,4 @@ public class MainPage extends BasePage{
             app.restartResponseAtSignInPage();
         }
     }
-    
-    
 }

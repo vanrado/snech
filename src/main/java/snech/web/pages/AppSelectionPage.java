@@ -23,6 +23,7 @@ import org.apache.wicket.markup.html.link.Link;
 import snech.core.CustomAuthenticatedWebSession;
 import snech.core.types.enums.EUserRole;
 import snech.web.base.BasePage;
+import snech.web.pages.admin.AdminOverviewPage;
 import snech.web.pages.client.TicketDetailPage;
 import snech.web.pages.client.TicketsListPage;
 import snech.web.panels.admin.AdminHeaderPanel;
@@ -58,7 +59,7 @@ public class AppSelectionPage extends BasePage {
 
             @Override
             public void onClick() {
-                setResponsePage(AppSelectionPage.class);
+                setResponsePage(AdminOverviewPage.class);
             }
         });
     }

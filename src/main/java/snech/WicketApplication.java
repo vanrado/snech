@@ -8,6 +8,7 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.file.Folder;
 import snech.core.CustomAuthenticatedWebSession;
+import snech.web.pages.AppSelectionPage;
 import snech.web.pages.client.AccountManagementPage;
 import snech.web.pages.client.ChangeDetailsPage;
 import snech.web.pages.client.ChangePasswordPage;
@@ -36,7 +37,7 @@ public class WicketApplication extends AuthenticatedWebApplication {
      * @see wicket.Application#getHomePage()
      */
     public Class getHomePage() {
-        return TicketsListPage.class;
+        return AppSelectionPage.class;
     }
 
     @Override

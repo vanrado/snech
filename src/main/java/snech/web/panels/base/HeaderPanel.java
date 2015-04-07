@@ -32,18 +32,18 @@ public class HeaderPanel extends Panel {
 
     public HeaderPanel(String id) {
         super(id);
-        CustomAuthenticatedWebSession MySession = CustomAuthenticatedWebSession.get();
+        final CustomAuthenticatedWebSession mySession = CustomAuthenticatedWebSession.get();
         add(new Link("signOut.link") {
 
             @Override
             public void onClick() {
-                CustomAuthenticatedWebSession.get().invalidate();
+                mySession.invalidate();
                 setResponsePage(getApplication().getHomePage());
             }
 
         });
 
-        add(new Label("logedUser", MySession.getUser() != null ? MySession.getUser().getFirstName() + " " + MySession.getUser().getLastName() : ""));
+        add(new Label("logedUser", mySession.getUser() != null ? mySession.getUser().getFirstName() + " " + mySession.getUser().getLastName() : ""));
         add(new Link("overview.link") {
             @Override
             public void onClick() {

@@ -32,6 +32,7 @@ import snech.core.services.IHashUtils;
 import snech.core.types.Attachment;
 import snech.core.types.Issue;
 import snech.core.types.enums.EIssuePriority;
+import snech.web.pages.client.TicketsListPage;
 
 /**
  *
@@ -106,7 +107,7 @@ public class ReportForm extends Form {
                     target.add(feedback);
                     target.add(reportContainer);
                     target.add(this);
-                    target.appendJavaScript("setTimeout(function(){ window.location.replace(\"" + urlFor(getApplication().getHomePage(), null).toString() + "\"); }, 10000);");
+                    target.appendJavaScript("setTimeout(function(){ window.location.replace(\"" + urlFor(TicketsListPage.class, null).toString() + "\"); }, 10000);");
                 } else {
                     error("Pri vytvarani nastala chyba! Akciu opakujte alebo sa obratte na technicku podporu!");
                     subject = "";

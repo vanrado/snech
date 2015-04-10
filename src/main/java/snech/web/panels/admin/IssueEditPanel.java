@@ -31,6 +31,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import snech.core.CustomAuthenticatedWebSession;
 import snech.core.services.IDatabaseService;
 import snech.core.services.IFormatUtils;
 import snech.core.types.Issue;
@@ -89,7 +90,7 @@ public class IssueEditPanel extends Panel {
                     estimatedDateField.setDefaultModelObject(new PropertyModel(this, "estimatedDate"));
                 }
 
-                if (databaseService.updateIssue(issue)) {
+                if (databaseService.updateIssue(issue, CustomAuthenticatedWebSession.get().getUser().getLogin())) {
                     info("Úspešne aktualizované!");
                 }
             }

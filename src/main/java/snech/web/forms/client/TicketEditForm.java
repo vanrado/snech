@@ -47,10 +47,12 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.file.Files;
 import org.apache.wicket.util.file.Folder;
 import snech.WicketApplication;
+import snech.core.CustomAuthenticatedWebSession;
 import snech.core.services.IDatabaseService;
 import snech.core.services.IHashUtils;
 import snech.core.types.Attachment;
 import snech.core.types.Issue;
+import snech.core.types.User;
 import snech.core.types.enums.EIssuePriority;
 import snech.web.pages.client.TicketDetailPage;
 
@@ -164,7 +166,7 @@ public class TicketEditForm extends Form<Object> {
         issue.setSubject(subject);
         issue.setPriority(EIssuePriority.valueOf(selectedPriority));
         issue.setMessage(message);
-        databaseService.updateIssue(issue);
+        databaseService.updateIssue(issue, CustomAuthenticatedWebSession.get().getUser().getLogin());
 
         removeAttachments();
         uploadAttachments();

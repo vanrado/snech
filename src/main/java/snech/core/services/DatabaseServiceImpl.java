@@ -403,7 +403,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
     }
 
     @Override
-    public boolean updateIssue(Issue issue) {
+    public boolean updateIssue(Issue issue, String login) {
         Connection connection = null;
         PreparedStatement statement = null;
         String selectSQL = "update issues set subject=?, code_priority=?, message=?, progress=?, code_status=?, estimated_time=? where issue_id=?";
@@ -449,7 +449,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
             }
 
             if (success) {
-                //insertIssueLog(issue.getId(), EIssueLogType.AKTUALIZACIA, issue.getUserLogin(), "");
+                insertIssueLog(issue.getId(), EIssueLogType.AKTUALIZACIA, login, "");
             }
         }
 

@@ -15,9 +15,6 @@ import snech.core.types.enums.EIssueStatus;
  */
 public interface IDatabaseService {
 
-    /*
-     Users
-     */
     public User getUser(long userId);
 
     public boolean updateLoginPassword(String login, String newPassword, String newSalt);
@@ -27,42 +24,18 @@ public interface IDatabaseService {
     public User getUserLogin(String login);
 
     public String getLoginSalt(String userLogin);
-    /*
-     /Users
-     */
 
-    /*
-     Notices
-     */
     public List<Notice> getNotices(boolean allNotices);
-    /*
-     /Notices
-     */
 
-    /*
-     Issues
-     */
-    /**
-     * @param userId
-     * @param deleted ak true vrati aj poziadavky so statusom VYMAZANA
-     * @return
-     */
     public List<Issue> getIssues(String userId, boolean deleted);
 
-    public boolean updateIssue(Issue issue);
+    public boolean updateIssue(Issue issue, String login);
 
     public boolean removeIssue(long id);
 
     public Issue getIssue(long issueId);
 
-    /**
-     * @param issue predstavuje vkladany ticket.
-     * @return vrati issueId vygenerovane pre vlozeny ticket v databaze.
-     */
     public long insertIssue(Issue issue);
-    /*
-     /Issues
-     */
 
     public boolean insertIssueLog(long issueId, EIssueLogType logType, String author, String description);
 
@@ -70,20 +43,14 @@ public interface IDatabaseService {
 
     public boolean setIssueStatus(EIssueStatus status, long id, String author);
 
-    /*
-     Uploads
-     */
     public long getUploadsCount();
 
     public void incrementUploads();
-    /*
-     /Uploads
-     */
 
     public boolean insertAttachment(Attachment attachment);
 
     public List<Attachment> getAttachments(long issueId, long messageId);
-    
+
     public boolean removeAttachment(long attachmentId);
 
     public String testSelect();

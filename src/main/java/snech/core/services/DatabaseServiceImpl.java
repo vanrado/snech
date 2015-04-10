@@ -47,7 +47,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
         User user = null;
         Connection connection = null;
         PreparedStatement statement = null;
-        String selectSQL = "SELECT * FROM user_logins inner join users on user_logins.user_id = users.user_id inner join user_roles on user_roles_role_id=user_roles.ROLE_ID where login=?";
+        String selectSQL = "SELECT * FROM user_logins inner join users on user_logins.user_id = users.user_id inner join user_roles on user_logins.role_id=user_roles.ROLE_ID where login=?";
         ResultSet rs = null;
 
         try {
@@ -59,7 +59,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
             if (rs.next()) {
                 user = new User();
 
-                long userId = rs.getLong("login_id");
+                //long userId = rs.getLong("login_id");
                 String userLogin = rs.getString("login");
                 String userFirstName = rs.getString("first_name");
                 String userLastName = rs.getString("last_name");
@@ -69,7 +69,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 String salt = rs.getString("salt");
                 EUserRole userRole = EUserRole.valueOf(rs.getString("role_name").toUpperCase());
 
-                user.setId(userId);
+                //user.setId(userId);
                 user.setLogin(userLogin);
                 user.setFirstName(userFirstName);
                 user.setLastName(userLastName);
@@ -80,27 +80,27 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 user.setUserRole(userRole);
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -138,27 +138,27 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 notices.add(notice);
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -176,12 +176,19 @@ public class DatabaseServiceImpl implements IDatabaseService {
         } else {
             selectSQL = "SELECT * FROM issues where user_login=? and code_status!='VYMAZANA'";
         }
+        
+        if(userId.equals("admin")){
+            selectSQL = "SELECT * FROM issues order by created_on DESC";
+        }
+        
         ResultSet rs = null;
 
         try {
             connection = dataSource.getConnection();
             statement = connection.prepareStatement(selectSQL);
-            statement.setString(1, userId);
+            if(!userId.equals("admin")){
+                statement.setString(1, userId);
+            }
             rs = statement.executeQuery();
 
             while (rs.next()) {
@@ -190,7 +197,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 String subject = rs.getString("subject");
 
                 issue.setId(rs.getLong("issue_id"));
-                issue.setAssignedAdminId(rs.getLong("admin_login"));
+                issue.setAssignedAdminId(rs.getLong("ASSIGNED_ADMIN_LOGIN"));
                 issue.setEstimatedDate(rs.getTimestamp("estimated_time"));
                 issue.setCreatedDate(rs.getTimestamp("created_on"));
                 issue.setLastUpdatedDate(rs.getTimestamp("last_update"));
@@ -204,27 +211,30 @@ public class DatabaseServiceImpl implements IDatabaseService {
             }
 
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        } finally {
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } catch(Exception ex){
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally {
             if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -235,7 +245,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
     public long insertIssue(Issue issue) {
         Connection connection = null;
         PreparedStatement statement = null;
-        String selectSQL = "insert into ISSUES (ISSUE_ID,USER_LOGIN,SUBJECT,CODE_PRIORITY,CODE_STATUS,ESTIMATED_TIME,CREATED_ON,LAST_UPDATE,MESSAGE,ADMIN_LOGIN, PROGRESS) values (issue_id_seq.nextval,'" + issue.getUserLogin() + "','" + issue.getSubject() + "','" + issue.getPriority().name() + "','NOVA', null, CURRENT_TIMESTAMP, null,'" + issue.getMessage() + "', null, ?)";
+        String selectSQL = "insert into ISSUES (ISSUE_ID,USER_LOGIN,SUBJECT,CODE_PRIORITY,CODE_STATUS,ESTIMATED_TIME,CREATED_ON,LAST_UPDATE,MESSAGE,ASSIGNED_ADMIN_LOGIN, PROGRESS) values (issue_id_seq.nextval,'" + issue.getUserLogin() + "','" + issue.getSubject() + "','" + issue.getPriority().name() + "','NOVA', null, CURRENT_TIMESTAMP, null,'" + issue.getMessage() + "', null, ?)";
         ResultSet rs = null;
         boolean success = true;
         long issueId = -1;
@@ -246,28 +256,32 @@ public class DatabaseServiceImpl implements IDatabaseService {
             statement.setInt(1, 0);
             rs = statement.executeQuery();
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             success = false;
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
@@ -302,7 +316,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
 
                 issue.setId(rs.getLong("issue_id"));
                 issue.setUserLogin(rs.getString("user_login"));
-                issue.setAssignedAdminId(rs.getLong("admin_login"));
+                issue.setAssignedAdminId(rs.getLong("ASSIGNED_ADMIN_LOGIN"));
                 issue.setEstimatedDate(rs.getTimestamp("estimated_time"));
                 issue.setCreatedDate(rs.getTimestamp("created_on"));
                 issue.setLastUpdatedDate(rs.getTimestamp("last_update"));
@@ -313,27 +327,31 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 issue.setProgress(rs.getInt("progress"));
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -355,28 +373,28 @@ public class DatabaseServiceImpl implements IDatabaseService {
             statement.setLong(1, id);
             rs = statement.executeQuery();
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             success = false;
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -388,7 +406,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
     public boolean updateIssue(Issue issue) {
         Connection connection = null;
         PreparedStatement statement = null;
-        String selectSQL = "update issues set subject=?, code_priority=?, message=? where issue_id=?";
+        String selectSQL = "update issues set subject=?, code_priority=?, message=?, progress=?, code_status=?, estimated_time=? where issue_id=?";
         ResultSet rs = null;
         boolean success = true;
 
@@ -398,36 +416,40 @@ public class DatabaseServiceImpl implements IDatabaseService {
             statement.setString(1, issue.getSubject());
             statement.setString(2, issue.getPriority().name());
             statement.setString(3, issue.getMessage());
-            statement.setLong(4, issue.getId());
+            statement.setLong(4, issue.getProgress());
+            statement.setString(5, issue.getStatus().name());
+            statement.setTimestamp(6, issue.getEstimatedDate());
+            statement.setLong(7, issue.getId());
+            
             rs = statement.executeQuery();
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             success = false;
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
             if (success) {
-                insertIssueLog(issue.getId(), EIssueLogType.AKTUALIZACIA, issue.getUserLogin(), "");
+                //insertIssueLog(issue.getId(), EIssueLogType.AKTUALIZACIA, issue.getUserLogin(), "");
             }
         }
 
@@ -450,28 +472,28 @@ public class DatabaseServiceImpl implements IDatabaseService {
             statement.setLong(2, id);
             rs = statement.executeQuery();
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             success = false;
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
@@ -509,27 +531,27 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 user.setOccupation(rs.getString("occupation"));
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -560,28 +582,28 @@ public class DatabaseServiceImpl implements IDatabaseService {
 
             rs = statement.executeQuery();
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             success = false;
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -605,28 +627,28 @@ public class DatabaseServiceImpl implements IDatabaseService {
             statement.setString(3, login);
             rs = statement.executeQuery();
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             success = false;
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -652,28 +674,28 @@ public class DatabaseServiceImpl implements IDatabaseService {
             statement.setString(4, description);
             rs = statement.executeQuery();
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             success = false;
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -708,27 +730,27 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 issueLogs.add(log);
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -754,27 +776,27 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 salt = rs.getString("salt");
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -800,27 +822,27 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 count = rs.getLong("nextval");
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -840,27 +862,27 @@ public class DatabaseServiceImpl implements IDatabaseService {
             statement = connection.prepareStatement(selectSQL);
             rs = statement.executeQuery();
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -892,21 +914,21 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -956,27 +978,27 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 attachments.add(attachment);
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -1000,7 +1022,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
             rs = statement.executeQuery();
         } catch (SQLException ex) {
             success = false;
-            System.out.println(ex.getMessage());
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
             success = false;
         } finally {
@@ -1008,21 +1030,21 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -1048,27 +1070,27 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 test += rs.getString("first_name") + " " + rs.getString("last_name");
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -1099,27 +1121,27 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 id = rs.getLong("issue_id");
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (rs != null) {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }

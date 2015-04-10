@@ -1,7 +1,11 @@
 package snech.core.services;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
 import snech.core.types.User;
 
@@ -40,5 +44,19 @@ public class FormatUtilsImpl implements IFormatUtils {
         }
         
         return fullname;
+    }
+    
+    public Timestamp getTimestampFromString(String date){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm");
+        Timestamp timestamp = null;
+        
+        try {
+            Date parsedDate = dateFormat.parse(date);
+            timestamp = new Timestamp(parsedDate.getTime());
+        } catch (ParseException ex) {
+            Logger.getLogger(FormatUtilsImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return timestamp;        
     }
 }

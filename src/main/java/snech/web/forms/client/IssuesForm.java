@@ -156,7 +156,7 @@ public class IssuesForm extends Form {
 
         tableContainer.add(issueDataView);
         add(tableContainer);
-        issueDataView.setItemsPerPage(5);
+        issueDataView.setItemsPerPage(ITEMS_PER_PAGE);
 
         PagingNavigator pagination = new PagingNavigator("pagination", issueDataView);
         if (issueDataView.getItemCount() <= ITEMS_PER_PAGE) {

@@ -1,0 +1,76 @@
+<wicket:panel>
+    <div wicket:id="feedback"></div>
+    <form wicket:id="edit.container">
+        <dl class="list-group dl-horizontal">
+            <span class="list-group-item">
+                <dt>ID:</dt>
+                <dd wicket:id="issueId">105</dd>
+            </span>
+            <span class="list-group-item">
+                <dt>Predmet:</dt>
+                <dd wicket:id="issueSubject">Nejdemi</dd>
+            </span>
+            <span class="list-group-item">
+                <dt>Stav:</dt>
+                <dd id="issueStatus">
+                    <select class="form-control" id="priority" wicket:id="statuses"></select>
+                </dd>
+            </span>
+            <span class="list-group-item">
+                <dt>Priorita:</dt>
+                <dd>
+                    <select class="form-control" id="priority" wicket:id="priorities"></select>
+                </dd>
+            </span>
+            <span class="list-group-item">
+                <dt>Priradený technik:</dt>
+                <dd id="issueAssigned">
+                    <div class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-expanded="true">
+
+                            <span wicket:id="assignedAdminName"></span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu3">
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Roman Zavacky</a></li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Janko Hrasko</a></li>
+                            <li role="presentation" class="divider"></li>
+                            <li role="presentation" class="dropdown-header">Vyťažení</li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Tomek Bavala</a></li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Matus Bajtos</a></li>
+                        </ul>
+                    </div>
+                </dd>
+            </span>
+
+            <span class="list-group-item">
+                <dt>Pokrok:</dt>
+                <dd id="estimatedDate">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40"
+                             aria-valuemin="0" aria-valuemax="100" style="width:70%" wicket:id="progress">
+                        </div>
+                    </div>
+                    <select class="form-control" wicket:id="progressSelect"></select>
+                </dd>
+            </span>
+
+            <span class="list-group-item">
+                <dt>Odhad vyriešenia:</dt>
+                <dd>
+                    <div class='input-group date' id='datetimepicker2'>
+                        <input type='text' class="form-control" wicket:id="estimatedDate"/>
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </dd>
+            </span>
+        </dl>
+        <div class="center-b" style="text-align: center;">
+            <button class="btn btn-default" type="submit">Aktualizovať</button>
+            <button class="btn btn-default" wicket:id="cancel.button">Zrušiť</button>    
+        </div>
+    </form>
+
+</wicket:panel>

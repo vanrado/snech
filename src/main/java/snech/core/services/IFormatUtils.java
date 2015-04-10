@@ -8,6 +8,10 @@ import snech.core.types.User;
  * @author Radovan Račák
  */
 public interface IFormatUtils {
+
     public String getFormatedDate(Timestamp date);
+
     public String getUserFullName(User user);
+
+    public Timestamp getTimestampFromString(String date);
 }

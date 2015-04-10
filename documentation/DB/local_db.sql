@@ -10,7 +10,15 @@ select last_number
 from user_sequences
 where sequence_name='UPLOAD_FOLDER_SEQ';
 
+select login, user_id
+inner join users on user_id=users.user_id 
+from user_logins where role_id=2;
+
+SELECT * FROM user_logins inner join users on user_logins.user_id = users.user_id inner join user_roles on user_logins.role_id=user_roles.ROLE_ID where login='robert_u';
+
 delete from attachments where attachment_id=12;
+
+update issues set progress=70 where issue_id=121;
 
 select upload_folder_seq.NEXTVAL from dual;
 

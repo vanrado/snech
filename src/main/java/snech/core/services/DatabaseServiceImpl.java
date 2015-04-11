@@ -1109,6 +1109,52 @@ public class DatabaseServiceImpl implements IDatabaseService {
     }
 
     @Override
+    public boolean assignIssueToTechnician(long issueId, String technicianLogin) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "insert into assigning_issues(login, issue_id) values(?, ?)";
+        ResultSet rs = null;
+        boolean success = true;
+
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            statement.setString(1, technicianLogin);
+            statement.setLong(2, issueId);
+            rs = statement.executeQuery();
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            success = false;
+        } catch(Exception ex){
+            success = false;
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        
+        return success;
+    }
+
+    @Override
     public String testSelect() {
         Connection connection = null;
         PreparedStatement statement = null;

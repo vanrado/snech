@@ -65,10 +65,7 @@ public class IssueEditPanel extends Panel {
     private DropDownChoice statusesDropDown;
     private Form<Void> editForm;
     private DropDownChoice progressDropdown;
-    private List<User> selectedAssignedTechnicians;
-    private List<User> assignedTechniciansList;
-    private ListView<User> assignedTechnicians;
-    private List<User> techniniciansToDelete;
+    private ArrayList<User> selectedAssignedTechnicians;
 
     @SpringBean
     private IDatabaseService databaseService;
@@ -83,7 +80,6 @@ public class IssueEditPanel extends Panel {
         feedback.setOutputMarkupId(true);
         add(feedback);
         selectedAssignedTechnicians = new ArrayList<>();
-        techniniciansToDelete = new ArrayList<>();
 
         editForm = new Form("edit.container") {
             @Override
@@ -98,26 +94,15 @@ public class IssueEditPanel extends Panel {
                 if (estimatedDate != null) {
                     Timestamp date = formatUtils.getTimestampFromString(estimatedDate);
                     issue.setEstimatedDate(date);
+                    estimatedDateField.setDefaultModelObject(new PropertyModel(this, "estimatedDate"));
                 }
 
                 for (User user : selectedAssignedTechnicians) {
                     if (databaseService.assignIssueToTechnician(issue.getId(), user.getLogin())) {
-                        info("Poziadavka uspesne priradena technikovi " + user.getFirstName() + " " + user.getLastName());
+                        info("Poziadavka uspesne priradena technikovy " + user.getFirstName() + " " + user.getLastName());
                     }
                 }
 
-                for (User user : techniniciansToDelete) {
-                    if (databaseService.deleteAssignedTechnicians(issue.getId(), user.getLogin())) {
-                        info("Poziadavka odobrata technikovi " + user.getFirstName() + " " + user.getLastName());
-                    }
-                }
-
-                techniniciansToDelete.clear();
-                selectedAssignedTechnicians.clear();
-                assignedTechniciansList = databaseService.getAssignedTechnicians(issue.getId());
-                assignedTechnicians.setDefaultModelObject(assignedTechniciansList);
-                estimatedDateField.setDefaultModelObject(estimatedDate);
-                
                 if (databaseService.updateIssue(issue, CustomAuthenticatedWebSession.get().getUser().getLogin())) {
                     info("Úspešne aktualizované!");
                 }
@@ -144,27 +129,6 @@ public class IssueEditPanel extends Panel {
         assignedAdminName = new Label("technicianName", "Vyber");
         assignedAdminName.setOutputMarkupId(true);
         techniciansContainer.add(assignedAdminName);
-
-        assignedTechnicians = new ListView<User>("assignedTechnician", new ArrayList()) {
-
-            @Override
-            protected void populateItem(ListItem<User> item) {
-                final User user = item.getModelObject();
-                item.add(new Label("technician.name", user.getFirstName() + " " + user.getLastName()));
-                item.add(new AjaxLink("removeSelected.link") {
-
-                    @Override
-                    public void onClick(AjaxRequestTarget target) {
-                        if (techniniciansToDelete.contains(user)) {
-                            techniniciansToDelete.remove(user);
-                        } else {
-                            techniniciansToDelete.add(user);
-                        }
-                    }
-                });
-            }
-        };
-        editForm.add(assignedTechnicians);
 
         final ListView<User> techniciansToAssign = new ListView<User>("technicianToAssign", selectedAssignedTechnicians) {
 
@@ -212,24 +176,13 @@ public class IssueEditPanel extends Panel {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-                if (selectedTechnician != null && !selectedAssignedTechnicians.contains(selectedTechnician)) {
-                    boolean isAssigned = false;
-                    for (User user : assignedTechniciansList) {
-                        if (user.getLogin().equals(selectedTechnician.getLogin())) {
-                            isAssigned = true;
-                        }
-                    }
-
-                    if (!isAssigned) {
-                        selectedAssignedTechnicians.add(selectedTechnician);
-                    }
+                if (!selectedAssignedTechnicians.contains(selectedTechnician)) {
+                    selectedAssignedTechnicians.add(selectedTechnician);
                 }
-
                 for (User user : selectedAssignedTechnicians) {
                     info("login=" + user.getLogin());
                 }
-
-                assignedAdminName.setDefaultModelObject("Nepriradené");
+                assignedAdminName.setDefaultModelObject("Vyber");
                 techniciansToAssign.setDefaultModelObject(selectedAssignedTechnicians);
 
                 target.add(assignedAdminName);
@@ -258,8 +211,7 @@ public class IssueEditPanel extends Panel {
         progress = new Label("progress", " ");
         editForm.add(progress);
 
-        estimatedDate = "";
-        estimatedDateField = new TextField("estimatedDate", new PropertyModel(this, "estimatedDate"));
+        estimatedDateField = new TextField("estimatedDate", new PropertyModel(this, "estimatedDate"));//new DateTextField("estimatedDate", new PropertyModel<Date>(this, "estimatedDate"), new DateConverter);
         editForm.add(estimatedDateField);
         add(editForm);
     }
@@ -279,9 +231,7 @@ public class IssueEditPanel extends Panel {
             selectedStatus = issue.getStatus().getName();
             statusesDropDown.setDefaultModel(new PropertyModel<String>(this, "selectedStatus"));
 
-            estimatedDate = formatUtils.getFormatedDate(issue.getEstimatedDate());
-            estimatedDateField.setDefaultModel(new PropertyModel(this, "estimatedDate"));
-
+//            estimatedDate = issue.getEstimatedDate()
             issueId.setDefaultModelObject(issue.getId());
             subject.setDefaultModelObject(issue.getSubject());
             assignedAdminName.setDefaultModelObject(issue.getAssignedAdminId() == 0 ? "Nepriradené" : issue.getAssignedAdminId());
@@ -292,10 +242,6 @@ public class IssueEditPanel extends Panel {
             progress.add(new AttributeModifier("style", "width: " + issue.getProgress() + "%"));
 
             selectedAssignedTechnicians.clear();
-            techniniciansToDelete.clear();
-
-            assignedTechniciansList = databaseService.getAssignedTechnicians(issue.getId());
-            assignedTechnicians.setDefaultModelObject(assignedTechniciansList);
         } else {
             // editForm.setVisible(true);
         }

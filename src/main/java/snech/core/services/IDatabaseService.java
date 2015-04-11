@@ -57,6 +57,8 @@ public interface IDatabaseService {
     public List<User> getTechnicians();
     
     public boolean assignIssueToTechnician(long issueId, String technicianLogin);
+    
+    public List<User> getAssignedTechnicians(long issueId);
 
     public String testSelect();
 }

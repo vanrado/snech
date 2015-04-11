@@ -1125,7 +1125,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             success = false;
-        } catch(Exception ex){
+        } catch (Exception ex) {
             success = false;
         } finally {
             if (rs != null) {
@@ -1150,8 +1150,63 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 }
             }
         }
-        
+
         return success;
+    }
+
+    @Override
+    public List<User> getAssignedTechnicians(long issueId) {
+        ArrayList<User> technicians = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "select users.first_name, users.last_name, user_logins.login, role_name from ASSIGNING_ISSUES "
+                + "inner join user_logins on ASSIGNING_ISSUES.LOGIN = user_logins.login "
+                + "inner join users on user_logins.user_id=users.user_id "
+                + "inner join user_roles on user_roles.ROLE_ID = user_logins.ROLE_ID "
+                + "where issue_id=?";
+        ResultSet rs = null;
+
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            statement.setLong(1, issueId);
+            rs = statement.executeQuery();
+
+            while (rs.next()) {
+                User user = new User();
+                user.setFirstName(rs.getString("first_name"));
+                user.setLastName(rs.getString("last_name"));
+                user.setLogin(rs.getString("login"));
+                user.setUserRole(EUserRole.valueOf(rs.getString("role_name")));
+                technicians.add(user);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
+        return technicians;
     }
 
     @Override

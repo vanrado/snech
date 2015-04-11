@@ -56,7 +56,7 @@ public class AdminOverviewPage extends AdminBasePage {
                     public void onClick(AjaxRequestTarget target) {
                         selectedIssue = issue;
                         editPanel.setDefaultModel(new Model<Issue>(selectedIssue));
-                        target.appendJavaScript("$(document).ready(function () { $(function () { $('#datetimepicker2').datetimepicker({ locale: 'sk' }); }); });");
+                        target.appendJavaScript("$(document).ready(function () { initMyDatePicker(); markForDelete();});");
                         target.add(editPanel);
                     }
                 });

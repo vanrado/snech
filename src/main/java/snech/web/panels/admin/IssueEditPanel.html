@@ -22,26 +22,41 @@
                     <select class="form-control" id="priority" wicket:id="priorities"></select>
                 </dd>
             </span>
-            <span class="list-group-item">
-                <dt>Priradený technik:</dt>
-                <dd id="issueAssigned">
-                    <div class="dropdown">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-expanded="true">
-
-                            <span wicket:id="assignedAdminName"></span>
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu3">
-                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Roman Zavacky</a></li>
-                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Janko Hrasko</a></li>
-                            <li role="presentation" class="divider"></li>
-                            <li role="presentation" class="dropdown-header">Vyťažení</li>
-                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Tomek Bavala</a></li>
-                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Matus Bajtos</a></li>
-                        </ul>
-                    </div>
+            <div class="list-group-item">
+                <dt>Priradení technici:</dt>
+                <dd wicket:id="assignedTechnician">
+                    <span wicket:id="technician.name"></span>
+                    <a href="#" class="remove" wicket:id="removeSelected.link">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </a>
                 </dd>
-            </span>
+            </div>
+            <div class="list-group-item"  wicket:id="technicians.container">
+                <dt>Priradenie technikov:</dt>
+                <dd wicket:id="technicianToAssign">
+                    <span wicket:id="technician.name"></span>
+                    <a href="#" class="remove" wicket:id="removeSelected.link">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </a>
+                </dd>
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-expanded="true" style="position: relative;">
+
+                        <span wicket:id="technicianName"></span>
+                        <span class="caret"></span>
+                    </button>
+
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu3">
+                        <li role="presentation" wicket:id="technician.option">
+                            <a role="menuitem" tabindex="-1" href="#" wicket:id="technician.link"><span wicket:id="technician.name">Tomek Bavala</span></a>
+                        </li>
+                        <!--                            <li role="presentation" class="dropdown-header">Vyťažení</li>-->
+                    </ul>
+
+                    <a href="#" style="" wicket:id="confirmTechnician.link"><span class="glyphicon glyphicon-ok-circle"></span></a>
+                </div>
+
+            </div>
 
             <span class="list-group-item">
                 <dt>Pokrok:</dt>
@@ -72,5 +87,4 @@
             <button class="btn btn-default" wicket:id="cancel.button">Zrušiť</button>    
         </div>
     </form>
-
 </wicket:panel>

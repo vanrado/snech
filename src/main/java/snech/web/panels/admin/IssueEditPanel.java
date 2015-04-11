@@ -16,15 +16,19 @@
 package snech.web.panels.admin;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
@@ -35,6 +39,7 @@ import snech.core.CustomAuthenticatedWebSession;
 import snech.core.services.IDatabaseService;
 import snech.core.services.IFormatUtils;
 import snech.core.types.Issue;
+import snech.core.types.User;
 import snech.core.types.enums.EIssuePriority;
 import snech.core.types.enums.EIssueStatus;
 
@@ -49,6 +54,7 @@ public class IssueEditPanel extends Panel {
     private String selectedStatus;
     private Integer selectedProgress;
     private String estimatedDate;
+    private User selectedTechnician;
 
     private Label issueId;
     private Label subject;
@@ -59,6 +65,7 @@ public class IssueEditPanel extends Panel {
     private DropDownChoice statusesDropDown;
     private Form<Void> editForm;
     private DropDownChoice progressDropdown;
+    private ArrayList<User> selectedAssignedTechnicians;
 
     @SpringBean
     private IDatabaseService databaseService;
@@ -72,6 +79,7 @@ public class IssueEditPanel extends Panel {
         final FeedbackPanel feedback = new FeedbackPanel("feedback");
         feedback.setOutputMarkupId(true);
         add(feedback);
+        selectedAssignedTechnicians = new ArrayList<>();
 
         editForm = new Form("edit.container") {
             @Override
@@ -83,7 +91,6 @@ public class IssueEditPanel extends Panel {
                 progress.add(new AttributeModifier("style", "width: " + issue.getProgress() + "%"));
                 progress.setDefaultModelObject(new PropertyModel<Integer>(issue, "progress").getObject());
 
-                
                 if (estimatedDate != null) {
                     Timestamp date = formatUtils.getTimestampFromString(estimatedDate);
                     issue.setEstimatedDate(date);
@@ -105,13 +112,79 @@ public class IssueEditPanel extends Panel {
         subject = new Label("issueSubject", "-");
         editForm.add(subject);
 
-        assignedAdminName = new Label("assignedAdminName", "Nepriradené");
-        editForm.add(assignedAdminName);
-
         List<String> prioritiesList = EIssuePriority.getPrioritiesString();
         prioritiesDropDown = new DropDownChoice("priorities", new PropertyModel<String>(this, "selectedPriority"), prioritiesList);
         prioritiesDropDown.setRequired(true);
         editForm.add(prioritiesDropDown);
+
+        final WebMarkupContainer techniciansContainer = new WebMarkupContainer("technicians.container");
+        techniciansContainer.setOutputMarkupId(true);
+
+        assignedAdminName = new Label("technicianName", "Vyber");
+        assignedAdminName.setOutputMarkupId(true);
+        techniciansContainer.add(assignedAdminName);
+
+        final ListView<User> techniciansToAssign = new ListView<User>("technicianToAssign", selectedAssignedTechnicians) {
+
+            @Override
+            protected void populateItem(ListItem<User> listitem) {
+                final User user = listitem.getModelObject();
+                AjaxLink removeSelectedTechnicianLink = new AjaxLink("removeSelected.link") {
+
+                    @Override
+                    public void onClick(AjaxRequestTarget target) {
+                        if (selectedAssignedTechnicians.contains(user)) {
+                            selectedAssignedTechnicians.remove(user);
+                        }
+                        target.add(techniciansContainer);
+                    }
+                };
+                listitem.add(removeSelectedTechnicianLink);
+                listitem.add(new Label("technician.name", user.getFirstName() + " " + user.getLastName()));
+            }
+        };
+        techniciansContainer.add(techniciansToAssign);
+
+        List<User> technicians = databaseService.getTechnicians();
+        ListView<User> techniciansList = new ListView<User>("technician.option", technicians) {
+
+            @Override
+            protected void populateItem(ListItem<User> listitem) {
+                final User technician = listitem.getModelObject();
+                AjaxLink technLink = new AjaxLink("technician.link") {
+                    @Override
+                    public void onClick(AjaxRequestTarget target) {
+                        selectedTechnician = technician;
+                        assignedAdminName.setDefaultModelObject(selectedTechnician.getFirstName() + " " + selectedTechnician.getLastName());
+                        target.add(assignedAdminName);
+                    }
+                };
+                technLink.add(new Label("technician.name", technician.getFirstName() + " " + technician.getLastName()));
+                listitem.add(technLink);
+            }
+
+        };
+        techniciansContainer.add(techniciansList);
+        editForm.add(techniciansContainer);
+        AjaxLink confirmTechnicianLink = new AjaxLink("confirmTechnician.link") {
+
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                if (!selectedAssignedTechnicians.contains(selectedTechnician)) {
+                    selectedAssignedTechnicians.add(selectedTechnician);
+                }
+                for (User user : selectedAssignedTechnicians) {
+                    info("login=" + user.getLogin());
+                }
+                assignedAdminName.setDefaultModelObject("Vyber");
+                techniciansToAssign.setDefaultModelObject(selectedAssignedTechnicians);
+
+                target.add(assignedAdminName);
+                target.add(feedback);
+                target.add(techniciansContainer);
+            }
+        };
+        techniciansContainer.add(confirmTechnicianLink);
 
         List<String> statusList = EIssueStatus.getStatusesList();
         statusesDropDown = new DropDownChoice("statuses", new PropertyModel<String>(this, "selectedStatus"), statusList);
@@ -161,6 +234,8 @@ public class IssueEditPanel extends Panel {
             progressDropdown.setDefaultModel(new PropertyModel<Integer>(issue, "progress"));
             progress.setDefaultModelObject(new PropertyModel<Integer>(issue, "progress").getObject());
             progress.add(new AttributeModifier("style", "width: " + issue.getProgress() + "%"));
+
+            selectedAssignedTechnicians.clear();
         } else {
             // editForm.setVisible(true);
         }

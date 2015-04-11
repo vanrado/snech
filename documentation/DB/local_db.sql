@@ -19,6 +19,45 @@ SELECT * FROM user_logins inner join users on user_logins.user_id = users.user_i
 delete from attachments where attachment_id=12;
 
 update issues set progress=70 where issue_id=121;
+select * from issues where issue_id=267;
+SELECT * FROM issues order by created_on DESC;
+
+
+select users.FIRST_NAME, users.LAST_NAME, user_roles.role_name, login from user_logins
+inner join user_roles on user_roles.ROLE_ID = user_logins.ROLE_ID
+inner join users on users.USER_ID = user_logins.USER_ID
+where role_name='technik';
+
+
+
+/* Zabezpecenie ze uzivatel bude mat len jeden ucet uzivatela, technika a admina */
+/**/
+create or replace trigger user_login_trg
+before
+insert on user_logins
+for each row
+declare 
+  v_pocetRoli number;
+begin
+  select count(*)
+  into v_pocetRoli
+  from user_logins
+  where user_id=:new.user_id and role_id=:new.role_id;
+  
+  if(v_pocetRoli = 0) 
+  then
+    dbms_output.put_line('Mozme vlozit'); 
+  else
+    raise_application_error(-20001, 'Uzivatel s id #'||:new.user_id||' uz ma pridelenu rolu s id #'||:new.role_id);
+  end if;
+end;
+/
+
+select count(*)
+from user_logins
+where user_id=1 and role_id=2;
+
+select role_id from user_logins where user_id=1;
 
 select upload_folder_seq.NEXTVAL from dual;
 

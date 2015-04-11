@@ -1,5 +1,6 @@
 package snech.core.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import snech.core.types.Attachment;
 import snech.core.types.Issue;
@@ -52,6 +53,8 @@ public interface IDatabaseService {
     public List<Attachment> getAttachments(long issueId, long messageId);
 
     public boolean removeAttachment(long attachmentId);
+    
+    public List<User> getTechnicians();
 
     public String testSelect();
 }

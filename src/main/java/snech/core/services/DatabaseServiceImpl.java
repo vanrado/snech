@@ -176,17 +176,17 @@ public class DatabaseServiceImpl implements IDatabaseService {
         } else {
             selectSQL = "SELECT * FROM issues where user_login=? and code_status!='VYMAZANA'";
         }
-        
-        if(userId.equals("admin")){
+
+        if (userId.equals("admin")) {
             selectSQL = "SELECT * FROM issues order by created_on DESC";
         }
-        
+
         ResultSet rs = null;
 
         try {
             connection = dataSource.getConnection();
             statement = connection.prepareStatement(selectSQL);
-            if(!userId.equals("admin")){
+            if (!userId.equals("admin")) {
                 statement.setString(1, userId);
             }
             rs = statement.executeQuery();
@@ -197,7 +197,6 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 String subject = rs.getString("subject");
 
                 issue.setId(rs.getLong("issue_id"));
-                issue.setAssignedAdminId(rs.getLong("ASSIGNED_ADMIN_LOGIN"));
                 issue.setEstimatedDate(rs.getTimestamp("estimated_time"));
                 issue.setCreatedDate(rs.getTimestamp("created_on"));
                 issue.setLastUpdatedDate(rs.getTimestamp("last_update"));
@@ -212,10 +211,9 @@ public class DatabaseServiceImpl implements IDatabaseService {
 
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch(Exception ex){
+        } catch (Exception ex) {
             Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        finally {
+        } finally {
             if (rs != null) {
                 try {
                     rs.close();
@@ -245,7 +243,8 @@ public class DatabaseServiceImpl implements IDatabaseService {
     public long insertIssue(Issue issue) {
         Connection connection = null;
         PreparedStatement statement = null;
-        String selectSQL = "insert into ISSUES (ISSUE_ID,USER_LOGIN,SUBJECT,CODE_PRIORITY,CODE_STATUS,ESTIMATED_TIME,CREATED_ON,LAST_UPDATE,MESSAGE,ASSIGNED_ADMIN_LOGIN, PROGRESS) values (issue_id_seq.nextval,'" + issue.getUserLogin() + "','" + issue.getSubject() + "','" + issue.getPriority().name() + "','NOVA', null, CURRENT_TIMESTAMP, null,'" + issue.getMessage() + "', null, ?)";
+        String selectSQL = "insert into ISSUES (ISSUE_ID,USER_LOGIN,SUBJECT,CODE_PRIORITY,CODE_STATUS,ESTIMATED_TIME,CREATED_ON,LAST_UPDATE,MESSAGE, PROGRESS) "
+                + "values (issue_id_seq.nextval, ?, ?, ?,'NOVA', null, CURRENT_TIMESTAMP, null, ?, ?)";
         ResultSet rs = null;
         boolean success = true;
         long issueId = -1;
@@ -253,7 +252,11 @@ public class DatabaseServiceImpl implements IDatabaseService {
         try {
             connection = dataSource.getConnection();
             statement = connection.prepareStatement(selectSQL);
-            statement.setInt(1, 0);
+            statement.setString(1, issue.getUserLogin());
+            statement.setString(2, issue.getSubject());
+            statement.setString(3, issue.getPriority().name());
+            statement.setString(4, issue.getMessage());
+            statement.setInt(5, 0);
             rs = statement.executeQuery();
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -316,7 +319,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
 
                 issue.setId(rs.getLong("issue_id"));
                 issue.setUserLogin(rs.getString("user_login"));
-                issue.setAssignedAdminId(rs.getLong("ASSIGNED_ADMIN_LOGIN"));
+                //issue.setAssignedAdminId(rs.getLong("ASSIGNED_ADMIN_LOGIN"));
                 issue.setEstimatedDate(rs.getTimestamp("estimated_time"));
                 issue.setCreatedDate(rs.getTimestamp("created_on"));
                 issue.setLastUpdatedDate(rs.getTimestamp("last_update"));
@@ -420,7 +423,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
             statement.setString(5, issue.getStatus().name());
             statement.setTimestamp(6, issue.getEstimatedDate());
             statement.setLong(7, issue.getId());
-            
+
             rs = statement.executeQuery();
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -1049,6 +1052,60 @@ public class DatabaseServiceImpl implements IDatabaseService {
             }
         }
         return success;
+    }
+
+    @Override
+    public List<User> getTechnicians() {
+        List<User> developers = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "select users.FIRST_NAME, users.LAST_NAME, user_roles.role_name, login from user_logins "
+                + "inner join user_roles on user_roles.ROLE_ID = user_logins.ROLE_ID "
+                + "inner join users on users.USER_ID = user_logins.USER_ID "
+                + "where role_name='TECHNIK'";
+        ResultSet rs = null;
+
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+
+            rs = statement.executeQuery();
+
+            while (rs.next()) {
+                User user = new User();
+                user.setLogin(rs.getString("login"));
+                user.setFirstName(rs.getString("first_name"));
+                user.setLastName(rs.getString("last_name"));
+                user.setUserRole(EUserRole.valueOf(rs.getString("role_name")));
+                developers.add(user);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
+        return developers;
     }
 
     @Override

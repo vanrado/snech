@@ -1,23 +1,9 @@
 <html>
     <head>
     <wicket:head>
-        <link rel="stylesheet" href="web\js\jquery-ui-1.11.4\jquery-ui.css">
-        <script src="web\js\jquery-ui-1.11.4\jquery-ui.js"></script>
-
         <script src="web\js\datepicker\src\moment-with-locales.min.js"></script>
         <script src="web\js\datepicker\bootstrap-datetimepicker.js"></script>
         <link rel="stylesheet" href="web\js\datepicker\bootstrap-datetimepicker.min.css">
-        <script>
-            $(document).ready(function () {
-                $(function () {
-                    $('#datetimepicker2').datetimepicker({
-                        locale: 'sk'
-                    });
-                });
-            });
-
-
-        </script>
     </wicket:head>
 </head>
 <wicket:extend>
@@ -61,8 +47,6 @@
                             </td>
                             <td><span wicket:id="createdOnDate"></span></td>
                             <td><span wicket:id="estimatedDate"></span></td>
-
-
                         </tr>
                     </tbody>
 

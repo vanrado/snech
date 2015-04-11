@@ -57,6 +57,10 @@ footer{
     cursor: text;
 }
 
+.for-delete span{
+    color: #C00;
+}
+
 /*#####################
 Additional Styles (required)
 ######################*/

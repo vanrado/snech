@@ -97,6 +97,12 @@ public class IssueEditPanel extends Panel {
                     estimatedDateField.setDefaultModelObject(new PropertyModel(this, "estimatedDate"));
                 }
 
+                for (User user : selectedAssignedTechnicians) {
+                    if (databaseService.assignIssueToTechnician(issue.getId(), user.getLogin())) {
+                        info("Poziadavka uspesne priradena technikovy " + user.getFirstName() + " " + user.getLastName());
+                    }
+                }
+
                 if (databaseService.updateIssue(issue, CustomAuthenticatedWebSession.get().getUser().getLogin())) {
                     info("Úspešne aktualizované!");
                 }

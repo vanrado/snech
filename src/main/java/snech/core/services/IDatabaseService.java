@@ -59,6 +59,8 @@ public interface IDatabaseService {
     public boolean assignIssueToTechnician(long issueId, String technicianLogin);
     
     public List<User> getAssignedTechnicians(long issueId);
+    
+    public boolean deleteAssignedTechnicians(long issueId, String technicianLogin);
 
     public String testSelect();
 }

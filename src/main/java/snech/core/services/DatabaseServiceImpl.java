@@ -1210,6 +1210,53 @@ public class DatabaseServiceImpl implements IDatabaseService {
     }
 
     @Override
+    public boolean deleteAssignedTechnicians(long issueId, String technicianLogin) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "delete from ASSIGNING_ISSUES where login=? and issue_id=?";
+        ResultSet rs = null;
+        boolean success = true;
+
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            statement.setString(1, technicianLogin);
+            statement.setLong(2, issueId);
+            rs = statement.executeQuery();
+        } catch (SQLException ex) {
+            success = false;
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } catch(Exception ex){
+            success = false;
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        
+        return success;
+    }
+
+    @Override
     public String testSelect() {
         Connection connection = null;
         PreparedStatement statement = null;
@@ -1228,6 +1275,8 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 test += rs.getString("first_name") + " " + rs.getString("last_name");
             }
         } catch (SQLException ex) {
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
             Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (rs != null) {

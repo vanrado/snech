@@ -1226,10 +1226,10 @@ public class DatabaseServiceImpl implements IDatabaseService {
         } catch (SQLException ex) {
             success = false;
             Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch(Exception ex){
+        } catch (Exception ex) {
             success = false;
             Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }finally {
+        } finally {
             if (rs != null) {
                 try {
                     rs.close();
@@ -1252,8 +1252,71 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 }
             }
         }
-        
+
         return success;
+    }
+
+    @Override
+    public List<Issue> getAssignedIssues(String login) {
+        ArrayList<Issue> issues = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "select * from assigning_issues inner join issues on assigning_issues.ISSUE_ID = issues.ISSUE_ID where assigning_issues.login=?";
+
+        ResultSet rs = null;
+
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            statement.setString(1, login);
+            rs = statement.executeQuery();
+            
+            while (rs.next()) {
+                Issue issue = new Issue();
+                String message = rs.getString("message");
+                String subject = rs.getString("subject");
+
+                issue.setId(rs.getLong("issue_id"));
+                issue.setEstimatedDate(rs.getTimestamp("estimated_time"));
+                issue.setCreatedDate(rs.getTimestamp("created_on"));
+                issue.setLastUpdatedDate(rs.getTimestamp("last_update"));
+                issue.setMessage(message != null ? message : "");
+                issue.setSubject(subject != null ? subject : "");
+                issue.setPriority(EIssuePriority.getPriorityFromString(rs.getString("CODE_PRIORITY")));
+                issue.setStatus(EIssueStatus.valueOf(rs.getString("code_status")));
+                issue.setProgress(rs.getInt("progress"));
+
+                issues.add(issue);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        return issues;
     }
 
     @Override

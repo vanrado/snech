@@ -60,6 +60,8 @@ public interface IDatabaseService {
     
     public List<User> getAssignedTechnicians(long issueId);
     
+    public List<Issue> getAssignedIssues(String login);
+    
     public boolean deleteAssignedTechnicians(long issueId, String technicianLogin);
 
     public String testSelect();

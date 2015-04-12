@@ -1,0 +1,54 @@
+<wicket:extend>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <table class="table" id="table.container">
+                    <thead>
+                        <tr>
+                            <th data-field="state" data-checkbox="true"></th>                        
+                            <th data-field="ticketsId">#ID</th>
+                            <th data-field="ticketsSubject">Predmet</th>
+                            <th data-field="ticketsState">Stav</th>
+                            <th data-field="ticketsPriority">Priorita</th>
+                            <th data-field="progress">Pokrok</th>
+                            <th data-field="ticketsUpdated">Vytvorené</th>
+                            <th data-field="ticketsEstimated">Odhad vyriešenia</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr wicket:id="issue">
+                            <td class="bs-checkbox">
+                                <a href="#" wicket:id="edit.link"><span class="glyphicon glyphicon-edit"></span></a>
+                            </td>
+                            <td><span wicket:id="id">45</span></td>
+                            <td>
+                                <a href="#" wicket:id="detailsLink"><span wicket:id="detailsLinkLabel"></span></a>
+                            </td>
+                            <td><span wicket:id="issueStatus"></span></td>
+                            <td><span wicket:id="priority"></span></td>
+                            <td>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40"
+                                         aria-valuemin="0" aria-valuemax="100" style="width:40%" wicket:id="progress">
+                                        40%
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span wicket:id="createdOnDate"></span></td>
+                            <td><span wicket:id="estimatedDate"></span></td>
+                        </tr>
+                    </tbody>
+
+                </table>
+                <div wicket:id="pagination"></div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div wicket:id="edit.panel"></div>
+            </div>
+        </div>
+    </div>
+</wicket:extend>

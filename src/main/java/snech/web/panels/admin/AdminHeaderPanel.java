@@ -19,6 +19,8 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import snech.core.CustomAuthenticatedWebSession;
+import snech.web.pages.admin.AdminOverviewPage;
+import snech.web.pages.admin.MyTasksPage;
 
 /**
  *
@@ -29,6 +31,20 @@ public class AdminHeaderPanel extends Panel {
     public AdminHeaderPanel(String id) {
         super(id);
         final CustomAuthenticatedWebSession mySession = CustomAuthenticatedWebSession.get();
+        add(new Link("issueAdministration.link") {
+
+            @Override
+            public void onClick() {
+                setResponsePage(AdminOverviewPage.class);
+            }
+        });
+        add(new Link("myTasks.link") {
+
+            @Override
+            public void onClick() {
+                setResponsePage(MyTasksPage.class);
+            }
+        });
         add(new Link("signOut.link") {
 
             @Override
@@ -38,7 +54,7 @@ public class AdminHeaderPanel extends Panel {
             }
 
         });
-
+        
         add(new Label("logedUser", mySession.getUser() != null ? mySession.getUser().getFirstName() + " " + mySession.getUser().getLastName() : ""));
     }
 

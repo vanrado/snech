@@ -91,9 +91,6 @@ public class IssueEditPanel extends Panel {
                 super.onSubmit();
                 issue.setPriority(EIssuePriority.valueOf(selectedPriority));
                 issue.setStatus(EIssueStatus.getStatusFromName(selectedStatus));
-                issue.setEstimatedDate(null);
-                progress.add(new AttributeModifier("style", "width: " + issue.getProgress() + "%"));
-                progress.setDefaultModelObject(new PropertyModel<Integer>(issue, "progress").getObject());
 
                 if (estimatedDate != null) {
                     Timestamp date = formatUtils.getTimestampFromString(estimatedDate);
@@ -112,15 +109,17 @@ public class IssueEditPanel extends Panel {
                     }
                 }
 
+                if (databaseService.updateIssue(issue, CustomAuthenticatedWebSession.get().getUser().getLogin())) {
+                    info("Úspešne aktualizované!");
+                }
+
                 techniniciansToDelete.clear();
                 selectedAssignedTechnicians.clear();
                 assignedTechniciansList = databaseService.getAssignedTechnicians(issue.getId());
                 assignedTechnicians.setDefaultModelObject(assignedTechniciansList);
                 estimatedDateField.setDefaultModelObject(estimatedDate);
-                
-                if (databaseService.updateIssue(issue, CustomAuthenticatedWebSession.get().getUser().getLogin())) {
-                    info("Úspešne aktualizované!");
-                }
+                progress.add(new AttributeModifier("style", "width: " + issue.getProgress() + "%"));
+                progress.setDefaultModelObject(new PropertyModel<Integer>(issue, "progress").getObject());
             }
         };
         editForm.setVisible(false);

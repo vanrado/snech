@@ -4,6 +4,7 @@ import java.util.List;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
@@ -25,6 +26,7 @@ import snech.web.panels.admin.IssueEditPanel;
  *
  * @author vanrado
  */
+@AuthorizeInstantiation("ADMIN")
 public class AdminOverviewPage extends AdminBasePage {
 
     private List<Issue> issues;

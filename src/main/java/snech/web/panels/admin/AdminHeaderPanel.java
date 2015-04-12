@@ -15,6 +15,9 @@
  */
 package snech.web.panels.admin;
 
+import org.apache.wicket.authorization.Action;
+import org.apache.wicket.authroles.authorization.strategies.role.Roles;
+import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeAction;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -31,12 +34,21 @@ public class AdminHeaderPanel extends Panel {
     public AdminHeaderPanel(String id) {
         super(id);
         final CustomAuthenticatedWebSession mySession = CustomAuthenticatedWebSession.get();
-        add(new Link("issueAdministration.link") {
+        LinkForAdmins issueAdministrationLink = new LinkForAdmins("issueAdministration.link") {
 
             @Override
             public void onClick() {
                 setResponsePage(AdminOverviewPage.class);
             }
+        };
+        add(issueAdministrationLink);
+        add(new LinkForAdmins("userAdministration.link"){
+
+            @Override
+            public void onClick() {
+                super.onClick(); //To change body of generated methods, choose Tools | Templates.
+            }
+        
         });
         add(new Link("myTasks.link") {
 
@@ -57,5 +69,17 @@ public class AdminHeaderPanel extends Panel {
         
         add(new Label("logedUser", mySession.getUser() != null ? mySession.getUser().getFirstName() + " " + mySession.getUser().getLastName() : ""));
     }
+    
+    @AuthorizeAction(action = Action.RENDER, roles = "ADMIN")
+    private class LinkForAdmins extends Link{
 
+        public LinkForAdmins(String id) {
+            super(id);
+        }
+
+        @Override
+        public void onClick() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+    }
 }

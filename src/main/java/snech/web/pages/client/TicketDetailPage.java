@@ -19,10 +19,13 @@ import com.sun.glass.ui.Application;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.link.DownloadLink;
@@ -72,12 +75,22 @@ public class TicketDetailPage extends MainPage {
         add(new Label("issueSubject", issue.getSubject()));
         add(new Label("issueStatus", issue.getStatus() != null ? issue.getStatus().getName() : UNKNOWN));
         add(new Label("issuePriority", issue.getPriority() != null ? issue.getPriority() : UNKNOWN));
-        add(new Label("issueAssigned", formatUtils.getUserFullName(assignedAdmin)));
         add(new Label("estimatedDate", formatUtils.getFormatedDate(issue.getEstimatedDate())));
         add(new Label("lastUpdatedDate", formatUtils.getFormatedDate(issue.getLastUpdatedDate())));
         add(new Label("createdOnDate", formatUtils.getFormatedDate(issue.getCreatedDate())));
         add(new MultiLineLabel("message", issue.getMessage() != null ? issue.getMessage() : UNKNOWN));
         add(new MultiLineLabel("replyFromAdmin", issue.getReplyFromAdmin() != null ? issue.getReplyFromAdmin() : UNKNOWN));
+        
+        List<User> technicianList = databaseService.getAssignedTechnicians(issue.getId());
+        ListView<User> assignedTechnicians = new ListView<User>("assignedTechnician", technicianList) {
+
+            @Override
+            protected void populateItem(ListItem<User> item) {
+                final User user = item.getModelObject();
+                item.add(new Label("technician.name", user.getFirstName() + " " + user.getLastName()));
+            }
+        };
+        add(assignedTechnicians);
         List<Attachment> attachments = databaseService.getAttachments(issue.getId(), -1);
 
         if (attachments != null) {

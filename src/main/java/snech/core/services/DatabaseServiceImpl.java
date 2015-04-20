@@ -895,7 +895,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
     public boolean insertAttachment(Attachment attachment) {
         Connection connection = null;
         PreparedStatement statement = null;
-        String selectSQL = "insert into attachments(attachment_id, ISSUE_ID, message_id, file_url, file_name, file_size) values (ATTACHMENT_ID_seq.nextval, ?, null, ?, ?, ?)";
+        String selectSQL = "insert into attachments(attachment_id, ISSUE_ID, file_url, file_name, file_size) values (ATTACHMENT_ID_seq.nextval, ?, ?, ?, ?)";
         ResultSet rs = null;
         boolean success = true;
         try {
@@ -942,39 +942,26 @@ public class DatabaseServiceImpl implements IDatabaseService {
     /**
      *
      * @param issueId -1 ak hladame podla messageId
-     * @param messageId -1 ak hladame podla issueId
      * @return
      */
     @Override
-    public List<Attachment> getAttachments(long issueId, long messageId) {
+    public List<Attachment> getAttachments(long issueId) {
         List<Attachment> attachments = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
-        String selectSQL = "select * from attachments where ";
-        if (messageId == -1) {
-            selectSQL += "issue_id=?";
-        } else {
-            selectSQL += "message_id=?";
-        }
-
+        String selectSQL = "select * from attachments where issue_id=?";
         ResultSet rs = null;
 
         try {
             connection = dataSource.getConnection();
             statement = connection.prepareStatement(selectSQL);
-            if (messageId == -1) {
-                statement.setLong(1, issueId);
-            } else {
-                statement.setLong(1, messageId);
-            }
-
+            statement.setLong(1, issueId);
             rs = statement.executeQuery();
 
             while (rs.next()) {
                 Attachment attachment = new Attachment();
                 attachment.setId(rs.getLong("attachment_id"));
                 attachment.setIssueId(rs.getLong("issue_id"));
-                attachment.setMessageId(rs.getLong("message_id"));
                 attachment.setFileUrl(rs.getString("file_url"));
                 attachment.setFileName(rs.getString("file_name"));
                 attachment.setFileSize(rs.getLong("file_size"));
@@ -1270,7 +1257,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
             statement = connection.prepareStatement(selectSQL);
             statement.setString(1, login);
             rs = statement.executeQuery();
-            
+
             while (rs.next()) {
                 Issue issue = new Issue();
                 String message = rs.getString("message");

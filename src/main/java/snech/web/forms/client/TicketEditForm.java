@@ -88,7 +88,7 @@ public class TicketEditForm extends Form<Object> {
         uploads = new ArrayList<>();
         attachmentsToDelete = new ArrayList<>();
         issue = databaseService.getIssue(Long.parseLong(pageParameters.get("id").toString()));
-        attachments = databaseService.getAttachments(issue.getId(), -1);
+        attachments = databaseService.getAttachments(issue.getId());
         subject = issue.getSubject();
         selectedPriority = issue.getPriority().name();
         message = issue.getMessage();
@@ -173,7 +173,7 @@ public class TicketEditForm extends Form<Object> {
 
         if (attachments != null) {
             attachments.clear();
-            attachments.addAll(databaseService.getAttachments(issue.getId(), -1));
+            attachments.addAll(databaseService.getAttachments(issue.getId()));
         }
         attachmentsToDelete.clear();
     }

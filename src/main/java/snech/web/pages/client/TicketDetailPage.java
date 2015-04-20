@@ -91,7 +91,7 @@ public class TicketDetailPage extends MainPage {
             }
         };
         add(assignedTechnicians);
-        List<Attachment> attachments = databaseService.getAttachments(issue.getId(), -1);
+        List<Attachment> attachments = databaseService.getAttachments(issue.getId());
 
         if (attachments != null) {
             add(new ListView<Attachment>("attachments", attachments) {

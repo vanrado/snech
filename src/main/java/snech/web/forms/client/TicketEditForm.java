@@ -62,10 +62,6 @@ import snech.web.pages.client.TicketDetailPage;
  */
 public class TicketEditForm extends Form<Object> {
 
-    @SuppressWarnings("FieldMayBeFinal")
-    @SpringBean
-    private IDatabaseService databaseService;
-
     @SpringBean
     private IHashUtils hashUtils;
 
@@ -83,10 +79,11 @@ public class TicketEditForm extends Form<Object> {
         super(id);
     }
 
+    @SpringBean
+    private IDatabaseService databaseService;
+    
     public TicketEditForm(String id, final PageParameters pageParameters) {
         super(id);
-        uploads = new ArrayList<>();
-        attachmentsToDelete = new ArrayList<>();
         issue = databaseService.getIssue(Long.parseLong(pageParameters.get("id").toString()));
         attachments = databaseService.getAttachments(issue.getId());
         subject = issue.getSubject();

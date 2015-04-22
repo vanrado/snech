@@ -15,6 +15,8 @@ public interface IHashUtils {
      */
     public String hashPassword(String password, String salt);
     
+    public String[] createNewPassword(String password);
+    
     public String getRandomSalt();
     
     public String hashString(String message, String algorithm) throws HashGenerationException;

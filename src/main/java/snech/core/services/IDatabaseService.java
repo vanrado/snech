@@ -25,6 +25,8 @@ public interface IDatabaseService {
     public User getUserLogin(String login);
 
     public String getLoginSalt(String userLogin);
+    
+    public List<User> getUsers();
 
     public List<Notice> getNotices(boolean allNotices);
 

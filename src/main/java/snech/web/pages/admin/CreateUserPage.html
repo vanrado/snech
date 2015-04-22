@@ -1,0 +1,53 @@
+<wicket:extend>
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading">Vytvorenie nového užívateľa</div>
+
+                <form id="edit.form">
+                    <div id="feedback"></div>
+                    <dl class="list-group dl-horizontal">
+                        <div class="list-group-item">
+                            <dt>Meno:</dt>
+                            <dd><input type="text"  class="form-control" id="firstName.textfield"></dd>
+                        </div>
+
+                        <div class="list-group-item">
+                            <dt>Priezvisko:</dt>
+                            <dd><input type="text" class="form-control" id="lastName.textfield"></dd>
+                        </div>
+
+                        <div class="list-group-item">
+                            <dt>Login:</dt>
+                            <dd><input type="text" class="form-control" id="login.textfield"></dd>
+                        </div>
+                        <div class="list-group-item">
+                            <dt>Užívateľská rola:</dt>
+                            <dd>
+                                <select class="form-control">
+                                    <option>Člen</option>
+                                    <option>Technik</option>
+                                    <option>Správca</option>
+                                </select>
+                            </dd>
+                        </div>
+                        <div class="list-group-item">
+                            <dt>Heslo:</dt>
+                            <dd><input type="password" class="form-control" id="password.field"></dd>
+                        </div>
+                        <div class="list-group-item">
+                            <dt>Heslo zopakovať:</dt>
+                            <dd><input type="password" class="form-control" id="passwordRepeat.field"></dd>
+                        </div>
+                    </dl>
+
+                    <button type="submit" class="btn btn-default" id="save.button">Potvrdiť</button>
+                    <button type="button" class="btn btn-default" id="backpage.button">Zrušiť</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</wicket:extend>

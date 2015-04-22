@@ -1,0 +1,59 @@
+<wicket:extend>
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading">Zmena údajov</div>
+
+                <form wicket:id="edit.form">
+                    <div wicket:id="feedback"></div>
+                    <dl class="list-group dl-horizontal">
+                        <div class="list-group-item">
+                            <dt>Meno:</dt>
+                            <dd><input type="text" id="userName" class="form-control" wicket:id="firstName.textfield"></dd>
+                        </div>
+
+                        <div class="list-group-item">
+                            <dt>Priezvisko:</dt>
+                            <dd><input type="text" id="surname" class="form-control" wicket:id="lastName.textfield"></dd>
+                        </div>
+
+                        <div class="list-group-item">
+                            <dt>Login:</dt>
+                            <dd><input type="text" id="surname" class="form-control" wicket:id="login.textfield"></dd>
+                        </div>
+                        
+                        <div class="list-group-item">
+                            <dt>Užívateľská rola</dt>
+                            <dd>
+                                <select class="form-control">
+                                    <option>UZIVATEL</option>
+                                    <option>TECHNIK</option>
+                                    <option>SPRAVCA</option>
+                                </select>
+                            </dd>
+                        </div>
+
+                        <div class="list-group-item">
+                            Zmena hesla <input type="checkbox" wicket:id="changePassword.checkbox">                             
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="list-group-item">
+                            <dt>Heslo:</dt>
+                            <dd><input type="password" id="surname" class="form-control" wicket:id="password.field"></dd>
+                        </div>
+                        <div class="list-group-item">
+                            <dt>Heslo zopakovať:</dt>
+                            <dd><input type="password" id="surname" class="form-control" wicket:id="passwordRepeat.field"></dd>
+                        </div>
+                    </dl>
+
+                    <button type="submit" class="btn btn-default" wicket:id="save.button">Uložiť</button>
+                    <button type="button" class="btn btn-default" wicket:id="backpage.button">Zrušiť</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</wicket:extend>

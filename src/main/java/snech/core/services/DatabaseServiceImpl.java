@@ -47,7 +47,9 @@ public class DatabaseServiceImpl implements IDatabaseService {
         User user = null;
         Connection connection = null;
         PreparedStatement statement = null;
-        String selectSQL = "SELECT * FROM user_logins inner join users on user_logins.user_id = users.user_id inner join user_roles on user_logins.role_id=user_roles.ROLE_ID where login=?";
+        String selectSQL = "SELECT * FROM user_logins "
+                + "inner join users on user_logins.user_id = users.user_id "
+                + "inner join user_roles on user_logins.role_id=user_roles.ROLE_ID where login=?";
         ResultSet rs = null;
 
         try {
@@ -108,6 +110,61 @@ public class DatabaseServiceImpl implements IDatabaseService {
         return user;
     }
 
+    @Override
+    public List<User> getUsers() {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "SELECT first_name, last_name, login, user_roles.role_name FROM user_logins "
+                + "inner join users on user_logins.user_id=users.user_id "
+                + "inner join user_roles on user_logins.role_id=user_roles.role_id "
+                + "where user_logins.role_id != 3";
+        ResultSet rs = null;
+        ArrayList<User> users = new ArrayList<>();
+
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            rs = statement.executeQuery();
+
+            while (rs.next()) {
+                User user = new User();
+                user.setFirstName(rs.getString("first_name"));
+                user.setLastName(rs.getString("last_name"));
+                user.setLogin(rs.getString("login"));
+                user.setUserRole(EUserRole.valueOf(rs.getString("role_name")));
+                users.add(user);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
+        return users;
+    }
+    
     /**
      * Vrati oznamy
      *

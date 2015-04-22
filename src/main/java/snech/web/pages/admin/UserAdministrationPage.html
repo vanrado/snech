@@ -1,0 +1,48 @@
+<wicket:extend>
+    <div class="row">
+        <div class="col-md-2">
+            <button class="btn btn-default" wicket:id="createUser.link">Vytvoriť nové užívateľské konto</button>
+        </div>        
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">Vyhľadanie užívateľa</div>
+                <select class="form-control">
+                    <option>Meno</option>
+                    <option>Priezvisko</option>
+                    <option>Login</option>
+                </select>
+                <input type="text" class="form-control" />
+                <button class="btn btn-default">Vyhľadať</button>
+            </div>
+
+        </div>
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">Užívatelia</div>
+                <table class="table" id="table.container">
+                    <thead>
+                        <tr>
+                            <th></th>                        
+                            <th>Meno</th>
+                            <th>Priezvisko</th>
+                            <th>Login</th>
+                            <th>Rola</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr wicket:id="userRow">
+                            <td><a href="#" wicket:id="userEdit.link"><span class="glyphicon glyphicon-edit"></span></a></td>
+                            <td wicket:id="firstName.label">Janko</td>
+                            <td wicket:id="lastName.label">Mrkvicka</td>
+                            <td wicket:id="login.label">robert_g</td>
+                            <td wicket:id="userRole.label"></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>            
+        </div>
+    </div>
+</wicket:extend>

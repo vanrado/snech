@@ -58,6 +58,19 @@ public class HashUtilsImpl implements IHashUtils {
         }
     }
 
+    /**
+     * 
+     * @param password
+     * @return pole s detailami o novom hesle. Pozicia 0 obsahuje salt, pozicia 1 obsahuje heslo. Vsetko je uz zahashovane 
+     */
+    @Override
+    public String[] createNewPassword(String password) {
+        String[] passwordDetails = new String[2];
+        passwordDetails[0] = getRandomSalt();
+        passwordDetails[1] = hashPassword(password, passwordDetails[0]);
+        return passwordDetails;
+    }
+    
     @Override
     public String randomStringGenerator(int length) {
         String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -79,5 +92,4 @@ public class HashUtilsImpl implements IHashUtils {
         }
         return stringBuffer.toString();
     }
-
 }

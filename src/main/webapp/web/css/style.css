@@ -61,6 +61,10 @@ footer{
     color: #C00;
 }
 
+.pagination-c{
+    text-align: center;
+}
+
 /*#####################
 Additional Styles (required)
 ######################*/

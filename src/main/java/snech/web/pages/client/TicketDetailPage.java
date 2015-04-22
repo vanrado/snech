@@ -41,13 +41,13 @@ import snech.core.types.Attachment;
 import snech.core.types.Issue;
 import snech.core.types.User;
 import snech.core.types.enums.EIssueStatus;
-import snech.web.base.MainPage;
+import snech.web.base.MemberBasePage;
 
 /**
  *
  * @author Radovan
  */
-public class TicketDetailPage extends MainPage {
+public class TicketDetailPage extends MemberBasePage {
 
     private String id;
 
@@ -68,8 +68,6 @@ public class TicketDetailPage extends MainPage {
                 && !CustomAuthenticatedWebSession.get().getRoles().contains("ADMIN")){
             setResponsePage(getApplication().getApplicationSettings().getAccessDeniedPage());
         }
-        
-        User assignedAdmin = databaseService.getUser(issue.getAssignedAdminId());
 
         add(new Label("issueId", issue.getId() != 0 ? issue.getId() : UNKNOWN));
         add(new Label("issueSubject", issue.getSubject()));

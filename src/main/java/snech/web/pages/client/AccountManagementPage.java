@@ -19,13 +19,13 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import snech.core.CustomAuthenticatedWebSession;
 import snech.core.types.User;
-import snech.web.base.MainPage;
+import snech.web.base.MemberBasePage;
 
 /**
  *
  * @author Radovan
  */
-public class AccountManagementPage extends MainPage {
+public class AccountManagementPage extends MemberBasePage {
     
     public AccountManagementPage(){
         User user = CustomAuthenticatedWebSession.get().getUser();

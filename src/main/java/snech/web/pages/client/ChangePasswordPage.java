@@ -11,14 +11,14 @@ import snech.core.CustomAuthenticatedWebSession;
 import snech.core.services.IDatabaseService;
 import snech.core.services.IHashUtils;
 import snech.core.types.User;
-import snech.web.base.MainPage;
+import snech.web.base.MemberBasePage;
 import snech.web.validators.PasswordValidator;
 
 /**
  *
  * @author Radovan
  */
-public class ChangePasswordPage extends MainPage {
+public class ChangePasswordPage extends MemberBasePage {
     
     @SpringBean
     private IDatabaseService databaseService;

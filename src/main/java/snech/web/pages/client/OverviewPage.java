@@ -15,14 +15,14 @@
  */
 package snech.web.pages.client;
 
-import snech.web.base.MainPage;
+import snech.web.base.MemberBasePage;
 import snech.web.panels.OverviewPanel;
 
 /**
  *
  * @author Radovan
  */
-public class OverviewPage extends MainPage {
+public class OverviewPage extends MemberBasePage {
 
     public OverviewPage() {
         add(new OverviewPanel("overview.panel"));

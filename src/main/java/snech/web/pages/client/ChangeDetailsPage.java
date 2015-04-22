@@ -10,13 +10,13 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import snech.core.CustomAuthenticatedWebSession;
 import snech.core.services.IDatabaseService;
 import snech.core.types.User;
-import snech.web.base.MainPage;
+import snech.web.base.MemberBasePage;
 
 /**
  *
  * @author Radovan
  */
-public class ChangeDetailsPage extends MainPage {
+public class ChangeDetailsPage extends MemberBasePage {
 
     private String firstName;
     private String lastName;

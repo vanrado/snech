@@ -224,10 +224,6 @@ public class IssueEditPanel extends Panel {
                     }
                 }
 
-                for (User user : selectedAssignedTechnicians) {
-                    info("login=" + user.getLogin());
-                }
-
                 assignedAdminName.setDefaultModelObject("Nepriradené");
                 techniciansToAssign.setDefaultModelObject(selectedAssignedTechnicians);
 

@@ -23,10 +23,10 @@ import snech.web.panels.admin.AdminHeaderPanel;
  * @author vanrado
  */
 @AuthorizeInstantiation({"ADMIN", "TECHNIK"})
-public class AdminBasePage extends BasePage{
+public class AdminBasePage extends BasePage {
 
     public AdminBasePage() {
         add(new AdminHeaderPanel("header.panel"));
     }
-    
+
 }

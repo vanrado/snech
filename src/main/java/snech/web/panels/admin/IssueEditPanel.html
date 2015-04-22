@@ -25,11 +25,12 @@
             <div class="list-group-item">
                 <dt>Priradení technici:</dt>
                 <dd wicket:id="assignedTechnician">
-                        <span wicket:id="technician.name"></span>
-                        <a class="remove" wicket:id="removeSelected.link">
-                            <span class="glyphicon glyphicon-remove"></span>
-                        </a>
+                    <span wicket:id="technician.name"></span>
+                    <a class="remove" wicket:id="removeSelected.link">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </a>
                 </dd>
+                <dd></dd>
             </div>
             <div class="list-group-item"  wicket:id="technicians.container">
                 <dt>Priradenie technikov:</dt>
@@ -39,22 +40,24 @@
                         <span class="glyphicon glyphicon-remove"></span>
                     </a>
                 </dd>
-                <div class="dropdown">
-                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-expanded="true" style="position: relative;">
+                <dd>
+                    <div class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-expanded="true" style="position: relative;">
 
-                        <span wicket:id="technicianName"></span>
-                        <span class="caret"></span>
-                    </button>
+                            <span wicket:id="technicianName"></span>
+                            <span class="caret"></span>
+                        </button>
 
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu3">
-                        <li role="presentation" wicket:id="technician.option">
-                            <a role="menuitem" tabindex="-1" href="#" wicket:id="technician.link"><span wicket:id="technician.name">Tomek Bavala</span></a>
-                        </li>
-                        <!--                            <li role="presentation" class="dropdown-header">Vyťažení</li>-->
-                    </ul>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu3">
+                            <li role="presentation" wicket:id="technician.option">
+                                <a role="menuitem" tabindex="-1" href="#" wicket:id="technician.link"><span wicket:id="technician.name">Tomek Bavala</span></a>
+                            </li>
+                            <!--                            <li role="presentation" class="dropdown-header">Vyťažení</li>-->
+                        </ul>
 
-                    <a href="#" style="" wicket:id="confirmTechnician.link"><span class="glyphicon glyphicon-ok-circle"></span></a>
-                </div>
+                        <a href="#" style="" wicket:id="confirmTechnician.link"><span class="glyphicon glyphicon-ok-circle"></span></a>
+                    </div>
+                </dd>
 
             </div>
 

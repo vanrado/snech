@@ -10,6 +10,11 @@ select last_number
 from user_sequences
 where sequence_name='UPLOAD_FOLDER_SEQ';
 
+SELECT  first_name, last_name, login, user_roles.role_name FROM user_logins
+inner join users on user_logins.user_id=users.user_id
+inner join user_roles on user_logins.role_id=user_roles.role_id
+where user_logins.role_id != 3;
+
 select login, user_id
 inner join users on user_id=users.user_id 
 from user_logins where role_id=2;

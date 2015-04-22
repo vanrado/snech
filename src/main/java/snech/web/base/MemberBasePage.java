@@ -25,12 +25,12 @@ import snech.web.panels.base.HeaderPanel;
  *
  * @author Radovan
  */
-public class MainPage extends BasePage{
-    public MainPage(){
+public class MemberBasePage extends BasePage{
+    public MemberBasePage(){
         add(new HeaderPanel("header.panel"));
     }
     
-    public MainPage(PageParameters pageParameters){
+    public MemberBasePage(PageParameters pageParameters){
         super(pageParameters);
         add(new HeaderPanel("header.panel"));
     }

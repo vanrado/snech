@@ -24,6 +24,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import snech.core.CustomAuthenticatedWebSession;
 import snech.web.pages.admin.AdminOverviewPage;
 import snech.web.pages.admin.MyTasksPage;
+import snech.web.pages.admin.UserAdministrationPage;
 
 /**
  *
@@ -46,7 +47,7 @@ public class AdminHeaderPanel extends Panel {
 
             @Override
             public void onClick() {
-                super.onClick(); //To change body of generated methods, choose Tools | Templates.
+                setResponsePage(UserAdministrationPage.class);
             }
         
         });

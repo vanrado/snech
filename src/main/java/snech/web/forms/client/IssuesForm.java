@@ -56,7 +56,7 @@ public class IssuesForm extends Form {
         add(feedback);
 
         final User logedUser = CustomAuthenticatedWebSession.get().getUser();
-        issues = databaseService.getIssues(logedUser != null ? logedUser.getLogin() : "", false);
+        issues = databaseService.getIssues(logedUser.getLogin(), false);
 
         final Label issuesForDelete = new Label("issuesForDelete", "");
         issuesForDelete.setOutputMarkupId(true);

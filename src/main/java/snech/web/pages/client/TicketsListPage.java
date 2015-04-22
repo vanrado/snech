@@ -15,7 +15,7 @@
  */
 package snech.web.pages.client;
 
-import snech.web.base.MainPage;
+import snech.web.base.MemberBasePage;
 import snech.web.panels.ContactFormPanel;
 import snech.web.panels.IssuePanel;
 import snech.web.panels.NoticePanel;
@@ -25,7 +25,7 @@ import snech.web.panels.ReportTicketPanel;
  *
  * @author Radovan
  */
-public class TicketsListPage extends MainPage {
+public class TicketsListPage extends MemberBasePage {
 
     public TicketsListPage() {
         add(new IssuePanel("issue.panel"));

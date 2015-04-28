@@ -119,19 +119,6 @@ public class IssuesForm extends Form {
                 listItem.add(checkBox);
 
                 listItem.add(new Label("issueStatus", issue.getStatus().getName())); //issue.getStatus().getName()));
-                listItem.add(new Link("contactAdminLink") {
-
-                    @Override
-                    protected void onInitialize() {
-                        super.onInitialize();
-                        add(new Label("contactName", issue.getAssignedAdminId()));
-                    }
-
-                    @Override
-                    public void onClick() {
-                        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-                    }
-                });
                 listItem.add(new Label("priority", issue.getPriority()));
                 listItem.add(new Label("estimatedDate", formatUtils.getFormatedDate(issue.getEstimatedDate())));
                 listItem.add(new Label("createdOnDate", formatUtils.getFormatedDate(issue.getCreatedDate())));

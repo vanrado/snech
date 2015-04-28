@@ -164,7 +164,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
 
         return users;
     }
-    
+
     /**
      * Vrati oznamy
      *
@@ -262,7 +262,76 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 issue.setPriority(EIssuePriority.getPriorityFromString(rs.getString("CODE_PRIORITY")));
                 issue.setStatus(EIssueStatus.valueOf(rs.getString("code_status")));
                 issue.setProgress(rs.getInt("progress"));
+                issue.setUserLogin(rs.getString("user_login"));
+                issues.add(issue);
+            }
 
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        return issues;
+    }
+
+    @Override
+    public List<Issue> getIssues(EIssueStatus status, int numberOfDays, boolean notAssigned) {
+        ArrayList<Issue> issues = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL;
+
+        selectSQL = "select subject, trunc(sysdate) - trunc(created_on) as pocetdni from issues"
+                + " where code_status='NOVA' and (trunc(sysdate) - trunc(created_on)) < 30 and"
+                + " issue_id not in (select issue_id from assigning_issues)";
+
+        if(status != null){
+         
+       }
+        ResultSet rs = null;
+
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            rs = statement.executeQuery();
+
+            while (rs.next()) {
+                Issue issue = new Issue();
+                String message = rs.getString("message");
+                String subject = rs.getString("subject");
+
+                issue.setId(rs.getLong("issue_id"));
+                issue.setEstimatedDate(rs.getTimestamp("estimated_time"));
+                issue.setCreatedDate(rs.getTimestamp("created_on"));
+                issue.setLastUpdatedDate(rs.getTimestamp("last_update"));
+                issue.setMessage(message != null ? message : "");
+                issue.setSubject(subject != null ? subject : "");
+                issue.setPriority(EIssuePriority.getPriorityFromString(rs.getString("CODE_PRIORITY")));
+                issue.setStatus(EIssueStatus.valueOf(rs.getString("code_status")));
+                issue.setProgress(rs.getInt("progress"));
+                issue.setUserLogin(rs.getString("user_login"));
                 issues.add(issue);
             }
 
@@ -1103,7 +1172,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
         List<User> developers = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
-        String selectSQL = "select users.FIRST_NAME, users.LAST_NAME, user_roles.role_name, login from user_logins "
+        String selectSQL = "select users.FIRST_NAME, users.LAST_NAME, user_roles.role_name, login, users.email from user_logins "
                 + "inner join user_roles on user_roles.ROLE_ID = user_logins.ROLE_ID "
                 + "inner join users on users.USER_ID = user_logins.USER_ID "
                 + "where role_name='TECHNIK'";
@@ -1121,6 +1190,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 user.setFirstName(rs.getString("first_name"));
                 user.setLastName(rs.getString("last_name"));
                 user.setUserRole(EUserRole.valueOf(rs.getString("role_name")));
+                user.setEmail(rs.getString("email"));
                 developers.add(user);
             }
         } catch (SQLException ex) {
@@ -1153,7 +1223,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
     }
 
     @Override
-    public boolean assignIssueToTechnician(long issueId, String technicianLogin) {
+    public boolean assignIssueToTechnician(long issueId, User user) {
         Connection connection = null;
         PreparedStatement statement = null;
         String selectSQL = "insert into assigning_issues(login, issue_id) values(?, ?)";
@@ -1163,14 +1233,15 @@ public class DatabaseServiceImpl implements IDatabaseService {
         try {
             connection = dataSource.getConnection();
             statement = connection.prepareStatement(selectSQL);
-            statement.setString(1, technicianLogin);
+            statement.setString(1, user.getLogin());
             statement.setLong(2, issueId);
             rs = statement.executeQuery();
+            System.out.println("Pridane");
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             success = false;
         } catch (Exception ex) {
-            success = false;
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (rs != null) {
                 try {
@@ -1203,7 +1274,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
         ArrayList<User> technicians = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
-        String selectSQL = "select users.first_name, users.last_name, user_logins.login, role_name from ASSIGNING_ISSUES "
+        String selectSQL = "select users.first_name, users.last_name, user_logins.login, role_name, users.email from ASSIGNING_ISSUES "
                 + "inner join user_logins on ASSIGNING_ISSUES.LOGIN = user_logins.login "
                 + "inner join users on user_logins.user_id=users.user_id "
                 + "inner join user_roles on user_roles.ROLE_ID = user_logins.ROLE_ID "
@@ -1222,6 +1293,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 user.setLastName(rs.getString("last_name"));
                 user.setLogin(rs.getString("login"));
                 user.setUserRole(EUserRole.valueOf(rs.getString("role_name")));
+                user.setEmail(rs.getString("email"));
                 technicians.add(user);
             }
         } catch (SQLException ex) {

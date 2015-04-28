@@ -31,6 +31,8 @@ public interface IDatabaseService {
     public List<Notice> getNotices(boolean allNotices);
 
     public List<Issue> getIssues(String userId, boolean deleted);
+    
+    public List<Issue> getIssues(EIssueStatus status, int numberOfDays, boolean notAssigned);
 
     public boolean updateIssue(Issue issue, String login);
 
@@ -58,7 +60,7 @@ public interface IDatabaseService {
     
     public List<User> getTechnicians();
     
-    public boolean assignIssueToTechnician(long issueId, String technicianLogin);
+    public boolean assignIssueToTechnician(long issueId, User user);
     
     public List<User> getAssignedTechnicians(long issueId);
     

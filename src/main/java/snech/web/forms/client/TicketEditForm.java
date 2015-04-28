@@ -81,7 +81,7 @@ public class TicketEditForm extends Form<Object> {
 
     @SpringBean
     private IDatabaseService databaseService;
-    
+
     public TicketEditForm(String id, final PageParameters pageParameters) {
         super(id);
         issue = databaseService.getIssue(Long.parseLong(pageParameters.get("id").toString()));
@@ -89,6 +89,7 @@ public class TicketEditForm extends Form<Object> {
         subject = issue.getSubject();
         selectedPriority = issue.getPriority().name();
         message = issue.getMessage();
+        attachmentsToDelete = new ArrayList<>();
 
         final FeedbackPanel feedback = new FeedbackPanel("feedback");
         feedback.setOutputMarkupId(true);
@@ -165,7 +166,9 @@ public class TicketEditForm extends Form<Object> {
         issue.setMessage(message);
         databaseService.updateIssue(issue, CustomAuthenticatedWebSession.get().getUser().getLogin());
 
-        removeAttachments();
+        if (attachmentsToDelete.size() > 0) {
+            removeAttachments();
+        }
         uploadAttachments();
 
         if (attachments != null) {

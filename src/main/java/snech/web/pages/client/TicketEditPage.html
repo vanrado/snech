@@ -8,18 +8,6 @@
             }
         </style>
 
-        <script>
-            $(document).ready(function () {
-                $(".remove").click(function () {
-                    
-                    if ($(this).parent(this).hasClass("for-delete")) {
-                        $(this).parent(this).removeClass("for-delete");
-                    } else {
-                        $(this).parent(this).addClass("for-delete");
-                    }
-                });
-            });
-        </script>
     </wicket:head>
 </head>
 <wicket:extend>

@@ -50,7 +50,7 @@ public class UserEditPage extends AdminBasePage {
 
     @SpringBean
     private IHashUtils hashUtils;
-    
+
     public UserEditPage(PageParameters params) {
         user = databaseService.getUserLogin(params.get("login").toString());
         if (user == null) {
@@ -95,29 +95,28 @@ public class UserEditPage extends AdminBasePage {
                 } else {
                     error("Nastala chyba pri aktualizacii databazy!");
                 }
-                
-                if(password != null && password.equals(passwordRepeat)){
-                    String[] newPassword = hashUtils.createNewPassword(password);
-                    if(databaseService.updateLoginPassword(user.getLogin(), newPassword[1], newPassword[0])){
-                        info("Aktualizácia hesla prebehla úspešne!");
-                    }else{
-                        error("Aktualizácia hesla neprebehla úspešne!");
+
+                if (password != null) {
+                    if (password.equals(passwordRepeat)) {
+                        String[] newPassword = hashUtils.createNewPassword(password);
+                        if (databaseService.updateLoginPassword(user.getLogin(), newPassword[1], newPassword[0])) {
+                            info("Aktualizácia hesla prebehla úspešne!");
+                        } else {
+                            error("Aktualizácia hesla neprebehla úspešne!");
+                        }
+                    } else {
+                        error("Heslá sa nezhodujú!");
                     }
-                }else{
-                    error("Heslá sa nezhodujú!");
                 }
-                
-                System.out.println("Lalala");
             }
         });
-        
-        
+
         final PasswordTextField password = new PasswordTextField("password.field", new PropertyModel(this, "password"));
         password.setEnabled(false);
         password.add(new PasswordValidator());
         editForm.add(password);
 
-        final PasswordTextField passwordRepeat = new PasswordTextField("passwordRepeat.field",  new PropertyModel(this, "passwordRepeat"));
+        final PasswordTextField passwordRepeat = new PasswordTextField("passwordRepeat.field", new PropertyModel(this, "passwordRepeat"));
         passwordRepeat.setEnabled(false);
         editForm.add(passwordRepeat);
 

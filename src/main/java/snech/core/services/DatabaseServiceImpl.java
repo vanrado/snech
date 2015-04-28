@@ -693,7 +693,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
         final String UNKNOWN = "-";
         Connection connection = null;
         PreparedStatement statement = null;
-        String selectSQL = "update users set first_name=?, last_name=?, email=?, occupation=?";
+        String selectSQL = "update users set first_name=?, last_name=?, email=?, occupation=? where user_id in (select user_id from user_logins where user_logins.login=?)";
         ResultSet rs = null;
         boolean success = true;
         String firstName = user.getFirstName() != null ? user.getFirstName() : UNKNOWN;
@@ -708,6 +708,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
             statement.setString(2, lastName);
             statement.setString(3, email);
             statement.setString(4, occupation);
+            statement.setString(5, user.getLogin());
 
             rs = statement.executeQuery();
         } catch (SQLException ex) {

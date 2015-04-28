@@ -37,6 +37,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import snech.core.CustomAuthenticatedWebSession;
 import snech.core.services.IDatabaseService;
+import snech.core.services.IEmailService;
 import snech.core.services.IFormatUtils;
 import snech.core.types.Issue;
 import snech.core.types.User;
@@ -74,6 +75,9 @@ public class IssueEditPanel extends Panel {
     private IDatabaseService databaseService;
 
     @SpringBean
+    private IEmailService emailService;
+
+    @SpringBean
     private IFormatUtils formatUtils;
 
     public IssueEditPanel(String id) {
@@ -98,7 +102,13 @@ public class IssueEditPanel extends Panel {
                 }
 
                 for (User user : selectedAssignedTechnicians) {
-                    if (databaseService.assignIssueToTechnician(issue.getId(), user.getLogin())) {
+                    if (databaseService.assignIssueToTechnician(issue.getId(), user)) {
+                        emailService.sendInfoForTechnicianAssign(user, issue.getId());
+                        
+                        User member = databaseService.getUserLogin(issue.getUserLogin());
+                        if (member != null) {
+                            emailService.sendInfoForMemberAssign(member, issue.getId());
+                        }
                         info("Poziadavka uspesne priradena technikovi " + user.getFirstName() + " " + user.getLastName());
                     }
                 }

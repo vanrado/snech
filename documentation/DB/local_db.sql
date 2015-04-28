@@ -96,8 +96,12 @@ from ISSUE_LOGS
 where issue_id in (select issue_id from issues where user_login='robert_u')
 order by created_on DESC;
 
+select subject, trunc(sysdate) - trunc(created_on) as pocetdni
+from issues
+where code_status='NOVA' and pocetdni > 5;
+
 INSERT INTO "SNECH_DB"."NOTICES" (NOTICE_ID, SUBJECT, CREATED_ON, VISIBLE, AUTHOR_ID, MESSAGE) 
-VALUES (2, 'Oznam druhy', CURRENT_TIMESTAMP, '1', 1, 'Tak toto je sprava a oznaam, budeme vypinat servery v stredu 16.5.2015');
+VALUES (notices_id_seq.nextval, 'Interdum et malesuada fames', CURRENT_TIMESTAMP, '1', 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut ultrices ipsum ut mi luctus, quis consectetur mi tristique. Aenean accumsan sapien nisi');
 
 select * from notices
 where visible = '1';

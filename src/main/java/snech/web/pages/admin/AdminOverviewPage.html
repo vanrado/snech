@@ -1,7 +1,34 @@
 <wicket:extend>
     <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">Filtrovanie požiadaviek <a href="javascript::void()" id="filterShowLink"><span class="glyphicon glyphicon-plus"></span></a></div>
+                <div id="filter">
+                    <div class="list-group-item">
+                        <input type="checkbox">
+                        Podľa stavu 
+                        <select class="form-control-static">
+                            <option>Nová</option>
+                        </select>
+                    </div>
+                    <div class="list-group-item">
+                        <input type="checkbox">
+                        Požiadavky staré menej ako <input type="number"> dní
+                    </div>
+
+                    <div class="list-group-item">
+                        <input type="checkbox"> Nepridelený žiadny technik <br>
+                    </div>
+
+                    <a class="btn btn-default" style="margin: 5px;">Vyhľadať</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-8">
             <div class="panel panel-default">
+                <div class="panel-heading">Zoznam požiadaviek</div>
                 <table class="table" id="table.container">
                     <thead>
                         <tr>
@@ -49,6 +76,7 @@
 
         <div class="col-md-4">
             <div class="panel panel-default">
+                <div class="panel-heading">Rýchla úprava</div>
                 <div wicket:id="edit.panel"></div>
             </div>
         </div>

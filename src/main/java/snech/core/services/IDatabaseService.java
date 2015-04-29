@@ -19,6 +19,8 @@ public interface IDatabaseService {
     public User getUser(long userId);
 
     public boolean updateLoginPassword(String login, String newPassword, String newSalt);
+    
+    public List<User> getUsersByStringsearch(String pattern);
 
     public boolean updateUser(User user);
 

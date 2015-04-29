@@ -4,24 +4,23 @@
             <button class="btn btn-default" wicket:id="createUser.link">Vytvoriť nové užívateľské konto</button>
         </div>        
     </div>
+    
     <div class="row">
         <div class="col-md-4">
             <div class="panel panel-default">
                 <div class="panel-heading">Vyhľadanie užívateľa</div>
-                <select class="form-control">
-                    <option>Meno</option>
-                    <option>Priezvisko</option>
-                    <option>Login</option>
-                </select>
-                <input type="text" class="form-control" />
-                <button class="btn btn-default">Vyhľadať</button>
+                <div wicket:id="feedback"></div>
+                <form wicket:id="search.form">
+                    <input type="text" class="form-control" wicket:id="input.field"/>
+                    <button class="btn btn-default" type="submit" wicket:id="searchsubmit.link">Vyhľadať</button>
+                </form>
             </div>
 
         </div>
         <div class="col-md-8">
             <div class="panel panel-default">
                 <div class="panel-heading">Užívatelia</div>
-                <table class="table" id="table.container">
+                <table class="table" wicket:id="users.container">
                     <thead>
                         <tr>
                             <th></th>                        

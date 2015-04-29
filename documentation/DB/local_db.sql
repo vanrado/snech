@@ -15,9 +15,14 @@ inner join users on user_logins.user_id=users.user_id
 inner join user_roles on user_logins.role_id=user_roles.role_id
 where user_logins.role_id != 3;
 
-select login, user_id
-inner join users on user_id=users.user_id 
-from user_logins where role_id=2;
+create index login_index  on user_logins(login) indextype is ctxsys.context;
+create index issue_subject_index on issues(subject) indextype is ctxsys.context;
+create index users_firstname_index on users(first_name) indextype is ctxsys.context;
+create index users_lastname_index on users(last_name) indextype is ctxsys.context;
+
+select * from users
+inner join user_logins on users.user_id=user_logins.USER_ID
+where contains(user_logins.login, 'robersst', 1) > 0 or contains(users.first_name,'tomas') > 0;
 
 SELECT * FROM user_logins inner join users on user_logins.user_id = users.user_id inner join user_roles on user_logins.role_id=user_roles.ROLE_ID where login='robert_u';
 

@@ -111,6 +111,66 @@ public class DatabaseServiceImpl implements IDatabaseService {
     }
 
     @Override
+    public List<User> getUsersByStringsearch(String pattern) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String selectSQL = "SELECT first_name, last_name, login, user_roles.role_name FROM user_logins "
+                + "inner join users on users.user_id=user_logins.USER_ID "
+                + "inner join user_roles on user_logins.role_id=user_roles.role_id "
+                + "where contains(user_logins.login, ?, 1) > 0 "
+                + "or contains(users.first_name, ?, 2) > 0 "
+                + "or contains(users.last_name, ?, 3) > 0";
+        ResultSet rs = null;
+        ArrayList<User> users = new ArrayList<>();
+
+        try {
+            connection = dataSource.getConnection();
+            statement = connection.prepareStatement(selectSQL);
+            statement.setString(1, pattern);
+            statement.setString(2, pattern);
+            statement.setString(3, pattern);
+            rs = statement.executeQuery();
+
+            while (rs.next()) {
+                User user = new User();
+                user.setFirstName(rs.getString("first_name"));
+                user.setLastName(rs.getString("last_name"));
+                user.setLogin(rs.getString("login"));
+                user.setUserRole(EUserRole.valueOf(rs.getString("role_name")));
+                users.add(user);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
+        return users;
+    }
+
+    @Override
     public List<User> getUsers() {
         Connection connection = null;
         PreparedStatement statement = null;
@@ -307,9 +367,9 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 + " where code_status='NOVA' and (trunc(sysdate) - trunc(created_on)) < 30 and"
                 + " issue_id not in (select issue_id from assigning_issues)";
 
-        if(status != null){
-         
-       }
+        if (status != null) {
+
+        }
         ResultSet rs = null;
 
         try {

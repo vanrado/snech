@@ -16,11 +16,20 @@
 package snech.web.pages.admin;
 
 import java.util.List;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import snech.core.services.IDatabaseService;
@@ -38,6 +47,7 @@ public class UserAdministrationPage extends AdminBasePage {
     @SpringBean
     private IDatabaseService databaseService;
     private List<User> users;
+    private String inputSearchString;
 
     public UserAdministrationPage() {
         users = databaseService.getUsers();
@@ -48,7 +58,12 @@ public class UserAdministrationPage extends AdminBasePage {
                 setResponsePage(CreateUserPage.class);
             }
         });
-        add(new ListView<User>("userRow", users) {
+        final FeedbackPanel feedback = new FeedbackPanel("feedback");
+        feedback.setOutputMarkupId(true);
+        add(feedback);
+        final WebMarkupContainer usersContainer = new WebMarkupContainer("users.container");
+        usersContainer.setOutputMarkupId(true);
+        usersContainer.add(new ListView<User>("userRow", users) {
 
             @Override
             protected void populateItem(ListItem<User> item) {
@@ -68,6 +83,27 @@ public class UserAdministrationPage extends AdminBasePage {
                 });
             }
         });
+        add(usersContainer);
+
+        Form searchForm = new Form("search.form");
+        TextField inputSearchField = new TextField("input.field", new PropertyModel(this, "inputSearchString"));
+        searchForm.add(inputSearchField);
+        searchForm.add(new AjaxSubmitLink("searchsubmit.link") {
+
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                users.clear();
+                if (inputSearchString != null && !inputSearchString.equals("")) {
+                    users.addAll(databaseService.getUsersByStringsearch(inputSearchString));
+                } else {
+                    users.addAll(databaseService.getUsers());
+                }
+                target.add(usersContainer);
+            }
+
+        });
+        add(searchForm);
+
     }
 
 }

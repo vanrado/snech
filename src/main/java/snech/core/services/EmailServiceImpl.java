@@ -25,8 +25,8 @@ public class EmailServiceImpl implements IEmailService {
     public void sendInfoForTechnicianAssign(User user, long issueId) {
         String from = "admin@azet.sk";
 
-        final String username = "radovan.racak";
-        final String password = "ofi2o12r";
+        final String username = "yourEmail";
+        final String password = "yourPassword";
 
         String host = "smtp.gmail.com";
         Properties props = new Properties();
